@@ -1,0 +1,112 @@
+﻿@model IEnumerable<NPCIL.Models.PublicationModel>
+@{
+    ViewData["Title"] = "View Publication";
+}
+
+<link href="~/datatables/css/buttons.datatables.css" rel="stylesheet" />
+<link href="~/datatables/css/datatables.datatables.css" rel="stylesheet" />
+
+
+<div class="page-header">
+    <div class="page-block">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <ul class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="~/Home/Index">Dashboard</a></li>
+                    <li class="breadcrumb-item"><a href="javascript: void(0)">View Publication</a></li>
+                    @* <li class="breadcrumb-item" aria-current="page">Form Validation</li> *@
+                </ul>
+                <div class="page-header-title">
+                    <h2 class="mb-0">View Publication</h2>
+                </div>
+            </div>
+            <div class="col-md-6 text-end">
+                <a href="~/Publication/AddPublication" class="btn btn-primary">Add Publication</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="row">
+    <!-- [ basic-table ] start -->
+    <div class="col-xl-12">
+        <div class="card">
+            <div class="card-header">
+                <h5>View Publication</h5>
+            </div>
+            <div class="card-body table-border-style">
+                <button class="btn btn-light-primary mb-1 btn-sm csv">Export CSV</button>
+                <button class="btn btn-light-primary mb-1 btn-sm sql">Export SQL</button>
+                <button class="btn btn-light-primary mb-1 btn-sm txt">Export TXT</button>
+                <button class="btn btn-light-primary mb-1 btn-sm json">Export JSON</button>
+                <div class="table-responsive">
+                    <table id="example" class="display nowrap">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Title</th>
+                                <th>Author Name</th>
+                                <th>Upload Files</th>
+                                <th>Edit</th>
+                                <th>Delete</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var pub in Model)
+                            {
+                                <tr>
+                                    <td>@pub.PUB_id</td>
+                                    <td>@pub.PUB_Title</td>
+                                    <td>@pub.PUB_AutherName</td>
+                                    @* <td><img src="@pub.ImagePath" width="150" alt="Image Not Available" /></td> *@
+                                    <td><a href="@pub.ImagePath">@pub.ImagePath</a></td>
+                                    <td>@Html.ActionLink("Edit", "EditPublication", new { id = @pub.PUB_id })</td>
+                                    <td>@Html.ActionLink("Delete", "DeletePublication", new { id = @pub.PUB_id })</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- [ basic-table ] end -->
+</div>
+<!-- [ Main Content ] end -->
+
+
+
+<script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+<script src="~/datatables/js/buttons.datatables.js"></script>
+<script src="~/datatables/js/buttons.html5.min.js"></script>
+<script src="~/datatables/js/buttons.print.min.js"></script>
+<script src="~/datatables/js/datatables.js"></script>
+<script src="~/datatables/js/dataTables.buttons.js"></script>
+<script src="~/datatables/js/jszip.min.js"></script>
+<script src="~/datatables/js/pdfmake.min.js"></script>
+<script src="~/datatables/js/vfs_fonts.js"></script>
+<script src="~/datatables/js/custom.js"></script>
+<script src="~/datatables/js/datatables.buttons.js"></script>
+
+<script>
+new DataTable('#example', {
+    layout: {
+        topStart: {
+            buttons: ['copy', 'csv', 'excel', 'pdf', 'print']
+        }
+    }
+});
+
+    new DataTable('#myTable', {
+        layout: {
+            topStart: {
+                buttons: ['copy']
+            }
+        }
+    });
+</script>
+
+
+
+

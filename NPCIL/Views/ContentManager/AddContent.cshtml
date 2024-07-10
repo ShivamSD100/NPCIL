@@ -1,0 +1,150 @@
+﻿@model WebApplication1.Models.ContentManagerModel;
+@{
+    ViewData["Title"] = "Add Content Manager";
+}
+
+<div class="page-header">
+    <div class="page-block">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <ul class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="../dashboard/index.html">Dashboard</a></li>
+                    <li class="breadcrumb-item"><a href="javascript: void(0)">CMS</a></li>
+                    <li class="breadcrumb-item" aria-current="page">Add Content</li>
+                </ul>
+                <div class="page-header-title">
+                    <h2 class="mb-0">Add Content</h2>
+                </div>
+            </div>
+            <div class="col-md-6 text-end">
+                <a href="~/Menu/MenusList" class="btn btn-primary">View Menu</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="row">
+    <!-- [ Form Validation ] start -->
+    @Html.HiddenFor(m => m.Menu_Id)
+    <div class="col-sm-12">
+        <div class="card">
+            <div class="card-header">
+                <h5>Add Content</h5>
+            </div>
+            <div class="card-body">
+                <form asp-controller="ContentManager" id="myForm" asp-action="AddContent" method="post" enctype="multipart/form-data" class="validate-me" id="validate-me" data-validate="" novalidate="true">
+                    <div class="mb-3 row">
+                        <label class="col-lg-4 col-form-label text-lg-end">Menu Name(english)</label>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(m => m.CM_Name_eng, new { @class = "form-control", placeholder = "", @id = "nameeng" })
+                            @Html.ValidationMessageFor(m => m.CM_Name_eng, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="mb-3 row">
+                        <label class="col-lg-4 col-form-label text-lg-end">Menu Name(hindi)</label>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(m => m.CM_Name_hind, new { @class = "form-control", placeholder = "" })
+                            @Html.ValidationMessageFor(m => m.CM_Name_hind, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="mb-3 row">
+                        <label class="col-lg-4 col-form-label text-lg-end">Menu Position</label>
+                        <div class="col-lg-6">
+                            <select asp-for="CM_MenuPositionId"
+                                    class="form-control"
+                                    asp-items="@(new SelectList(@ViewBag.ListofPosition,"CM_MenuPositionId", "CM_MenuPosition_Name"))">
+                            </select>
+                            @Html.ValidationMessageFor(m => m.CM_MenuPositionId, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="mb-3 row">
+                        <label class="col-lg-4 col-form-label text-lg-end">Menu Type</label>
+                        <div class="col-lg-6">
+                            <select asp-for="CM_MenuTypeId"
+                                    class="form-control"
+                                    asp-items="@(new SelectList(@ViewBag.ListofType,"CM_MenuTypeId", "CM_MenuType_Name"))">
+                            </select>
+                            @Html.ValidationMessageFor(m => m.CM_MenuTypeId, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="mb-3 row">
+                        <label class="col-lg-4 col-form-label text-lg-end">Page Content(english)</label>
+                        <div class="col-lg-6">
+                            @Html.TextAreaFor(m => m.CM_PageContent_eng, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.CM_PageContent_eng, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="mb-3 row">
+                        <label class="col-lg-4 col-form-label text-lg-end">Page Content(hindi)</label>
+                        <div class="col-lg-6">
+                            @Html.TextAreaFor(m => m.CM_PageContent_hind, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.CM_PageContent_hind, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="mb-3 row">
+                        <label class="col-lg-4 col-form-label text-lg-end">Start Date</label>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(model => model.CM_StartDate_Display, "{0:yyyy-MM-dd}", new { @class = "form-control", @type = "date", style = "width: 535px; height: 38px;" })
+                            @Html.ValidationMessageFor(m => m.CM_StartDate_Display, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="mb-3 row">
+                        <label class="col-lg-4 col-form-label text-lg-end">End Date</label>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(model => model.CM_EndDate_Display, "{0:yyyy-MM-dd}", new { @class = "form-control", @type = "date", style = "width: 535px; height: 38px;" })
+                            @Html.ValidationMessageFor(m => m.CM_EndDate_Display, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="mb-3 row">
+                        <label class="col-lg-4 col-form-label text-lg-end">Thumbnail Image</label>
+                        <div class="col-lg-6">
+                            <input asp-for="CM_Img" type="file">
+                            <p style="color: red; font:small;">Tip: .jpeg .png .gif image only</p>
+                            @Html.ValidationMessageFor(m => m.CM_Img, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="mb-3 row">
+                        <label class="col-lg-4 col-form-label text-lg-end">Short Description(english)</label>
+                        <div class="col-lg-6">
+                            @Html.TextAreaFor(m => m.CM_Desc_eng, new { @class = "form-control", cols = "55", rows = "10" })
+                            @Html.ValidationMessageFor(m => m.CM_Desc_eng, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="mb-3 row">
+                        <label class="col-lg-4 col-form-label text-lg-end">Short Description(hindi)</label>
+                        <div class="col-lg-6">
+                            @Html.TextAreaFor(m => m.CM_Desc_hind, new { @class = "form-control", cols = "55", rows = "10" })
+                            @Html.ValidationMessageFor(m => m.CM_Desc_hind, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="row mb-0">
+                        <div class="col-lg-4 col-form-label"></div>
+                        <div class="col-lg-6">
+                            <input type="submit" class="btn btn-primary" value=@ViewBag.abc id="sub" fdprocessedid="6yalqo">
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- [ Form Validation ] end -->
+</div>
+
+<script>
+    <partial name="_ValidationScriptsPartial" />
+</script>
+
+
+

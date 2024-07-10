@@ -1,0 +1,104 @@
+﻿@model WebApplication1.Models.BannerModel;
+@{
+    ViewData["Title"] = "Add Banner";
+}
+
+<div class="page-header">
+    <div class="page-block">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <ul class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="../dashboard/index.html">Dashboard</a></li>
+                    <li class="breadcrumb-item"><a href="javascript: void(0)">Banner Management</a></li>
+                    <li class="breadcrumb-item" aria-current="page">Add Banner</li>
+                </ul>
+                <div class="page-header-title">
+                    <h2 class="mb-0">Add Banner</h2>
+                </div>
+            </div>
+            <div class="col-md-6 text-end">
+                <a href="~/Banner/BannerList" class="btn btn-primary" >View Banner</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="row">
+          <!-- [ Form Validation ] start -->
+    
+          <div class="col-sm-12">
+            <div class="card">
+              <div class="card-header">
+                <h5>Add Banner</h5>
+              </div>
+              <div class="card-body">
+                    <form asp-controller="Banner" asp-action="AddBanner" method="post" enctype="multipart/form-data" class="validate-me" id="validate-me" data-validate="" novalidate="true">
+                    @Html.HiddenFor(m => m.BannerId)
+                    @Html.HiddenFor(m => m.BannerImg)
+                        <div class="mb-3 row">
+                        <label class="col-lg-4 col-form-label text-lg-end">Title</label>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(m => m.BannerTitle, new { @class = "form-control", placeholder = "" })
+                            @Html.ValidationMessageFor(m => m.BannerTitle, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="mb-3 row">
+                        <label class="col-lg-4 col-form-label text-lg-end">Title(in reg lang)</label>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(m => m.BannerTitleRegLang, new { @class = "form-control", placeholder = "" })
+                            @Html.ValidationMessageFor(m => m.BannerTitleRegLang, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                  <div class="mb-3 row">
+                    <label class="col-lg-4 col-form-label text-lg-end">Upload Image</label>
+                    <div class="col-lg-6">
+                            <input asp-for="BannerImg" type="file" class="form-control">
+                            <p style="color: red; font:small;">Tip: .jpeg .png .gif image only</p>
+                            @Html.ValidationMessageFor(m => m.BannerImg, "", new { @class = "text-danger" })
+                    </div>
+                  </div>
+
+                    <div class="mb-3 row">
+                        <label class="col-lg-4 col-form-label text-lg-end">Link URL</label>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(m => m.BannerLinkURL, new { @class = "form-control", placeholder = "" })
+                            <p style="color: red; font:small;">Tip: http://www.google.com</p>
+                            @Html.ValidationMessageFor(m => m.BannerLinkURL, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="mb-3 row">
+                        <label class="col-lg-4 col-form-label text-lg-end">Alt Tag</label>
+                        <div class="col-lg-6">
+                            @Html.TextAreaFor(m => m.BannerAltTag, new { @class = "form-control", cols = "55", rows = "10" })
+                            @Html.ValidationMessageFor(m => m.BannerAltTag, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="mb-3 row">
+                        <label class="col-lg-4 col-form-label text-lg-end">Alt Tag(in reg lang)</label>
+                        <div class="col-lg-6">
+                            @Html.TextAreaFor(m => m.BannerTagRegLang, new { @class = "form-control", cols = "55", rows = "10" })
+                            @Html.ValidationMessageFor(m => m.BannerTagRegLang, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                  <div class="row mb-0">
+                    <div class="col-lg-4 col-form-label"></div>
+                    <div class="col-lg-6">
+                      <input type="submit" class="btn btn-primary" value="Submit" fdprocessedid="6yalqo">
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+          <!-- [ Form Validation ] end -->
+        </div>
+
+<script>
+    <partial name="_ValidationScriptsPartial" />
+</script>

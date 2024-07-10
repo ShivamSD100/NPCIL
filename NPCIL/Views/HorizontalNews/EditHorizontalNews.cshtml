@@ -1,0 +1,107 @@
+﻿@model NPCIL.Models.HorizontalNewsModel;
+@{
+    ViewData["Title"] = "Edit Horizontal Model";
+}
+
+<div class="page-header">
+    <div class="page-block">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <ul class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="../dashboard/index.html">Dashboard</a></li>
+                    <li class="breadcrumb-item"><a href="javascript: void(0)">Horizontal Top News</a></li>
+                    <li class="breadcrumb-item" aria-current="page">Edit Horizontal News</li>
+                </ul>
+                <div class="page-header-title">
+                    <h2 class="mb-0">Edit Horizontal News</h2>
+                </div>
+            </div>
+            <div class="col-md-6 text-end">
+                <a href="~/HorizontalNews/HorizontalNewsList" class="btn btn-primary">View Horizontal News</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="row">
+    <!-- [ Form Validation ] start -->
+    
+    <div class="col-sm-12">
+        <div class="card">
+            <div class="card-header">
+                <h5>Edit Horizontal News</h5>
+            </div>
+            <div class="card-body">
+                <form asp-controller="HorizontalNews" asp-action="UpdateHorizontalNews" method="post" enctype="multipart/form-data" class="validate-me" id="validate-me" data-validate="" novalidate="true">
+                    @Html.HiddenFor(m => m.HN_id)
+                    <div class="mb-3 row">
+                        <label class="col-lg-4 col-form-label text-lg-end">Language</label>
+                        <div class="col-lg-6">
+                            <select asp-for="HN_LangId"
+                                    class="form-control"
+                                    asp-items="@(new SelectList(ViewBag.ListofLanguage,"HN_LangId", "HN_LangName"))">
+                            </select>
+                            @Html.ValidationMessageFor(m => m.HN_LangId, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="mb-3 row">
+                        <label class="col-lg-4 col-form-label text-lg-end">Type of Content</label>
+                        <div class="col-lg-6">
+                            <select asp-for="HN_ContentId"
+                                    class="form-control"
+                                    asp-items="@(new SelectList(ViewBag.ListofContentType,"HN_ContentId", "HN_ContentName"))">
+                            </select>
+                            @Html.ValidationMessageFor(m => m.HN_ContentId, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="mb-3 row">
+                        <label class="col-lg-4 col-form-label text-lg-end">Title</label>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(m => m.HN_Title, new { @class = "form-control", placeholder = "" })
+                            @Html.ValidationMessageFor(m => m.HN_Title, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="mb-3 row">
+                        <label class="col-lg-4 col-form-label text-lg-end">Start Date</label>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(model => model.HN_StartDate_Display, "{0:yyyy-MM-dd}", new { @class = "form-control", @type = "date", style = "width: 535px; height: 38px;" })
+                            @Html.ValidationMessageFor(m => m.HN_StartDate_Display, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="mb-3 row">
+                        <label class="col-lg-4 col-form-label text-lg-end">End Date</label>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(model => model.HN_EndDate_Display, "{0:yyyy-MM-dd}", new { @class = "form-control", @type = "date", style = "width: 535px; height: 38px;" })
+                            @Html.ValidationMessageFor(m => m.HN_EndDate_Display, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="mb-3 row">
+                        <label class="col-lg-4 col-form-label text-lg-end">Page Description</label>
+                        <div class="col-lg-6">
+                            @Html.TextAreaFor(m => m.HN_Description, new { @class = "form-control", cols = "55", rows = "10" })
+                            @Html.ValidationMessageFor(m => m.HN_Description, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="row mb-0">
+                        <div class="col-lg-4 col-form-label"></div>
+                        <div class="col-lg-6">
+                            <input type="submit" class="btn btn-primary" value="Update">
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- [ Form Validation ] end -->
+</div>
+
+<script>
+    <partial name="_ValidationScriptsPartial" />
+</script>

@@ -1,0 +1,111 @@
+﻿@model NPCIL.Models.PublicationCategoriesModel;
+@{
+    ViewData["Title"] = "Edit Publication Categories";
+}
+
+<div class="page-header">
+    <div class="page-block">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <ul class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="~/Home/Index">Dashboard</a></li>
+                    <li class="breadcrumb-item"><a href="javascript: void(0)">Publication Management</a></li>
+                    <li class="breadcrumb-item" aria-current="page">Edit Publication Categories</li>
+                </ul>
+                <div class="page-header-title">
+                    <h2 class="mb-0">Edit Publication Categories</h2>
+                </div>
+            </div>
+            <div class="col-md-6 text-end">
+                <a href="~/PublicationCategories/PublicationCategoriesList" class="btn btn-primary">View Add Publication Categories</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="row">
+    <!-- [ Form Validation ] start -->
+
+    <div class="col-sm-12">
+        <div class="card">
+            <div class="card-header">
+                <h5>Edit Publication Categories</h5>
+            </div>
+            <div class="card-body">
+                <form asp-controller="PublicationCategories" asp-action="UpdatePublicationCategories" method="post" enctype="multipart/form-data" class="validate-me" id="validate-me" data-validate="" novalidate="true">
+                    @Html.HiddenFor(m => m.CategoriesId)
+                    @Html.HiddenFor(model => model.ImagePath)
+                    <div class="mb-3 row">
+                        <label class="col-lg-4 col-form-label text-lg-end">Title</label>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(m => m.CategoriesTitle, new { @class = "form-control", placeholder = "" })
+                            @Html.ValidationMessageFor(m => m.CategoriesTitle, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="mb-3 row">
+                        <label class="col-lg-4 col-form-label text-lg-end">Title(in reg lang)</label>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(m => m.CategoriesTitleRegLang, new { @class = "form-control", placeholder = "" })
+                            @Html.ValidationMessageFor(m => m.CategoriesTitleRegLang, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="mb-3 row">
+                        <label class="col-lg-4 col-form-label text-lg-end">Upload Image</label>
+                        <div class="col-lg-6">
+                            <input asp-for="CategoriesImg" type="file" class="form-control">
+                            <p style="color: red; font:small;">Tip: .jpeg .png .gif image only</p>
+                            @* @Html.ValidationMessageFor(m => m.CategoriesImg, "", new { @class = "text-danger" }) *@
+                        </div>
+                    </div>
+
+                    <div class="mb-3 row">
+                        <label class ="col-lg-4 col-form-label text-lg-end">Uploaded Image</label>
+                        <div class="col-lg-6">
+                            <img src="@Model.ImagePath" width="150" alt="Image Not Available" />
+                        </div>
+                    </div> 
+
+                    <div class="mb-3 row">
+                        <label class="col-lg-4 col-form-label text-lg-end">Link URL</label>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(m => m.CategoriesLinkURL, new { @class = "form-control", placeholder = "" })
+                            <p style="color: red; font:small;">Tip: http://www.google.com</p>
+                            @Html.ValidationMessageFor(m => m.CategoriesLinkURL, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="mb-3 row">
+                        <label class="col-lg-4 col-form-label text-lg-end">Alt Tag</label>
+                        <div class="col-lg-6">
+                            @Html.TextAreaFor(m => m.CategoriesAltTag, new { @class = "form-control", cols = "55", rows = "10" })
+                            @Html.ValidationMessageFor(m => m.CategoriesAltTag, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="mb-3 row">
+                        <label class="col-lg-4 col-form-label text-lg-end">Alt Tag(in reg lang)</label>
+                        <div class="col-lg-6">
+                            @Html.TextAreaFor(m => m.CategoriesTagRegLang, new { @class = "form-control", cols = "55", rows = "10" })
+                            @Html.ValidationMessageFor(m => m.CategoriesTagRegLang, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="row mb-0">
+                        <div class="col-lg-4 col-form-label"></div>
+                        <div class="col-lg-6">
+                            <input type="submit" class="btn btn-primary" value="Update" fdprocessedid="6yalqo">
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- [ Form Validation ] end -->
+</div>
+
+<script>
+    <partial name="_ValidationScriptsPartial" />
+</script>

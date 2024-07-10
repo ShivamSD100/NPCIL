@@ -1,0 +1,118 @@
+﻿@model NPCIL.Models.PublicationModel;
+@{
+    ViewData["Title"] = "Add Publication";
+}
+
+
+<div class="page-header">
+    <div class="page-block">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <ul class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="~/Home/Index">Dashboard</a></li>
+                    <li class="breadcrumb-item"><a href="javascript: void(0)">Publication Management</a></li>
+                    <li class="breadcrumb-item" aria-current="page">Update Publication</li>
+                </ul>
+                <div class="page-header-title">
+                    <h2 class="mb-0">Update Publication</h2>
+                </div>
+            </div>
+            <div class="col-md-6 text-end">
+                <a href="~/Publication/PublicationList" class="btn btn-primary">View Publication</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="row">
+    <!-- [ Form Validation ] start -->
+
+    <div class="col-sm-12">
+        <div class="card">
+            <div class="card-header">
+                <h5>Update Publication</h5>
+            </div>
+            <div class="card-body">
+                <form asp-controller="Publication" asp-action="UpdatePublication" method="post" enctype="multipart/form-data" class="validate-me" id="validate-me" data-validate="" novalidate="true">
+                    @Html.HiddenFor(m => m.PUB_id)
+                    <div class="mb-3 row">
+                        <label class="col-lg-4 col-form-label text-lg-end">Language</label>
+                        <div class="col-lg-6">
+                            <select asp-for="PUB_LangId"
+                                    class="form-control"
+                                    asp-items="@(new SelectList(@ViewBag.ListofLanguage,"PUB_LangId", "PUB_LangName"))">
+                            </select>
+                            @Html.ValidationMessageFor(m => m.PUB_LangId, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="mb-3 row">
+                        <label class="col-lg-4 col-form-label text-lg-end">Publication Type</label>
+                        <div class="col-lg-6">
+                            <select asp-for="PUB_PubTypeId"
+                                    class="form-control"
+                                    asp-items="@(new SelectList(@ViewBag.ListofPublicationType,"PUB_PubTypeId", "PUB_PubTypeName"))">
+                            </select>
+                            @Html.ValidationMessageFor(m => m.PUB_PubTypeId, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <label class="col-lg-4 col-form-label text-lg-end">Title</label>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(m => m.PUB_Title, new { @class = "form-control", placeholder = "" })
+                            @Html.ValidationMessageFor(m => m.PUB_Title, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="mb-3 row">
+                        <label class="col-lg-4 col-form-label text-lg-end">Author Name</label>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(m => m.PUB_AutherName, new { @class = "form-control", placeholder = "" })
+                            @Html.ValidationMessageFor(m => m.PUB_AutherName, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="mb-3 row">
+                        <label class="col-lg-4 col-form-label text-lg-end">File Upload</label>
+                        <div class="col-lg-6">
+                            <input asp-for="PUB_FileUpload" type="file" class="form-control">
+                            <p style="color: red; font:small;">Tip: Pdf file only</p>
+                            @Html.ValidationMessageFor(m => m.PUB_FileUpload, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="mb-3 row">
+                        <label class="col-lg-4 col-form-label text-lg-end">Uploaded File</label>
+                        <div class="col-lg-6">
+                            <img src="@Model.ImagePath" width="150" alt="Image Not Available" />
+                        </div>
+                    </div>
+
+                    <div class="mb-3 row">
+                        <label class="col-lg-4 col-form-label text-lg-end">Others</label>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(m => m.PUB_Others, new { @class = "form-control", placeholder = "" })
+                            @Html.ValidationMessageFor(m => m.PUB_Others, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="row mb-0">
+                        <div class="col-lg-4 col-form-label"></div>
+                        <div class="col-lg-6">
+                            <input type="submit" class="btn btn-primary" value="Update" fdprocessedid="6yalqo">
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- [ Form Validation ] end -->
+</div>
+
+<script>
+    <partial name="_ValidationScriptsPartial" />
+</script>
+
+
+

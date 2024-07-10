@@ -1,0 +1,89 @@
+﻿@* @model WebApplication1.Models.BannerModel; *@
+@model IEnumerable<WebApplication1.Models.BannerModel>
+@{
+    ViewData["Title"] = "View Banner";
+}
+
+<link href="~/datatables/css/buttons.datatables.css" rel="stylesheet" />
+<link href="~/datatables/css/datatables.datatables.css" rel="stylesheet" />
+
+
+<div class="page-header">
+    <div class="page-block">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <ul class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="../dashboard/index.html">Dashboard</a></li>
+                    <li class="breadcrumb-item"><a href="javascript: void(0)">View Banner</a></li>
+                    @* <li class="breadcrumb-item" aria-current="page">Form Validation</li> *@
+                </ul>
+                <div class="page-header-title">
+                    <h2 class="mb-0">View Banner</h2>
+                </div>
+            </div>
+            <div class="col-md-6 text-end">
+                <a href="~/Banner/AddBanner" class="btn btn-primary" >Add Banner</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="row">
+    <!-- [ basic-table ] start -->
+    <div class="col-xl-12">
+        <div class="card">
+            <div class="card-header">
+                <h5>View Banner</h5>
+            </div>
+            <div class="card-body table-border-style">
+                <button class="btn btn-light-primary mb-1 btn-sm csv">Export CSV</button>
+                <button class="btn btn-light-primary mb-1 btn-sm sql">Export SQL</button>
+                <button class="btn btn-light-primary mb-1 btn-sm txt">Export TXT</button>
+                <button class="btn btn-light-primary mb-1 btn-sm json">Export JSON</button>
+                <div class="table-responsive">
+                    <table id="example1" class="display nowrap table" >
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Image</th>
+                                <th>Edit</th>
+                                <th>Delete</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var ban in Model)
+                            {
+                                <tr>
+                                    <td>@ban.BannerId</td>
+                                    <td>@ban.BannerTitle</td>
+                                    @* <td>@ban.BannerImg</td> *@
+                                    <td><img src="@ban.ImagePath" width="150" alt="Image Not Available" /></td>
+                                    <td>@Html.ActionLink("Edit", "EditBanner", new { id = @ban.BannerId })</td>
+                                    <td>@Html.ActionLink("Delete", "Del", new { id = @ban.BannerId })</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- [ basic-table ] end -->
+</div>
+<!-- [ Main Content ] end -->
+
+
+
+<script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+<script src="~/datatables/js/buttons.datatables.js"></script>
+<script src="~/datatables/js/buttons.html5.min.js"></script>
+<script src="~/datatables/js/buttons.print.min.js"></script> 
+<script src="~/datatables/js/datatables.js"></script>
+<script src="~/datatables/js/dataTables.buttons.js"></script>
+<script src="~/datatables/js/jszip.min.js"></script>
+<script src="~/datatables/js/pdfmake.min.js"></script>
+<script src="~/datatables/js/vfs_fonts.js"></script>
+<script src="~/datatables/js/custom.js"></script>
+<script src="~/datatables/js/datatables.buttons.js"></script>

@@ -1,0 +1,243 @@
+﻿@model NPCIL.Models.MenuModel;
+@{
+    ViewData["Title"] = "Add Menu";
+}
+
+
+<div class="page-header">
+    <div class="page-block">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <ul class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="../dashboard/index.html">Dashboard</a></li>
+                    <li class="breadcrumb-item"><a href="javascript: void(0)">CMS</a></li>
+                    <li class="breadcrumb-item" aria-current="page">Add Menu</li>
+                </ul>
+                <div class="page-header-title">
+                    <h2 class="mb-0">Add Menu</h2>
+                </div>
+            </div>
+            <div class="col-md-6 text-end">
+                <a href="~/Menu/MenusList" class="btn btn-primary">View Menu</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="row">
+    <!-- [ Form Validation ] start -->
+
+    <div class="col-sm-12">
+        <div class="card">
+            <div class="card-header">
+                <h5>Add Menu</h5>
+            </div>
+            <div class="card-body">
+                <form asp-controller="Menu" asp-action="CMSMenuAdd" method="post" enctype="multipart/form-data" class="validate-me" id="validate-me" data-validate="" novalidate="true">
+                    <div class="mb-3 row">
+                        @Html.HiddenFor(m => m.ParentId)
+                        <label class="col-lg-4 col-form-label text-lg-end">Menu Name(english)</label>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(m => m.MenuName_eng, new { @class = "form-control", placeholder = "" })
+                            @Html.ValidationMessageFor(m => m.MenuName_eng, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="mb-3 row">
+                        <label class="col-lg-4 col-form-label text-lg-end">Menu Name(hindi)</label>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(m => m.MenuName_hind, new { @class = "form-control", placeholder = "" })
+                            @Html.ValidationMessageFor(m => m.MenuName_hind, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="mb-3 row">
+                        <label class="col-lg-4 col-form-label text-lg-end">Menu Position</label>
+                        <div class="col-lg-6">
+                            <select asp-for="MenuPositionId"
+                                    class="form-control"
+                                    asp-items="@(new SelectList(@ViewBag.ListofPosition,"MenuPositionId", "MenuPosition_Name"))">
+                            </select>
+                            @Html.ValidationMessageFor(m => m.MenuPositionId, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="mb-3 row">
+                        <label class="col-lg-4 col-form-label text-lg-end">Menu Type</label>
+                        <div class="col-lg-6">
+                            <select asp-for="MenuTypeId" onchange="changeMenuType(this)"
+                                    class="form-control"
+                                    asp-items="@(new SelectList(@ViewBag.ListofType,"MenuTypeId", "MenuType_Name"))">
+                            </select>
+                            @Html.ValidationMessageFor(m => m.MenuTypeId, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="mb-3 row" id="div_content" style="display:none">
+                        <div class="mb-3 row">
+                            <label class="col-lg-4 col-form-label text-lg-end">Page Content(english)</label>
+                            <div class="col-lg-6">
+                                @Html.TextAreaFor(m => m.Content_MenuName_eng, new { @class = "form-control" })
+                            </div>
+                        </div>
+
+                        <div class="mb-3 row">
+                            <label class="col-lg-4 col-form-label text-lg-end">Page Content(hindi)</label>
+                            <div class="col-lg-6">
+                                @Html.TextAreaFor(m => m.Content_MenuName_hindi, new { @class = "form-control" })
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3 row" id="div_file" style="display:none">
+                        <div class="mb-3 row">
+                            <label class="col-lg-4 col-form-label text-lg-end">File Upload</label>
+                            <div class="col-lg-6">
+                                <input asp-for="file_MenuImg" type="file" class="form-control">
+                                <p style="color: red; font:small;">Tip: .jpeg .png .gif image only</p>
+                            </div>
+                        </div>
+
+                        <div class="mb-3 row">
+                            <label class="col-lg-4 col-form-label text-lg-end">Start Date</label>
+                            <div class="col-lg-6">
+                                @Html.TextBoxFor(model => model.file_StartDate_Display, "{0:yyyy-MM-dd}", new { @class = "form-control", @type = "date", style = "width: 535px; height: 38px;" })
+                            </div>
+                        </div>
+
+                        <div class="mb-3 row">
+                            <label class="col-lg-4 col-form-label text-lg-end">End Date</label>
+                            <div class="col-lg-6">
+                                @Html.TextBoxFor(model => model.file_EndDate_Display, "{0:yyyy-MM-dd}", new { @class = "form-control", @type = "date", style = "width: 535px; height: 38px;" })
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3 row" id="div_linkurl" style="display:none">
+                        <div class="mb-3 row">
+                            <label class="col-lg-4 col-form-label text-lg-end">Link URL</label>
+                            <div class="col-lg-6">
+                                @Html.TextBoxFor(m => m.link_urlname, new { @class = "form-control", placeholder = "" })
+                                <p style="color: red; font:small;">Tip: http://www.google.com</p>
+                            </div>
+                        </div>
+
+                        <div class="mb-3 row">
+                            <label class="col-lg-4 col-form-label text-lg-end">Internal/External Link</label>
+                            <div class="col-lg-6">
+                                <select asp-for="linkTypeId"
+                                        class="form-control"
+                                        asp-items="@(new SelectList(@ViewBag.ListofLink,"linkTypeId", "LinkTypeName"))">
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3 row" id="div_event" style="display:none">
+                    <div class="mb-3 row">
+                        <label class="col-lg-4 col-form-label text-lg-end">Year</label>
+                            <div class="col-lg-6">
+                                @Html.TextBoxFor(model => model.event_year, new { @class = "form-control"})
+                            </div>
+                    </div>
+                    </div>
+                                     
+
+                    <div class="mb-3 row">
+                        <label class="col-lg-4 col-form-label text-lg-end">Thumbnail Image</label>
+                        <div class="col-lg-6">
+                            <input asp-for="MenuImg" type="file" class="form-control">
+                            <p style="color: red; font:small;">Tip: .jpeg .png .gif image only</p>
+                            @Html.ValidationMessageFor(m => m.MenuImg, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    
+
+                    <div class="mb-3 row">
+                        <label class="col-lg-4 col-form-label text-lg-end">Menu Description(english)</label>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(m => m.MenuDesc_eng, new { @class = "form-control", placeholder = "" })
+                            @Html.ValidationMessageFor(m => m.MenuDesc_eng, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="mb-3 row">
+                        <label class="col-lg-4 col-form-label text-lg-end">Menu Description(hindi)</label>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(m => m.MenuDesc_hind, new { @class = "form-control"})
+                            @Html.ValidationMessageFor(m => m.MenuDesc_hind, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                   @*  <div class="mb-3 row">
+                        <label class="col-lg-4 col-form-label text-lg-end">Is Tab Display</label>
+                        <div class="col-lg-6">
+                            @Html.DropDownListFor(m => m.tabActive, Model.Items, "Select an item", new { @class = "form-control" })
+                        </div>
+                    </div> *@
+
+                    <div class="row mb-0">
+                        <div class="col-lg-4 col-form-label"></div>
+                        <div class="col-lg-6">
+                            <input type="submit" class="btn btn-primary" value="Submit" fdprocessedid="6yalqo">
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- [ Form Validation ] end -->
+</div>
+
+<script>
+    <partial name="_ValidationScriptsPartial" />
+</script>
+
+<script>
+    function changeMenuType(ddl){
+        var selectedText = $(ddl).find("option:selected").text();
+        if (selectedText == "Content") {
+            document.getElementById("div_content").style.display = "contents";
+            document.getElementById("div_file").style.display = "none";
+            document.getElementById("div_linkurl").style.display = "none";
+            document.getElementById("div_event").style.display = "none";
+        }
+        else if (selectedText == "File") {
+            document.getElementById("div_content").style.display = "none";
+            document.getElementById("div_file").style.display = "contents";
+            document.getElementById("div_linkurl").style.display = "none";
+            document.getElementById("div_event").style.display = "none";
+        }
+        else if (selectedText == "Link") {
+            document.getElementById("div_content").style.display = "none";
+            document.getElementById("div_file").style.display = "none";
+            document.getElementById("div_linkurl").style.display = "contents";
+            document.getElementById("div_event").style.display = "none";
+        }
+        else if (selectedText == "Custom Page") {
+            document.getElementById("div_content").style.display = "none";
+            document.getElementById("div_file").style.display = "none";
+            document.getElementById("div_linkurl").style.display = "none";
+            document.getElementById("div_event").style.display = "none";
+        }
+        else if (selectedText == "Image") {
+            document.getElementById("div_content").style.display = "none";
+            document.getElementById("div_file").style.display = "none";
+            document.getElementById("div_linkurl").style.display = "none";
+            document.getElementById("div_event").style.display = "none";
+        }
+        else if (selectedText == "Event") {
+            document.getElementById("div_content").style.display = "none";
+            document.getElementById("div_file").style.display = "none";
+            document.getElementById("div_linkurl").style.display = "none";
+            document.getElementById("div_event").style.display = "contents";
+        }
+        else if (selectedText == "Video") {
+            document.getElementById("div_content").style.display = "none";
+            document.getElementById("div_file").style.display = "contents";
+            document.getElementById("div_linkurl").style.display = "none";
+            document.getElementById("div_event").style.display = "none";
+        }
+    }
+</script>
