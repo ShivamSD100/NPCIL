@@ -36,6 +36,8 @@
             <div class="card-body">
                 <form asp-controller="Menu" asp-action="UpdateMenu" method="post" enctype="multipart/form-data" class="validate-me" id="validate-me" data-validate="" novalidate="true">
                     @Html.HiddenFor(m => m.MenuId)
+                     @Html.HiddenFor(m => m.ImagePath)
+                    @Html.HiddenFor(m => m.Imagepath2)
                     <div class="mb-3 row">
                         <label class="col-lg-4 col-form-label text-lg-end">Parent Menu</label>
                         <div class="col-lg-6">
@@ -104,7 +106,14 @@
                             <label class="col-lg-4 col-form-label text-lg-end">File Upload</label>
                             <div class="col-lg-6">
                                 <input asp-for="file_MenuImg" type="file" class="form-control">
+                                @* <img id="fileImagePrev" src="#" alt="File Image Preview" style="max-width: 20%;  display: none;"> *@
                                 @* <p style="color: red; font:small;">Tip: .jpeg .png .gif image only</p> *@
+                                <div class="preview-container">
+                                    <img id="file_MenuImg_imgPreview" src="#" alt="Banner Preview" style="max-width: 20%; display: none;">
+                                    <video id="file_MenuImg_videoPreview" controls style="max-width: 20%; display: none;"></video>
+                                    <div id="file_MenuImg_fileNamePreview" style="display: none;"></div>
+                                </div>
+                                
                             </div>
                         </div>
 
@@ -112,6 +121,7 @@
                         <label class="col-lg-4 col-form-label text-lg-end">Previous Image</label>
                         <div class="col-lg-6">
                                 <img src="@Model.Imagepath2" width="150" alt="Image Not Available" />
+                                
                         </div>
                     </div>
 
@@ -164,8 +174,14 @@
                         <label class="col-lg-4 col-form-label text-lg-end">Thumbnail Image</label>
                         <div class="col-lg-6">
                             <input asp-for="MenuImg" type="file" class="form-control">
+                            @* <img id="menuImagePrev" src="#" alt="File Image Preview" style="max-width: 20%;  display: none;"> *@
                             @* <p style="color: red; font:small;">Tip: .jpeg .png .gif image only</p> *@
                             @* @Html.ValidationMessageFor(m => m.MenuImg, "", new { @class = "text-danger" }) *@
+                            <div class="preview-container">
+                                <img id="MenuImg_imgPreview" src="#" alt="Banner Preview" style="max-width: 20%; display: none;">
+                                <video id="MenuImg_videoPreview" controls style="max-width: 20%; display: none;"></video>
+                                <div id="MenuImg_fileNamePreview" style="display: none;"></div>
+                            </div>
                         </div>
                     </div>
 
@@ -187,7 +203,7 @@
                         <label class="col-lg-4 col-form-label text-lg-end">Menu Description(english)</label>
                         <div class="col-lg-6">
                             @Html.TextAreaFor(m => m.MenuDesc_eng, new { @class = "form-control", cols = "55", rows = "10" })
-                            @Html.ValidationMessageFor(m => m.MenuDesc_eng, "", new { @class = "text-danger" })
+                            @* @Html.ValidationMessageFor(m => m.MenuDesc_eng, "", new { @class = "text-danger" }) *@
                         </div>
                     </div>
 
@@ -195,7 +211,7 @@
                         <label class="col-lg-4 col-form-label text-lg-end">Menu Description(hindi)</label>
                         <div class="col-lg-6">
                             @Html.TextAreaFor(m => m.MenuDesc_hind, new { @class = "form-control", cols = "55", rows = "10" })
-                            @Html.ValidationMessageFor(m => m.MenuDesc_hind, "", new { @class = "text-danger" })
+                            @* @Html.ValidationMessageFor(m => m.MenuDesc_hind, "", new { @class = "text-danger" }) *@
                         </div>
                     </div>
                     <div class="mb-3 row">
@@ -274,7 +290,6 @@
 </script>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        debugger;
         var quillEngText = document.getElementById('Content_MenuName_eng').value;
         var hindEngText = document.getElementById('Content_MenuName_hindi').value;
         var quillEng = new Quill('#editor_menunameeng', {
@@ -298,8 +313,74 @@
 
         window.saveContent = saveContent;
     });
+    // document.getElementById('file_MenuImg').addEventListener('change', function (event) {
+    //     var file = event.target.files[0];
+    //     var reader = new FileReader();
+
+    //     reader.onload = function (e) {
+    //         document.getElementById('fileImagePrev').setAttribute('src', e.target.result);
+    //         document.getElementById('fileImagePrev').style.display = 'block';
+    //     };
+
+    //     reader.readAsDataURL(file);
+    // });
+    // document.getElementById('MenuImg').addEventListener('change', function (event) {
+    //     var file = event.target.files[0];
+    //     var reader = new FileReader();
+
+    //     reader.onload = function (e) {
+    //         document.getElementById('menuImagePrev').setAttribute('src', e.target.result);
+    //         document.getElementById('menuImagePrev').style.display = 'block';
+    //     };
+
+    //     reader.readAsDataURL(file);
+    // });
 
 
+</script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        setupFileInputPreview('file_MenuImg');
+        setupFileInputPreview('MenuImg');
+    });
+    function setupFileInputPreview(inputId) {
+        var input = document.getElementById(inputId);
+        var imgPreview = document.getElementById(inputId + '_imgPreview');
+        var videoPreview = document.getElementById(inputId + '_videoPreview');
+        var fileNamePreview = document.getElementById(inputId + '_fileNamePreview');
+
+        input.addEventListener('change', function (event) {
+            var file = event.target.files[0];
+            var reader = new FileReader();
+
+            // Hide all previews initially
+            imgPreview.style.display = 'none';
+            videoPreview.style.display = 'none';
+            fileNamePreview.style.display = 'none';
+
+            if (file) {
+                if (file.type.startsWith('image/')) {
+                    reader.onload = function (e) {
+                        imgPreview.setAttribute('src', e.target.result);
+                        imgPreview.style.display = 'block';
+                    };
+                    reader.readAsDataURL(file);
+                } else if (file.type.startsWith('video/')) {
+                    reader.onload = function (e) {
+                        videoPreview.setAttribute('src', e.target.result);
+                        videoPreview.style.display = 'block';
+                    };
+                    reader.readAsDataURL(file);
+                } else {
+                    fileNamePreview.textContent = 'Selected file: ' + file.name;
+                    fileNamePreview.style.display = 'block';
+                }
+            }
+        });
+    }
+
+    // Initialize the file input previews
+   
 </script>
 
 
