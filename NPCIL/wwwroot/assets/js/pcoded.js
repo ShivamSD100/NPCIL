@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // remove pre-loader start
   setTimeout(function () {
-    document.querySelector('.loader-bg').remove();
+    //document.querySelector('.loader-bg').remove();
   }, 400);
 
   // remove pre-loader end
@@ -533,7 +533,7 @@ function change_box_container(value) {
       }
     } else {
       document.querySelector('.pc-content').classList.remove('container');
-      document.querySelector('.footer-wrapper').classList.remove('container');
+      /*document.querySelector('.footer-wrapper').classList.remove('container');*/
       document.querySelector('.footer-wrapper').classList.add('container-fluid');
       var control = document.querySelector('.theme-container .btn.active');
       if (control) {
