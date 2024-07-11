@@ -34,7 +34,15 @@
                 <h5>Add Menu</h5>
             </div>
             <div class="card-body">
+                
                 <form asp-controller="Menu" asp-action="CMSMenuAdd" method="post" enctype="multipart/form-data" class="validate-me" id="validate-me" data-validate="" novalidate="true">
+                    <div class="mb-3 row">
+                        <label class="col-lg-4 col-form-label text-lg-end">Parent Menu</label>
+                        <div class="col-lg-6">
+                            <select asp-for="ParentId" asp-items="Model.MenuOptions" class="form-control"></select>
+                        </div>
+                    </div>
+                    
                     <div class="mb-3 row">
                         @Html.HiddenFor(m => m.ParentId)
                         <label class="col-lg-4 col-form-label text-lg-end">Menu Name(english)</label>
@@ -74,27 +82,31 @@
                         </div>
                     </div>
 
-                    <div class="mb-3 row" id="div_content" style="display:none">
-                        <div class="mb-3 row">
+                    <div id="div_content" style="display:none">
+                        <div class="mb-3 row " >
                             <label class="col-lg-4 col-form-label text-lg-end">Page Content(english)</label>
-                            <div class="col-lg-6">
-                                @Html.TextAreaFor(m => m.Content_MenuName_eng, new { @class = "form-control" })
+                            <div class="col-lg-6" >
+                                @Html.HiddenFor(m => m.Content_MenuName_eng, new { id = "Content_MenuName_eng", value = Model.Content_MenuName_eng ?? "" })
+                                <div id="editor_menunameeng" style="height: 400px;"></div>
                             </div>
                         </div>
 
-                        <div class="mb-3 row">
+                        <div class="mb-3 row" style="margin-top:5%; margin-bottom:5% !important">
                             <label class="col-lg-4 col-form-label text-lg-end">Page Content(hindi)</label>
-                            <div class="col-lg-6">
-                                @Html.TextAreaFor(m => m.Content_MenuName_hindi, new { @class = "form-control" })
+                            <div class="col-lg-6" >
+                                @Html.HiddenFor(m => m.Content_MenuName_hindi, new { id = "Content_MenuName_hindi", value = Model.Content_MenuName_hindi ?? "" })
+                                <div id="editor_menunamehind" style="height: 400px;"></div>
                             </div>
                         </div>
+                       
                     </div>
+
 
                     <div class="mb-3 row" id="div_file" style="display:none">
                         <div class="mb-3 row">
                             <label class="col-lg-4 col-form-label text-lg-end">File Upload</label>
                             <div class="col-lg-6">
-                                <input asp-for="file_MenuImg" type="file" class="form-control">
+                                <input asp-for="file_MenuImg" type="file" class="form-control" multiple="true">
                                 <p style="color: red; font:small;">Tip: .jpeg .png .gif image only</p>
                             </div>
                         </div>
@@ -170,28 +182,20 @@
                         </div>
                     </div>
 
-                   @*  <div class="mb-3 row">
-                        <label class="col-lg-4 col-form-label text-lg-end">Is Tab Display</label>
-                        <div class="col-lg-6">
-                            @Html.DropDownListFor(m => m.tabActive, Model.Items, "Select an item", new { @class = "form-control" })
-                        </div>
-                    </div> *@
-
                     <div class="row mb-0">
                         <div class="col-lg-4 col-form-label"></div>
                         <div class="col-lg-6">
-                            <input type="submit" class="btn btn-primary" value="Submit" fdprocessedid="6yalqo">
+                            <input type="submit" class="btn btn-primary" value="Submit" fdprocessedid="6yalqo" onclick="saveContent()">
                         </div>
                     </div>
                 </form>
             </div>
         </div>
     </div>
-    <!-- [ Form Validation ] end -->
 </div>
 
 <script>
-    <partial name="_ValidationScriptsPartial" />
+    // <partial name="_ValidationScriptsPartial" />
 </script>
 
 <script>
@@ -240,4 +244,33 @@
             document.getElementById("div_event").style.display = "none";
         }
     }
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var quillEngText = document.getElementById('editor_menunameeng').innerHTML;
+        var hindEngText = document.getElementById('editor_menunamehind').innerHTML;
+        var quillEng = new Quill('#editor_menunameeng', {
+            theme: 'snow'
+        });
+        var quillHind = new Quill('#editor_menunamehind', {
+            theme: 'snow'
+        });
+
+        quillEng.root.innerHTML = quillEngText;
+        quillHind.root.innerHTML = hindEngText;
+
+            function saveContent() {
+        debugger;
+            var contentEng = document.getElementById('Content_MenuName_eng');
+        contentEng.value = quillEng.root.innerHTML;
+
+            var contentHind = document.getElementById('Content_MenuName_hindi');
+        contentHind.value = quillHind.root.innerHTML;
+    }
+
+        window.saveContent = saveContent;
+    });
+
+
 </script>

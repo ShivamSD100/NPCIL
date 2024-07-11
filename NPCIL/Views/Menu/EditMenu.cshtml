@@ -37,6 +37,12 @@
                 <form asp-controller="Menu" asp-action="UpdateMenu" method="post" enctype="multipart/form-data" class="validate-me" id="validate-me" data-validate="" novalidate="true">
                     @Html.HiddenFor(m => m.MenuId)
                     <div class="mb-3 row">
+                        <label class="col-lg-4 col-form-label text-lg-end">Parent Menu</label>
+                        <div class="col-lg-6">
+                            <select asp-for="ParentId" asp-items="Model.MenuOptions" class="form-control"></select>
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
                         <label class="col-lg-4 col-form-label text-lg-end">Menu Name(english)</label>
                         <div class="col-lg-6">
                             @Html.TextBoxFor(m => m.MenuName_eng, new { @class = "form-control", placeholder = "" })
@@ -74,20 +80,23 @@
                         </div>
                     </div>
 
-                    <div class="mb-3 row" id="div_content" style="display:none">
-                        <div class="mb-3 row">
+                    <div id="div_content" style="display:none">
+                        <div class="mb-3 row ">
                             <label class="col-lg-4 col-form-label text-lg-end">Page Content(english)</label>
                             <div class="col-lg-6">
-                                @Html.TextAreaFor(m => m.Content_MenuName_eng, new { @class = "form-control" })
+                                @Html.HiddenFor(m => m.Content_MenuName_eng, new { id = "Content_MenuName_eng", value = Model.Content_MenuName_eng ?? "" })
+                                <div id="editor_menunameeng" style="height: 400px;"></div>
                             </div>
                         </div>
 
-                        <div class="mb-3 row">
+                        <div class="mb-3 row" style="margin-top:5%; margin-bottom:5% !important">
                             <label class="col-lg-4 col-form-label text-lg-end">Page Content(hindi)</label>
                             <div class="col-lg-6">
-                                @Html.TextAreaFor(m => m.Content_MenuName_hindi, new { @class = "form-control" })
+                                @Html.HiddenFor(m => m.Content_MenuName_hindi, new { id = "Content_MenuName_hindi", value = Model.Content_MenuName_hindi ?? "" })
+                                <div id="editor_menunamehind" style="height: 400px;"></div>
                             </div>
                         </div>
+
                     </div>
 
                     <div class="mb-3 row" id="div_file" style="display:none">
@@ -95,9 +104,16 @@
                             <label class="col-lg-4 col-form-label text-lg-end">File Upload</label>
                             <div class="col-lg-6">
                                 <input asp-for="file_MenuImg" type="file" class="form-control">
-                                <p style="color: red; font:small;">Tip: .jpeg .png .gif image only</p>
+                                @* <p style="color: red; font:small;">Tip: .jpeg .png .gif image only</p> *@
                             </div>
                         </div>
+
+                         <div class="mb-3 row">
+                        <label class="col-lg-4 col-form-label text-lg-end">Previous Image</label>
+                        <div class="col-lg-6">
+                                <img src="@Model.Imagepath2" width="150" alt="Image Not Available" />
+                        </div>
+                    </div>
 
                         <div class="mb-3 row">
                             <label class="col-lg-4 col-form-label text-lg-end">Start Date</label>
@@ -148,8 +164,15 @@
                         <label class="col-lg-4 col-form-label text-lg-end">Thumbnail Image</label>
                         <div class="col-lg-6">
                             <input asp-for="MenuImg" type="file" class="form-control">
-                            <p style="color: red; font:small;">Tip: .jpeg .png .gif image only</p>
-                            @Html.ValidationMessageFor(m => m.MenuImg, "", new { @class = "text-danger" })
+                            @* <p style="color: red; font:small;">Tip: .jpeg .png .gif image only</p> *@
+                            @* @Html.ValidationMessageFor(m => m.MenuImg, "", new { @class = "text-danger" }) *@
+                        </div>
+                    </div>
+
+                     <div class="mb-3 row">
+                        <label class="col-lg-4 col-form-label text-lg-end">Previous Image</label>
+                        <div class="col-lg-6">
+                            <img src="@Model.ImagePath" width="150" alt="Image Not Available" />
                         </div>
                     </div>
 
@@ -175,11 +198,16 @@
                             @Html.ValidationMessageFor(m => m.MenuDesc_hind, "", new { @class = "text-danger" })
                         </div>
                     </div>
-
+                    <div class="mb-3 row">
+                        <label class="col-lg-4 col-form-label text-lg-end">Is Tab Display</label>
+                        <div class="col-lg-6">
+                            <select asp-for="tabActive" asp-items="Model.TabActiveOptions" class = "form-control"></select>
+                        </div>
+                    </div>
                     <div class="row mb-0">
                         <div class="col-lg-4 col-form-label"></div>
                         <div class="col-lg-6">
-                            <input type="submit" class="btn btn-primary" value="Update" fdprocessedid="6yalqo">
+                            <input type="submit" class="btn btn-primary" value="Update" fdprocessedid="6yalqo" onclick="saveContent()">
                         </div>
                     </div>
                 </form>
@@ -190,7 +218,7 @@
 </div>
 
 <script>
-    <partial name="_ValidationScriptsPartial" />
+    // <partial name="_ValidationScriptsPartial" />
 </script>
 
 <script>
@@ -243,6 +271,35 @@
             document.getElementById("div_event").style.display = "none";
         }
     }
+</script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        debugger;
+        var quillEngText = document.getElementById('Content_MenuName_eng').value;
+        var hindEngText = document.getElementById('Content_MenuName_hindi').value;
+        var quillEng = new Quill('#editor_menunameeng', {
+            theme: 'snow'
+        });
+        var quillHind = new Quill('#editor_menunamehind', {
+            theme: 'snow'
+        });
+
+        quillEng.root.innerHTML = quillEngText;
+        quillHind.root.innerHTML = hindEngText;
+
+        function saveContent() {
+            debugger;
+            var contentEng = document.getElementById('Content_MenuName_eng');
+            contentEng.value = quillEng.root.innerHTML;
+
+            var contentHind = document.getElementById('Content_MenuName_hindi');
+            contentHind.value = quillHind.root.innerHTML;
+        }
+
+        window.saveContent = saveContent;
+    });
+
+
 </script>
 
 

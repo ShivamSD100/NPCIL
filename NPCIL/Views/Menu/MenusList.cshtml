@@ -5,7 +5,48 @@
 
 <link href="~/datatables/css/buttons.datatables.css" rel="stylesheet" />
 <link href="~/datatables/css/datatables.datatables.css" rel="stylesheet" />
+<link href="https://cdn.datatables.net/2.0.8/css/dataTables.dataTables.css"/>
+<link href="https://cdn.datatables.net/buttons/3.0.2/css/buttons.dataTables.css"/>
+<script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+<script src="https://cdn.datatables.net/2.0.8/js/dataTables.js"></script>
+<script src="https://cdn.datatables.net/buttons/3.0.2/js/dataTables.buttons.js"></script>
+<script src="https://cdn.datatables.net/buttons/3.0.2/js/buttons.dataTables.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+<script src="https://cdn.datatables.net/buttons/3.0.2/js/buttons.html5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/3.0.2/js/buttons.print.min.js"></script>
 
+
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+            $('#example1').DataTable({
+                dom: 'Bfrtip',
+                buttons: ['copy', 'csv', 'excel', 'pdf', 'print']
+            });
+    });
+</script>
+<style>
+    .status-oval {
+        display: inline-block;
+        padding: 5px 10px;
+        border-radius: 15px;
+        color: white;
+        font-weight: bold;
+        text-align: center;
+    }
+
+    .status-active {
+        background-color: green;
+    }
+
+    .status-inactive {
+        background-color: red;
+    }
+
+</style>
 
 <div class="page-header">
     <div class="page-block">
@@ -21,7 +62,7 @@
                 </div>
             </div>
             <div class="col-md-6 text-end">
-                 @Html.ActionLink("Add Menu", "CMSMenuAdd", "Menu", new { id = ViewData["ParentId"]}) 
+                @Html.ActionLink("Add Menu", "CMSMenuAdd", "Menu", new { id = ViewData["ParentId"] },new {@class="btn btn-primary"})
                 @*  <a href="~/Menu/CMSMenuAdd" class="btn btn-primary">Add Menu</a> *@ 
             </div>
         </div>
@@ -39,13 +80,13 @@
 
             </div>
             <div class="card-body table-border-style">
-                <button class="btn btn-light-primary mb-1 btn-sm csv">Export CSV</button>
+               @*  <button class="btn btn-light-primary mb-1 btn-sm csv">Export CSV</button>
                 <button class="btn btn-light-primary mb-1 btn-sm sql">Export SQL</button>
                 <button class="btn btn-light-primary mb-1 btn-sm txt">Export TXT</button>
-                <button class="btn btn-light-primary mb-1 btn-sm json">Export JSON</button>
+                <button class="btn btn-light-primary mb-1 btn-sm json">Export JSON</button> *@
                 <div class="table-responsive">
 
-                    <table id="example1" class="display nowrap table">
+                    <table id="example1" class="display nowrap" style="width:100%">
                         <thead>
                             <tr>
                                 <th>ID</th>
@@ -55,7 +96,7 @@
                                 <th>Menu Type</th>
                                 @* <th>Thumbnail</th> *@
                                 <th>Sub Menu</th>
-
+                                <th>Status</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -67,66 +108,29 @@
                                     @*  <td>@man.MenuName_eng</td> *@
                                     <td>@Html.ActionLink(@man.MenuName_eng, "AddContent", "ContentManager", new { id = @man.MenuId })</td>
                                     <td>
-                                        <select asp-for="@man.MenuListId"
-                                                class="form-control"
-                                                asp-items="@(new SelectList(@ViewBag.ListofMenu,"MenuListId", "MenuList_Name"))">
+                                        <select asp-for="@man.ParentId" class="form-control" asp-items="@man.MenuOptions">
                                         </select>
                                     </td>
                                     <td>@man.MenuPosition_Name</td>
                                     <td>@man.MenuType_Name</td>
                                     @* <td><img src="@man.ImagePath" width="150" alt="Image Not Available" /></td> *@
                                     @* <td><a align="center" href=""><svg fill="none" height="30" viewBox="0 0 30 30" width="30" alignment-baseline="central" xmlns="http://www.w3.org/2000/svg"><path d="M12 7C12.4142 7 12.75 7.33579 12.75 7.75V11.25H16.25C16.6642 11.25 17 11.5858 17 12C17 12.4142 16.6642 12.75 16.25 12.75H12.75V16.25C12.75 16.6642 12.4142 17 12 17C11.5858 17 11.25 16.6642 11.25 16.25V12.75H7.75C7.33579 12.75 7 12.4142 7 12C7 11.5858 7.33579 11.25 7.75 11.25H11.25V7.75C11.25 7.33579 11.5858 7 12 7Z" fill="#212121" /><path d="M3 6.25C3 4.45507 4.45507 3 6.25 3H17.75C19.5449 3 21 4.45507 21 6.25V17.75C21 19.5449 19.5449 21 17.75 21H6.25C4.45507 21 3 19.5449 3 17.75V6.25ZM6.25 4.5C5.2835 4.5 4.5 5.2835 4.5 6.25V17.75C4.5 18.7165 5.2835 19.5 6.25 19.5H17.75C18.7165 19.5 19.5 18.7165 19.5 17.75V6.25C19.5 5.2835 18.7165 4.5 17.75 4.5H6.25Z" fill="#87CEEB" /></svg></a></td> *@
-                                    <td>@Html.ActionLink("Add Sub", "MenusList", "Menu", new { id = @man.MenuId })</td>
-                                    <td>@Html.ActionLink("Edit", "EditMenu", new { id = @man.MenuId })</td>
-                                    @* <td>@Html.ActionLink("Edit", "AddControlManager","ContentManager")</td> *@
+                                    <td style="text-align:center">@Html.ActionLink("", "MenusList", "Menu", new { id = @man.MenuId }, new { @class = "fa fa-plus-square", aria_hidden = "true" })</td>
+                                    
 
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            <div class="card-body table-border-style" id="div_submenu" style="display:none">
-                <button class="btn btn-light-primary mb-1 btn-sm csv">Export CSV</button>
-                <button class="btn btn-light-primary mb-1 btn-sm sql">Export SQL</button>
-                <button class="btn btn-light-primary mb-1 btn-sm txt">Export TXT</button>
-                <button class="btn btn-light-primary mb-1 btn-sm json">Export JSON</button>
-                <div class="table-responsive">
-
-                    <table id="example1" class="display nowrap table">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Main Menu</th>
-                                <th>Parent Menu</th>
-                                <th>Menu Position</th>
-                                <th>Menu Type</th>
-                                @* <th>Thumbnail</th> *@
-                                <th>Sub Menu</th>
-
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var man in Model)
-                            {
-                                <tr>
-                                    <td>@man.MenuId</td>
-                                    @*  <td>@man.MenuName_eng</td> *@
-                                    <td>@Html.ActionLink(@man.MenuName_eng, "AddContent", "ContentManager", new { id = @man.MenuId })</td>
                                     <td>
-                                        <select asp-for="@man.MenuListId"
-                                                class="form-control"
-                                                asp-items="@(new SelectList(@ViewBag.ListofMenu,"MenuListId", "MenuList_Name"))">
-                                        </select>
+                                        @if (man.tabActive == "1")
+                                        {
+                                            <span class="status-oval status-active">Active</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="status-oval status-inactive">Inactive</span>
+                                        }
                                     </td>
-                                    <td>@man.MenuPosition_Name</td>
-                                    <td>@man.MenuType_Name</td>
-                                    @* <td><img src="@man.ImagePath" width="150" alt="Image Not Available" /></td> *@
-                                    @* <td><a align="center" href=""><svg fill="none" height="30" viewBox="0 0 30 30" width="30" alignment-baseline="central" xmlns="http://www.w3.org/2000/svg"><path d="M12 7C12.4142 7 12.75 7.33579 12.75 7.75V11.25H16.25C16.6642 11.25 17 11.5858 17 12C17 12.4142 16.6642 12.75 16.25 12.75H12.75V16.25C12.75 16.6642 12.4142 17 12 17C11.5858 17 11.25 16.6642 11.25 16.25V12.75H7.75C7.33579 12.75 7 12.4142 7 12C7 11.5858 7.33579 11.25 7.75 11.25H11.25V7.75C11.25 7.33579 11.5858 7 12 7Z" fill="#212121" /><path d="M3 6.25C3 4.45507 4.45507 3 6.25 3H17.75C19.5449 3 21 4.45507 21 6.25V17.75C21 19.5449 19.5449 21 17.75 21H6.25C4.45507 21 3 19.5449 3 17.75V6.25ZM6.25 4.5C5.2835 4.5 4.5 5.2835 4.5 6.25V17.75C4.5 18.7165 5.2835 19.5 6.25 19.5H17.75C18.7165 19.5 19.5 18.7165 19.5 17.75V6.25C19.5 5.2835 18.7165 4.5 17.75 4.5H6.25Z" fill="#87CEEB" /></svg></a></td> *@
-                                    <td>@Html.ActionLink("Add Sub", "MenusList", "Menu", new { id = @man.MenuId })</td>
-                                    <td>@Html.ActionLink("Edit", "EditMenu", new { id = @man.MenuId })</td>
-                                    @* <td>@Html.ActionLink("Edit", "AddControlManager","ContentManager")</td> *@
+
+                                    <td style="text-align:center">@Html.ActionLink("", "EditMenu", "Menu", new { id = @man.MenuId }, new { @class = "fas fa-edit", aria_hidden = "true" })</td>
+
 
                                 </tr>
                             }
@@ -134,6 +138,7 @@
                     </table>
                 </div>
             </div>
+
         </div>
     </div>
     <!-- [ basic-table ] end -->
@@ -142,17 +147,7 @@
 
 
 
-<script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
-<script src="~/datatables/js/buttons.datatables.js"></script>
-<script src="~/datatables/js/buttons.html5.min.js"></script>
-<script src="~/datatables/js/buttons.print.min.js"></script>
-<script src="~/datatables/js/datatables.js"></script>
-<script src="~/datatables/js/dataTables.buttons.js"></script>
-<script src="~/datatables/js/jszip.min.js"></script>
-<script src="~/datatables/js/pdfmake.min.js"></script>
-<script src="~/datatables/js/vfs_fonts.js"></script>
-<script src="~/datatables/js/custom.js"></script>
-<script src="~/datatables/js/datatables.buttons.js"></script>
+
 
 
 

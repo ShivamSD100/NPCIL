@@ -5,6 +5,9 @@ using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Newtonsoft.Json.Linq;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace NPCIL.Controllers
 {
@@ -24,18 +27,20 @@ namespace NPCIL.Controllers
         }
         public IActionResult CMSMenuAdd(int? id=0)
         {
-            //var model = new MenuModel
-            //{
-            //    Items = new List<SelectListItem>
-            //{
-            //    new SelectListItem { Value = "0", Text = "No" },
-            //    new SelectListItem { Value = "1", Text = "Yes" }
-            //}
-            //};
+
             MenuModel model = new MenuModel()
             {
-                ParentId = id>0 ? id.ToString() : "",
+                MenuOptions = new List<SelectListItem>()
             };
+            DataTable dtMenuOptions = cmn.GetDatatable("exec PRC_AddMenu @qtype=6");
+            model.MenuOptions.Add(new SelectListItem() { Value = "0", Text = "" });
+            foreach (DataRow dr1 in dtMenuOptions.Rows)
+            {
+                model.MenuOptions.Add(new SelectListItem() { Value = dr1["menu_sno"].ToString(), Text = dr1["menu_name_eng"].ToString() });
+            }
+
+            model.ParentId = id > 0 ? id.ToString() : "";
+
             ViewBag.ListofPosition = CMSMenuPosition();
             ViewBag.ListofType = CMSMenuType();
             ViewBag.ListofLink = LinkType();
@@ -185,6 +190,8 @@ namespace NPCIL.Controllers
 
             List<MenuModel> menuList = new List<MenuModel>();
             DataTable dt = new DataTable();
+            DataTable dtMenuOptions  = cmn.GetDatatable("exec PRC_AddMenu @qtype=6");
+
             if (id == 0)
             {
                 dt = cmn.GetDatatable("exec PRC_AddMenu @qtype=2");
@@ -204,11 +211,23 @@ namespace NPCIL.Controllers
                     MenuPosition_Name = dr["position"].ToString(),
                     MenuType_Name = dr["mtype"].ToString(),
                     ImagePath = dr["newImg"].ToString(),
-                    ParentId = dr["ParentId"].ToString()
-                    //tabActive = int.Parse(dr["tab_Active"].ToString())
+                    ParentId = dr["ParentId"].ToString(),
+                    tabActive = dr["tab_Active"].ToString(),
+                    MenuOptions = new List<SelectListItem>()
+
                 };
+
+                menuModel.MenuOptions.Add(new SelectListItem() { Value = "0", Text = "" });
+                foreach (DataRow dr1 in dtMenuOptions.Rows)
+                {
+                    menuModel.MenuOptions.Add(new SelectListItem (){ Value = dr1["menu_sno"].ToString(), Text = dr1["menu_name_eng"].ToString() });
+                }
+
                 menuList.Add(menuModel);
-            }
+            };
+
+                
+            
 
             ViewBag.ListofLink = LinkType();
             ViewBag.ListofMenu = CMSMenu();
@@ -221,7 +240,17 @@ namespace NPCIL.Controllers
             ViewBag.ListofType = CMSMenuType();
             ViewBag.ListofLink = LinkType();
             ViewBag.abc = "Submit";
-            MenuModel obj = new MenuModel();
+            MenuModel obj = new MenuModel()
+            {
+                MenuOptions = new List<SelectListItem>()
+            };
+            DataTable dtMenuOptions = cmn.GetDatatable("exec PRC_AddMenu @qtype=6");
+            obj.MenuOptions.Add(new SelectListItem() { Value = "0", Text = "" });
+            foreach (DataRow dr1 in dtMenuOptions.Rows)
+            {
+                obj.MenuOptions.Add(new SelectListItem() { Value = dr1["menu_sno"].ToString(), Text = dr1["menu_name_eng"].ToString() });
+            }
+
             DataTable dt = cmn.GetDatatable("exec PRC_AddMenu @qtype='3', " +
                             "@sno='" + id + "'");
 
@@ -241,7 +270,6 @@ namespace NPCIL.Controllers
                 obj.Content_MenuName_hindi = dt.Rows[0]["Content_hind"].ToString();
                 obj.Imagepath2 = dt.Rows[0]["file_image"].ToString();
 
-
                 if (!String.IsNullOrEmpty(dt.Rows[0]["file_Startdate"].ToString()))
                 {
                     obj.file_StartDate_Display = Convert.ToDateTime(dt.Rows[0]["file_Startdate"].ToString());
@@ -254,6 +282,16 @@ namespace NPCIL.Controllers
                 obj.link_urlname = dt.Rows[0]["link_urlname"].ToString();
                 obj.linkTypeId = int.Parse(dt.Rows[0]["linkType"].ToString());
                 obj.event_year = dt.Rows[0]["eventyear"].ToString();
+
+                obj.tabActive = dt.Rows[0]["tab_active"].ToString();
+                obj.ParentId = dt.Rows[0]["ParentId"].ToString();
+                obj.TabActiveOptions = new List<SelectListItem>
+            {
+                new SelectListItem { Value = "1", Text = "Yes" },
+                new SelectListItem { Value = "0", Text = "No" }
+            };
+
+
                 ViewBag.abc = "Update";
             }
             return View(obj);
@@ -304,6 +342,8 @@ namespace NPCIL.Controllers
                "@file_Enddate='" + menuModel.file_EndDate + "'," +
                "@link_urlname='" + menuModel.link_urlname + "'," +
                "@linkType='" + menuModel.linkTypeId + "'," +
+               "@tabActive='" + menuModel.tabActive+ "',"+
+               "@parentid='" + menuModel.ParentId + "',"+
                "@eventyear='" + menuModel.event_year + "'");
             if (ret == "4")
             {

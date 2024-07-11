@@ -22,7 +22,7 @@ namespace NPCIL.Models
         [Required(ErrorMessage = "Menu Type is required. Please Enter Menu Type.")]
         public int MenuType { get; set; } = 0;
 
-        [Required(ErrorMessage = "Image is required. Please Upload Image.")]
+        //[Required(ErrorMessage = "Image is required. Please Upload Image.")]
         public IFormFile MenuImg { get; set; } = null;
 
         [Required(ErrorMessage = "Description in English is required. Please Enter Description in English.")]
@@ -59,9 +59,9 @@ namespace NPCIL.Models
         public int linkTypeId { get; set; } = 0;
         public string LinkTypeName { get; set; } = "";
         public string event_year { get; set; } = "";
-        public int tabActive { get; set; } = 0;
-        public List<SelectListItem> Items { get; set; }
-
+        public string tabActive { get; set; } = "1";
+        public List<SelectListItem> TabActiveOptions { get; set; }
+        public List<SelectListItem> MenuOptions { get; set; }
         public string? ParentId { get; set; } 
 
     }
