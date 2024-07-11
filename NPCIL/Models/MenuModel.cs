@@ -25,10 +25,10 @@ namespace NPCIL.Models
         //[Required(ErrorMessage = "Image is required. Please Upload Image.")]
         public IFormFile MenuImg { get; set; } = null;
 
-        [Required(ErrorMessage = "Description in English is required. Please Enter Description in English.")]
+        //[Required(ErrorMessage = "Description in English is required. Please Enter Description in English.")]
         public string MenuDesc_eng { get; set; } = "";
 
-        [Required(ErrorMessage = "Description in Hindi is required. Please Enter Description in Hindi.")]
+        //[Required(ErrorMessage = "Description in Hindi is required. Please Enter Description in Hindi.")]
         public string MenuDesc_hind { get; set; } = "";
 
         public string ImagePath { get; set; } = "";

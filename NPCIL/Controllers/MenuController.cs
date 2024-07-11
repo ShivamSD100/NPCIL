@@ -141,20 +141,23 @@ namespace NPCIL.Controllers
                 menuModel.file_MenuImg.CopyTo(new FileStream(filePath, FileMode.Create));
                 filename2 = "/MenuImages/" + uniqueFileName;
             }
-            menuModel.file_StartDate = menuModel.file_StartDate_Display == null ? "": menuModel.file_StartDate_Display.Value.ToString();
-            menuModel.file_EndDate =  menuModel.file_EndDate_Display == null ? "" : menuModel.file_EndDate_Display.Value.ToString();
+
+            menuModel.Imagepath2 = filename2==""? menuModel.Imagepath2:filename2;
+            menuModel.ImagePath = filename==""?menuModel.ImagePath:filename;
+            menuModel.file_StartDate = String.Format("{0:MM-dd-yyyy}", menuModel.file_StartDate_Display == null ? "": menuModel.file_StartDate_Display.Value);
+            menuModel.file_EndDate = String.Format("{0:MM-dd-yyyy}", menuModel.file_EndDate_Display == null ? "" : menuModel.file_EndDate_Display.Value);
             //var parentId = String.IsNullOrEmpty(ViewData["ParentId"].ToString()) ? "" : ViewData["ParentId"];
             string ret = cmn.AddDelMod("exec PRC_AddMenu @qtype='1'," +
                 "@nameEng='" + menuModel.MenuName_eng + "'," +
                 "@nameHindi='" + menuModel.MenuName_hind + "'," +
-                "@img='" + filename + "'," +
+                "@img='" + menuModel.ImagePath + "'," +
                 "@position='" + menuModel.MenuPositionId + "'," +
                 "@menutype='" + menuModel.MenuTypeId + "'," +
                 "@descEng='" + menuModel.MenuDesc_eng + "'," +
                 "@descHindi='" + menuModel.MenuDesc_hind + "'," +
                 "@content_eng='" + menuModel.Content_MenuName_eng + "'," +
                 "@Content_hind='" + menuModel.Content_MenuName_hindi + "'," +
-                "@file_image='" + filename2 + "'," +
+                "@file_image='" + menuModel.Imagepath2 + "'," +
                 "@file_Startdate='" + menuModel.file_StartDate + "'," +
                 "@file_Enddate='" + menuModel.file_EndDate + "'," +
                 "@link_urlname='" + menuModel.link_urlname + "'," +
@@ -298,9 +301,11 @@ namespace NPCIL.Controllers
         }
 
         [HttpPost]
-        public IActionResult UpdateMenu(MenuModel menuModel)
+        public IActionResult UpdateMenu(MenuModel menuModel,IFormFile file)
+        
         {
-            var filePath = "";
+            
+            var filePath = ""; 
             var filename = "";
             var filename2 = "";
             if (menuModel.MenuImg != null)
@@ -320,24 +325,24 @@ namespace NPCIL.Controllers
                 menuModel.file_MenuImg.CopyTo(new FileStream(filePath, FileMode.Create));
                 filename2 = "/MenuImages/" + uniqueFileName;
             }
+            menuModel.Imagepath2 = filename2 == "" ? menuModel.Imagepath2 : filename2;
+            menuModel.ImagePath = filename == "" ? menuModel.ImagePath : filename;
 
-            if (filePath == "")
-                filePath = menuModel.ImagePath;
-            menuModel.file_StartDate = menuModel.file_StartDate_Display == null ? "" : menuModel.file_StartDate_Display.Value.ToString();
-            menuModel.file_EndDate = menuModel.file_EndDate_Display == null ? "" : menuModel.file_EndDate_Display.Value.ToString();
+            menuModel.file_StartDate = String.Format("{0:MM-dd-yyyy}", menuModel.file_StartDate_Display == null ? "" : menuModel.file_StartDate_Display.Value);
+            menuModel.file_EndDate = String.Format("{0:MM-dd-yyyy}", menuModel.file_EndDate_Display == null ? "" : menuModel.file_EndDate_Display.Value);
 
             string ret = cmn.AddDelMod("exec PRC_AddMenu @qtype='4'," +
                 "@sno='" + menuModel.MenuId + "'," +
                 "@nameEng='" + menuModel.MenuName_eng + "'," +
                 "@nameHindi='" + menuModel.MenuName_hind + "'," +
-                "@img='" + filename + "'," +
+                "@img='" + menuModel.ImagePath + "'," +
                 "@position='" + menuModel.MenuPositionId + "'," +
                 "@menutype='" + menuModel.MenuTypeId + "'," +
                 "@descEng='" + menuModel.MenuDesc_eng + "'," +
                 "@descHindi='" + menuModel.MenuDesc_hind + "'," +
                 "@content_eng='" + menuModel.Content_MenuName_eng + "'," +
                "@Content_hind='" + menuModel.Content_MenuName_hindi + "'," +
-               "@file_image='" + filename2 + "'," +
+               "@file_image='" + menuModel.Imagepath2 + "'," +
                "@file_Startdate='" + menuModel.file_StartDate + "'," +
                "@file_Enddate='" + menuModel.file_EndDate + "'," +
                "@link_urlname='" + menuModel.link_urlname + "'," +
