@@ -8,9 +8,8 @@ namespace NPCIL.Helper
     {
         public List<BannerModel> GetBanners();
         public List<MenuModel> GetMenus();
-        public List<MenuModel> GetSubMenus(string id);
+        public List<MenuModel> GetSubMenus(int id);
         public List<TenderModel> GetTenders();
-
         public List<VerticalNewsModel> GetVerticalNews();
         public List<HorizontalNewsModel> GetHorizontalNews();
 

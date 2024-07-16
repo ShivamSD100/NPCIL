@@ -7,5 +7,7 @@ namespace NPCIL.Models
         public List<TenderModel> Tenders { get; set; }
         public List<VerticalNewsModel> VerticalNews { get; set; }
         public List<HorizontalNewsModel> HorizontalNews { get; set; }
+
+        public virtual ICollection<MenuModel> SubMenus { get; set; } = new List<MenuModel>();
     }
 }

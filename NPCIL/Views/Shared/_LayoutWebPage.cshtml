@@ -146,43 +146,20 @@
                                         <a href="#" class="mobile-nav__toggler">
                                             <i class="fa fa-bars"></i>
                                         </a>
-
-                                        <ul class="main-menu__list">
-                                            <li>
-                                                <a href="index.html">Home </a>
-
-                                            </li>
-                                            <li>
-                                                <a href="#">About Us</a>
-
-                                            </li>
-                                            <li>
-                                                <a href="#">Plants </a>
-
-                                            </li>
-                                            <li>
-                                                <a href="#">Projects</a>
-
-                                            </li>
-                                            <li>
-                                                <a href="#">CSR</a>
-
-                                            </li>
-                                            <li>
-                                                <a href="#">Environmental Safety</a>
-
-                                            </li>
-                                            <li>
-                                                <a href="#">Major Achievements</a>
-
-                                            </li>
-                                            <li>
-                                                <a href="#">HR Management</a>
-
-                                            </li>
-
-
-                                        </ul>
+                                       @*  <ul class="main-menu__list">
+                                        @foreach (var Menu in Model.Menus)
+                                        {
+                                            if (string.IsNullOrEmpty(Menu.ParentId) || Int32.Parse(Menu.ParentId) == 0)
+                                            {
+                                            
+                                                <li>
+                                                        <a href="+Menu.MenuName_eng+">@Menu.MenuName_eng </a>
+                                                        @Html.ActionLink("","Menu.MenuName_eng")
+                                                </li>
+                                            
+                                            }
+                                        }
+                                        </ul> *@
                                     </div>
 
 

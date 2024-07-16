@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Globalization;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using NPCIL.Models;
 using WebApplication1.Models;
@@ -91,24 +92,67 @@ namespace NPCIL.Helper
 
         }
 
-        List<TenderModel> INPCILHelper.GetTenders()
+        public List<TenderModel> GetTenders()
         {
-            return new List<TenderModel>();
+            DataTable dt = cmn.GetDatatable("exec PRC_Tender @Qtype=2, @Tender_id='\" + id + \"'");
+            List<TenderModel> Tenders = [];
+            foreach (DataRow row in dt.Rows)
+            {
+                TenderModel tender = new TenderModel()
+                {
+                    id = int.Parse(row["Tender_id"].ToString()),
+                    TendorNo = row["Tendor_no"].ToString(),
+                    TendorAuthEng = row["Tendor_IssuingAuth_eng"].ToString(),
+                    DateOpening = (DateTime.ParseExact(row["Tender_DateOpening"].ToString(), "dd-MM-yyyy HH:mm:ss", CultureInfo.InvariantCulture)).ToString("d-M-yyyy"),
+                    StartDate_Receiving = (DateTime.ParseExact(row["Tender_StartDate_ReceivingTender"].ToString(), "dd-MM-yyyy HH:mm:ss", CultureInfo.InvariantCulture)).ToString("d-M-yyyy"),
+                    EndDate_Receiving = (DateTime.ParseExact(row["Tender_EndDate_ReceivingTender"].ToString(), "dd-MM-yyyy HH:mm:ss", CultureInfo.InvariantCulture)).ToString("d-M-yyyy")
+                };
+                Tenders.Add(tender);
+            }
+            return Tenders;
         }
 
-        List<VerticalNewsModel> INPCILHelper.GetVerticalNews()
+        public List<VerticalNewsModel> GetVerticalNews()
         {
-            return new List<VerticalNewsModel>();
+            DataTable dt = cmn.GetDatatable("exec PRC_AddVerticalNews @qtype=2, @VN_sno='\"+ id + \"'");
+            List<VerticalNewsModel> VerticalNews = [];
+            foreach (DataRow row in dt.Rows)
+            {
+                VerticalNewsModel verticalNewsModel = new VerticalNewsModel()
+                {
+                    VN_id = int.Parse(row["VN_Sno"].ToString()),
+                    VN_LangName = row["langua"].ToString(),
+                    VN_ContentName = row["content"].ToString(),
+                    VN_Title = row["VN_Title"].ToString(),
+                    VN_Description = row["VN_Description"].ToString(),
+                    VN_StartDate = row["startdate"].ToString(),
+                    VN_EndDate = row["enddate"].ToString()
+                };
+                VerticalNews.Add(verticalNewsModel);
+            }
+            return VerticalNews;
         }
 
-        List<HorizontalNewsModel> INPCILHelper.GetHorizontalNews()
+        public List<HorizontalNewsModel> GetHorizontalNews()
         {
-            return new List<HorizontalNewsModel>();
+            DataTable dt = cmn.GetDatatable("exec PRC_AddHorizontalNews @qtype=2, @hn_sno='\"+ id + \"'");
+            List <HorizontalNewsModel> HorizontalNews = [];
+            foreach (DataRow row in dt.Rows)
+            {
+                HorizontalNewsModel horizontalNewsModel = new HorizontalNewsModel()
+                {
+                    HN_id = int.Parse(row["HN_Sno"].ToString()),
+                    HN_LangName = row["langua"].ToString(),
+                    HN_ContentName = row["content"].ToString(),
+                    HN_Title = row["HN_Title"].ToString(),
+                    HN_Description = row["HN_Description"].ToString(),
+                    HN_StartDate = row["startdate"].ToString(),
+                    HN_EndDate = row["enddate"].ToString()
+                };
+                HorizontalNews.Add(horizontalNewsModel);
+            }
+            return HorizontalNews;
         }
 
-        List<MenuModel> INPCILHelper.GetSubMenus(string id)
-        {
-            return new List<MenuModel>();
-        }
     }
 }

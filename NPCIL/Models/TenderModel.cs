@@ -30,17 +30,17 @@ namespace NPCIL.Models
 
         [Required(ErrorMessage = "The date is required.")]
         [DataType(DataType.Date, ErrorMessage = "Please enter a valid date.")]
-        [Range(typeof(DateTime), "1/1/2000", "31/12/2099", ErrorMessage = "Date must be between 01/01/2000 and 12/31/2099")]
+        //[Range(typeof(DateTime), "1/1/2000", "31/12/2099", ErrorMessage = "Date must be between 01/01/2000 and 12/31/2099")]
         public DateTime? DateOpening_Display { get; set; }
 
         [Required(ErrorMessage = "The date is required.")]
         [DataType(DataType.Date, ErrorMessage = "Please enter a valid date.")]
-        [Range(typeof(DateTime), "1/1/2000", "31/12/2099", ErrorMessage = "Date must be between 01/01/2000 and 12/31/2099")]
+        //[Range(typeof(DateTime), "1-1-2000", "31/12/2099", ErrorMessage = "Date must be between 01/01/2000 and 12/31/2099")]
         public DateTime? StartDate_Receiving_Display { get; set; }
 
         [Required(ErrorMessage = "The date is required.")]
         [DataType(DataType.Date, ErrorMessage = "Please enter a valid date.")]
-        [Range(typeof(DateTime), "1/1/2000", "31/12/2099", ErrorMessage = "Date must be between 01/01/2000 and 12/31/2099")]
+        //[Range(typeof(DateTime), "1-1-2000", "31-12-2099", ErrorMessage = "Date must be between 01/01/2000 and 12/31/2099")]
         public DateTime? EndDate_Receiving_Display { get; set; }
         public DateTime? Prebid_Date_Display { get; set; }
         public string Scope_eng { get; set; } = "";
