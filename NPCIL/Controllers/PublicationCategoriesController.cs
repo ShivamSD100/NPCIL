@@ -41,7 +41,7 @@ namespace NPCIL.Controllers
                 obj.CategoriesId = int.Parse(dt.Rows[0]["PC_sno"].ToString());
                 obj.CategoriesTitle = dt.Rows[0]["PC_title"].ToString();
                 obj.CategoriesLinkURL = dt.Rows[0]["PC_linkURL"].ToString();
-                obj.ImagePath = dt.Rows[0]["newImg"].ToString();
+                obj.ImagePath = dt.Rows[0]["PC_uploadImg"].ToString();
                 obj.CategoriesTitleRegLang = dt.Rows[0]["PC_titleLang"].ToString();
                 obj.CategoriesTagRegLang = dt.Rows[0]["PC_altTagLang"].ToString();
                 obj.CategoriesAltTag = dt.Rows[0]["PC_altTag"].ToString();
@@ -61,7 +61,7 @@ namespace NPCIL.Controllers
                 {
                     CategoriesId = int.Parse(dr["PC_sno"].ToString()),
                     CategoriesTitle = dr["PC_title"].ToString(),
-                    ImagePath = dr["newImg"].ToString()
+                    ImagePath = dr["PC_uploadImg"].ToString()
                 };
                 publicationCategoriesList.Add(publicationCategoriesModel);
             }
@@ -81,11 +81,12 @@ namespace NPCIL.Controllers
                 publicationCategoriesModel.CategoriesImg.CopyTo(new FileStream(filePath, FileMode.Create));
                 filename = "/PubCatImages/" + uniqueFileName;
             }
+            publicationCategoriesModel.ImagePath = filename == "" ? publicationCategoriesModel.ImagePath : filename;
 
             string ret = cmn.AddDelMod("exec PRC_AddPublicationCategories @qtype='1'," +
                 "@PC_title='" + publicationCategoriesModel.CategoriesTitle + "'," +
                 "@PC_titleLang='" + publicationCategoriesModel.CategoriesTitleRegLang + "'," +
-                "@PC_uploadImg='" + filename + "'," +
+                "@PC_uploadImg='" + publicationCategoriesModel.ImagePath + "'," +
                 "@PC_linkURL='" + publicationCategoriesModel.CategoriesLinkURL + "'," +
                 "@PC_altTag='" + publicationCategoriesModel.CategoriesAltTag + "'," +
                 "@PC_altTagLang='" + publicationCategoriesModel.CategoriesTagRegLang + "'");
@@ -123,7 +124,7 @@ namespace NPCIL.Controllers
         }
 
         [HttpPost]
-        public IActionResult UpdatePublicationCategories(PublicationCategoriesModel publicationCategoriesModel)
+        public IActionResult UpdatePublicationCategories(PublicationCategoriesModel publicationCategoriesModel, IFormFile file)
         {
             var filePath = "";
             var filename = "";
@@ -136,17 +137,17 @@ namespace NPCIL.Controllers
                 filename = "/PubCatImages/" + uniqueFileName;
             }
 
-            if (filePath == "")
-            {
-                filePath = publicationCategoriesModel.ImagePath;
-                filename = Path.GetFileName(filePath);
-            }
-
+            //if (filePath == "")
+            //{
+            //    filePath = publicationCategoriesModel.ImagePath;
+            //    filename = Path.GetFileName(filePath);
+            //}
+            publicationCategoriesModel.ImagePath = filename == "" ? publicationCategoriesModel.ImagePath : filename;
             string ret = cmn.AddDelMod("exec PRC_AddPublicationCategories @qtype='2'," +
                 "@pc_sno='" + publicationCategoriesModel.CategoriesId + "'," +
                  "@PC_title='" + publicationCategoriesModel.CategoriesTitle + "'," +
                 "@PC_titleLang='" + publicationCategoriesModel.CategoriesTitleRegLang + "'," +
-                "@PC_uploadImg='" + filename + "'," +
+                "@PC_uploadImg='" + publicationCategoriesModel.ImagePath + "'," +
                 "@PC_linkURL='" + publicationCategoriesModel.CategoriesLinkURL + "'," +
                 "@PC_altTag='" + publicationCategoriesModel.CategoriesAltTag + "'," +
                 "@PC_altTagLang='" + publicationCategoriesModel.CategoriesTagRegLang + "'");

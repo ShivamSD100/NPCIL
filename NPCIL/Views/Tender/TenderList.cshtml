@@ -1,7 +1,6 @@
-﻿@* @model WebApplication1.Models.BannerModel; *@
-@model IEnumerable<NPCIL.Models.PublicationCategoriesModel>
+﻿@model IEnumerable<NPCIL.Models.TenderModel>
 @{
-    ViewData["Title"] = "View Publication Categories List";
+    ViewData["Title"] = "View Tender List";
 }
 
 <link href="~/datatables/css/buttons.datatables.css" rel="stylesheet" />
@@ -14,15 +13,15 @@
             <div class="col-md-6">
                 <ul class="breadcrumb">
                     <li class="breadcrumb-item"><a href="../dashboard/index.html">Dashboard</a></li>
-                    <li class="breadcrumb-item"><a href="javascript: void(0)">View Publication Categories</a></li>
+                    <li class="breadcrumb-item"><a href="javascript: void(0)">View Tender</a></li>
                     @* <li class="breadcrumb-item" aria-current="page">Form Validation</li> *@
                 </ul>
                 <div class="page-header-title">
-                    <h2 class="mb-0">View Publication Categories</h2>
+                    <h2 class="mb-0">View Tender</h2>
                 </div>
             </div>
             <div class="col-md-6 text-end">
-                <a href="~/PublicationCategories/AddPublicationCategories" class="btn btn-primary">Add Publication Categories</a>
+                <a href="~/Tender/AddTender" class="btn btn-primary">Add Tender</a>
             </div>
         </div>
     </div>
@@ -34,10 +33,10 @@
     <div class="col-xl-12">
         <div class="card">
             <div class="card-header">
-                <h5>View Publication Categories</h5>
+                <h5>View Tender</h5>
             </div>
             <div class="card-body table-border-style">
-               @*  <button class="btn btn-light-primary mb-1 btn-sm csv">Export CSV</button>
+                @*  <button class="btn btn-light-primary mb-1 btn-sm csv">Export CSV</button>
                 <button class="btn btn-light-primary mb-1 btn-sm sql">Export SQL</button>
                 <button class="btn btn-light-primary mb-1 btn-sm txt">Export TXT</button>
                 <button class="btn btn-light-primary mb-1 btn-sm json">Export JSON</button> *@
@@ -46,22 +45,27 @@
                         <thead>
                             <tr>
                                 <th>ID</th>
-                                <th>Name</th>
-                                <th>Image</th>
+                                <th>Tender No.</th>
+                                <th>Description</th>
+                                <th>Tender Opening Date</th>
+                                <th>Start Date Receiving Tender</th>
+                                <th>End Date Receiving Tender</th>
                                 <th>Edit</th>
                                 <th>Delete</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach (var pc in Model)
+                            @foreach (var tender in Model)
                             {
                                 <tr>
-                                    <td>@pc.CategoriesId</td>
-                                    <td>@pc.CategoriesTitle</td>
-                                    @* <td>@ban.BannerImg</td> *@
-                                    <td><img src="@pc.ImagePath" width="150" alt="Image Not Available" /></td>
-                                    <td style="text-align:center">@Html.ActionLink("", "EditPublicationCategories", new { id = @pc.CategoriesId }, new { @class = "fa fa-plus-square", aria_hidden = "true" })</td>
-                                    <td style="text-align:center">@Html.ActionLink("", "DeletePublicationCategories", new { id = @pc.CategoriesId }, new { @class = "fa-regular fa-trash", aria_hidden = "true" })</td>
+                                    <td>@tender.id</td>
+                                    <td>@tender.TendorNo</td>
+                                    <td>@tender.TendorAuthEng</td>
+                                    <td>@tender.DateOpening</td>
+                                    <td>@tender.StartDate_Receiving</td>
+                                    <td>@tender.EndDate_Receiving</td>
+                                    <td style="text-align:center">@Html.ActionLink("", "EditTender", new { id = @tender.id }, new { @class = "fa fa-plus-square", aria_hidden = "true" })</td>
+                                    <td style="text-align:center">@Html.ActionLink("", "DeleteTender", new { id = @tender.id }, new { @class = "fa-regular fa-trash", aria_hidden = "true" })</td>
                                 </tr>
                             }
                         </tbody>

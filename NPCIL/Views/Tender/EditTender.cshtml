@@ -1,0 +1,172 @@
+﻿@model NPCIL.Models.TenderModel;
+@{
+    ViewData["Title"] = "Add Tender";
+}
+
+<div class="page-header">
+    <div class="page-block">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <ul class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="~/Home/Index">Dashboard</a></li>
+                    <li class="breadcrumb-item"><a href="javascript: void(0)">Tenders</a></li>
+                    <li class="breadcrumb-item" aria-current="page">Update Tenders</li>
+                </ul>
+                <div class="page-header-title">
+                    <h2 class="mb-0">Update Tenders</h2>
+                </div>
+            </div>
+            <div class="col-md-6 text-end">
+                <a href="~/Tender/TenderList" class="btn btn-primary">View Tender</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="row">
+    <!-- [ Form Validation ] start -->
+
+    <div class="col-sm-12">
+        <div class="card">
+            <div class="card-header">
+                <h5>Add Tender</h5>
+            </div>
+            <div class="card-body">
+                <form asp-controller="Tender" asp-action="UpdateTender" method="post" enctype="multipart/form-data" class="validate-me" id="validate-me" data-validate="" novalidate="true">
+                    @Html.HiddenFor(m => m.id)
+                    <div class="mb-3 row">
+                        <label class="col-lg-4 col-form-label text-lg-end">Tender No.</label>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(m => m.TendorNo, new { @class = "form-control", placeholder = "" })
+                            @Html.ValidationMessageFor(m => m.TendorNo, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="mb-3 row">
+                        <label class="col-lg-4 col-form-label text-lg-end">Issuing Authority(english)</label>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(m => m.TendorAuthEng, new { @class = "form-control", placeholder = "" })
+                            @Html.ValidationMessageFor(m => m.TendorAuthEng, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+
+                    <div class="mb-3 row">
+                        <label class="col-lg-4 col-form-label text-lg-end">Issuing Authority(hindi)</label>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(m => m.TendorAuthHindi, new { @class = "form-control", placeholder = "" })
+                        </div>
+                    </div>
+
+                    <div class="mb-3 row">
+                        <label class="col-lg-4 col-form-label text-lg-end">Start Date of Selling Tender</label>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(model => model.StartDate_Selling_Display, "{0:yyyy-MM-dd}", new { @class = "form-control", @type = "date", style = "width: 535px; height: 38px;" })
+                        </div>
+                    </div>
+
+                    <div class="mb-3 row">
+                        <label class="col-lg-4 col-form-label text-lg-end">End Date of Selling Tender</label>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(model => model.EndDate_Selling_Display, "{0:yyyy-MM-dd}", new { @class = "form-control", @type = "date", style = "width: 535px; height: 38px;" })
+                        </div>
+                    </div>
+
+                    <div class="mb-3 row">
+                        <label class="col-lg-4 col-form-label text-lg-end">Date of Opening</label>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(model => model.DateOpening_Display, "{0:yyyy-MM-dd}", new { @class = "form-control", @type = "date", style = "width: 535px; height: 38px;" })
+                            @Html.ValidationMessageFor(m => m.DateOpening_Display, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="mb-3 row">
+                        <label class="col-lg-4 col-form-label text-lg-end">Start Date of Receiving Tender</label>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(model => model.StartDate_Receiving_Display, "{0:yyyy-MM-dd}", new { @class = "form-control", @type = "date", style = "width: 535px; height: 38px;" })
+                            @Html.ValidationMessageFor(m => m.StartDate_Receiving_Display, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="mb-3 row">
+                        <label class="col-lg-4 col-form-label text-lg-end">End Date of Receiving Tender</label>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(model => model.EndDate_Receiving_Display, "{0:yyyy-MM-dd}", new { @class = "form-control", @type = "date", style = "width: 535px; height: 38px;" })
+                            @Html.ValidationMessageFor(m => m.EndDate_Receiving_Display, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="mb-3 row">
+                        <label class="col-lg-4 col-form-label text-lg-end">Prebid Meeting Date</label>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(model => model.Prebid_Date_Display, "{0:yyyy-MM-dd}", new { @class = "form-control", @type = "date", style = "width: 535px; height: 38px;" })
+                        </div>
+                    </div>
+
+                    <div class="mb-3 row">
+                        <label class="col-lg-4 col-form-label text-lg-end">Scope of Work(english)</label>
+                        <div class="col-lg-6">
+                            @Html.TextAreaFor(m => m.Scope_eng, new { @class = "form-control", cols = "55", rows = "10" })
+                        </div>
+                    </div>
+
+                    <div class="mb-3 row">
+                        <label class="col-lg-4 col-form-label text-lg-end">Scope of Work(hindi)</label>
+                        <div class="col-lg-6">
+                            @Html.TextAreaFor(m => m.Scope_hindi, new { @class = "form-control", cols = "55", rows = "10" })
+                        </div>
+                    </div>
+
+                    <div class="mb-3 row">
+                        <label class="col-lg-4 col-form-label text-lg-end">Tender Body(english)</label>
+                        <div class="col-lg-6">
+                            @Html.TextAreaFor(m => m.body_eng, new { @class = "form-control", cols = "55", rows = "10" })
+                        </div>
+                    </div>
+
+                    <div class="mb-3 row">
+                        <label class="col-lg-4 col-form-label text-lg-end">Tender Body(hindi)</label>
+                        <div class="col-lg-6">
+                            @Html.TextAreaFor(m => m.body_hindi, new { @class = "form-control", cols = "55", rows = "10" })
+                        </div>
+                    </div>
+
+                    <div class="mb-3 row">
+                        <label class="col-lg-4 col-form-label text-lg-end">Mark as Important</label>
+                        <div class="col-lg-6">
+                            @Html.CheckBoxFor(m => m.markImportant, new { @style = "margin-top: 11px;height: 29px;width: 28px; " })
+                        </div>
+                    </div>
+
+                    <div class="mb-3 row">
+                        <label class="col-lg-4 col-form-label text-lg-end">Tender Cost</label>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(m => m.cost, new { @class = "form-control", placeholder = "" })
+                        </div>
+                    </div>
+
+                    <div class="mb-3 row">
+                        <label class="col-lg-4 col-form-label text-lg-end">EMD</label>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(m => m.EMD, new { @class = "form-control", placeholder = "" })
+                        </div>
+                    </div>
+
+                    <div class="row mb-0">
+                        <div class="col-lg-4 col-form-label"></div>
+                        <div class="col-lg-6">
+                            <input type="submit" class="btn btn-primary" value="Update" fdprocessedid="6yalqo">
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- [ Form Validation ] end -->
+</div>
+
+<script>
+    <partial name="_ValidationScriptsPartial" />
+</script>
+

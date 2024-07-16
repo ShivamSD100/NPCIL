@@ -213,7 +213,7 @@ namespace NPCIL.Controllers
                     MenuName_hind = dr["menu_name_hind"].ToString(),
                     MenuPosition_Name = dr["position"].ToString(),
                     MenuType_Name = dr["mtype"].ToString(),
-                    ImagePath = dr["newImg"].ToString(),
+                    ImagePath = dr["menu_img"].ToString(),
                     ParentId = dr["ParentId"].ToString(),
                     tabActive = dr["tab_Active"].ToString(),
                     MenuOptions = new List<SelectListItem>()
@@ -228,10 +228,6 @@ namespace NPCIL.Controllers
 
                 menuList.Add(menuModel);
             };
-
-                
-            
-
             ViewBag.ListofLink = LinkType();
             ViewBag.ListofMenu = CMSMenu();
             return View(menuList);
@@ -262,7 +258,7 @@ namespace NPCIL.Controllers
                 obj.MenuId = int.Parse(dt.Rows[0]["menu_sno"].ToString());
                 obj.MenuName_eng = dt.Rows[0]["menu_name_eng"].ToString();
                 obj.MenuName_hind = dt.Rows[0]["menu_name_hind"].ToString();
-                obj.ImagePath = dt.Rows[0]["newImg"].ToString();
+                obj.ImagePath = dt.Rows[0]["menu_img"].ToString();
                 obj.MenuPositionId = int.Parse(dt.Rows[0]["menu_position"].ToString());
                 obj.MenuPosition_Name = dt.Rows[0]["menu_position"].ToString();
                 obj.MenuTypeId = int.Parse(dt.Rows[0]["menu_type"].ToString());
