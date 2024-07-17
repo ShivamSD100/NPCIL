@@ -785,3 +785,9 @@
             .about-style2--about__social-links li a:hover span::before {
                 color: #ffffff;
             }
+
+.about-style2__content-text {
+    width: 90%;
+    text-align: justify;
+}
+

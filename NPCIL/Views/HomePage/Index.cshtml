@@ -1,5 +1,10 @@
 ﻿@model NPCIL.Models.HomeModel;
 
+<!-- Swiper CSS -->
+<link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">
+
+<!-- Swiper JS -->
+<script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
 
 <div class="stricky-header stricked-menu main-menu">
     <div class="sticky-header__content"></div>
@@ -12,42 +17,23 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-12">
-                <div class="swiper-container thm-swiper__slider" data-swiper-options='{"slidesPerView": 1, "loop": true,"effect": "fade","pagination": {
-                "el": "#main-slider-pagination",
-                "type": "bullets",
-                "clickable": true
-                },
-                "navigation": {
-                "nextEl": "#main-slider__swiper-button-next",
-                "prevEl": "#main-slider__swiper-button-prev"
-                },
-                "autoplay": {
-                "delay": 5000
-                }}'>
+                <div class="swiper-container">
                     <div class="swiper-wrapper">
-
-
-                        <!--Start Single Swiper Slide-->
-                        <div class="swiper-slide">
-                            <div class="image-layer" style="background-image: url(~/CustomAssets/images/slides/slide-v1-1.png);">
+                        @foreach (var banner in Model.Banners)
+                        {
+                            <div class="swiper-slide">
+                                <div class="image-layer" style="background-image: url('@Url.Content("~/Banner/" + banner.ImagePath)');">
+                                </div>
                             </div>
-
-                        </div>
-                        <!--End Single Swiper Slide-->
-
-
+                        }
                     </div>
 
-                    <!-- If we need navigation buttons -->
-                    <div class="main-slider__nav">
-                        <div class="swiper-button-prev" id="main-slider__swiper-button-next">
-                            <i class="icon-left-arrow"></i>
-                        </div>
-                        <div class="swiper-button-next" id="main-slider__swiper-button-prev">
-                            <i class="icon-right-arrow"></i>
-                        </div>
-                    </div>
+                    <!-- Add Pagination -->
+                    <div class="swiper-pagination"></div>
 
+                    <!-- Add Navigation -->
+                    <div class="swiper-button-next"></div>
+                    <div class="swiper-button-prev"></div>
                 </div>
             </div>
 
@@ -88,7 +74,7 @@
                                 </div>
                                 <h2>Nuclear Power Corporation of  India Limited </h2>
                             </div>
-                            <div class="about-style2__content-text">
+                            <div class="about-style2__content-text" style="width: 90%;text-align: justify;">
                                 <p>
                                     Nuclear Power Corporation of India Limited (NPCIL) is a Public Sector Enterprise under the administrative control of the Department of Atomic Energy (DAE), Government of India. The Company was registered as a Public Limited Company under the Companies Act, 1956 in September 1987 with the objectives of operating atomic power plants and implementing atomic power projects for generation of electricity in pursuance of the schemes and programmes of the Government of India under the Atomic Energy Act, 1962. NPCIL also has equity participation in BHAVINI, another PSU of Department of Atomic Energy (DAE) which implements Fast Breeder Reactors programme in the country.
                                 </p>
@@ -121,11 +107,11 @@
             <div class="col-xl-5">
                 <div class="team-details__skills-box">
                     <div class="title">
-                        <h2>News  & Announcements</h2>
+                        <h2>News & Announcements</h2>
 
                     </div>
                     <div class="latest-news-grid" style="min-height: 425px;max-height: 445px;">
-                        <div class="text-box">
+                        @* <div class="text-box">
                             <div class="d-flex">
                                 <div class="news-icon-container">  <img class="news-icon" src="~/CustomAssets/images/news-icon.png" /></div>
 
@@ -139,66 +125,24 @@
                             </div>
 
 
-                        </div>
+                        </div> *@
+
                         <div class="text-box">
+                             @foreach (var vertical in Model.VerticalNews)
+                                {
                             <div class="d-flex">
                                 <div class="news-icon-container">  <img class="news-icon" src="~/CustomAssets/images/news-icon.png" /></div>
-
-                                <div class="ps-3 py-2">
-                                    <p>
-                                        NPCIL Participation in National Technology Week 2023.
-                                    </p>
-                                    <p class="date">DATE:08/06/2023</p>
-                                    <p class="size">Size:25 KB  I  Language : Hindi</p>
-                                </div>
+                               
+                                    <div class="ps-3 py-2">
+                                        <p>
+                                            @vertical.VN_Title
+                                        </p>
+                                        <p class="date">DATE : @vertical.VN_StartDate</p>
+                                        <p class="size">Size:25 KB  I  Language : @vertical.VN_LangName</p>
+                                    </div>
+                                
                             </div>
-
-
-                        </div>
-                        <div class="text-box">
-                            <div class="d-flex">
-                                <div class="news-icon-container">  <img class="news-icon" src="~/CustomAssets/images/news-icon.png" /></div>
-
-                                <div class="ps-3 py-2">
-                                    <p>
-                                        NPCIL Participation in National Technology Week 2023.
-                                    </p>
-                                    <p class="date">DATE:08/06/2023</p>
-                                    <p class="size">Size:25 KB  I  Language : Hindi</p>
-                                </div>
-                            </div>
-
-
-                        </div>
-                        <div class="text-box">
-                            <div class="d-flex">
-                                <div class="news-icon-container">  <img class="news-icon" src="~/CustomAssets/images/news-icon.png" /></div>
-
-                                <div class="ps-3 py-2">
-                                    <p>
-                                        NPCIL Participation in National Technology Week 2023.
-                                    </p>
-                                    <p class="date">DATE:08/06/2023</p>
-                                    <p class="size">Size:25 KB  I  Language : Hindi</p>
-                                </div>
-                            </div>
-
-
-                        </div>
-                        <div class="text-box">
-                            <div class="d-flex">
-                                <div class="news-icon-container">  <img class="news-icon" src="~/CustomAssets/images/news-icon.png" /></div>
-
-                                <div class="ps-3 py-2">
-                                    <p>
-                                        NPCIL Participation in National Technology Week 2023.
-                                    </p>
-                                    <p class="date">DATE:08/06/2023</p>
-                                    <p class="size">Size:25 KB  I  Language : Hindi</p>
-                                </div>
-                            </div>
-
-
+                            }
                         </div>
                     </div>
                     <div class="btn-box mt-4">
@@ -464,3 +408,21 @@
         </div>
     </div>
 </section>
+
+<script>
+    var swiper = new Swiper('.swiper-container', {
+        loop: true,
+        pagination: {
+            el: '.swiper-pagination',
+            clickable: true,
+        },
+        navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+        },
+        autoplay: {
+            delay: 5000,
+            disableOnInteraction: false,
+        },
+    });
+</script>

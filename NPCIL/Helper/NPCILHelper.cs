@@ -94,7 +94,7 @@ namespace NPCIL.Helper
 
         public List<TenderModel> GetTenders()
         {
-            DataTable dt = cmn.GetDatatable("exec PRC_Tender @Qtype=2, @Tender_id='\" + id + \"'");
+            DataTable dt = cmn.GetDatatable("exec PRC_Tender @Qtype=2");
             List<TenderModel> Tenders = [];
             foreach (DataRow row in dt.Rows)
             {
@@ -114,7 +114,7 @@ namespace NPCIL.Helper
 
         public List<VerticalNewsModel> GetVerticalNews()
         {
-            DataTable dt = cmn.GetDatatable("exec PRC_AddVerticalNews @qtype=2, @VN_sno='\"+ id + \"'");
+            DataTable dt = cmn.GetDatatable("exec PRC_AddVerticalNews @qtype=2");
             List<VerticalNewsModel> VerticalNews = [];
             foreach (DataRow row in dt.Rows)
             {
@@ -135,7 +135,7 @@ namespace NPCIL.Helper
 
         public List<HorizontalNewsModel> GetHorizontalNews()
         {
-            DataTable dt = cmn.GetDatatable("exec PRC_AddHorizontalNews @qtype=2, @hn_sno='\"+ id + \"'");
+            DataTable dt = cmn.GetDatatable("exec PRC_AddHorizontalNews @qtype=2");
             List <HorizontalNewsModel> HorizontalNews = [];
             foreach (DataRow row in dt.Rows)
             {
