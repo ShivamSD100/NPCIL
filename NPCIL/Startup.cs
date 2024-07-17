@@ -23,7 +23,7 @@ namespace NPCIL
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddTransient<INPCILHelper, NPCILHelper>();
+            services.AddSingleton<INPCILHelper, NPCILHelper>();
             services.AddControllersWithViews();
         }
 
@@ -48,7 +48,7 @@ namespace NPCIL
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Login}/{action=Login}/{id?}");
+                    pattern: "{controller=HomePage}/{action=Index}");
             });
         }
     }

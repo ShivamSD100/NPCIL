@@ -1,0 +1,22 @@
+﻿@using NPCIL.Models
+@model NPCIL.Models.MenuViewModel
+
+@if (Model.Menus.Where(m => m.ParentId == Model.ParentId).ToList().Any())
+{
+    <ul class="main-menu__list">
+        
+        @foreach (var menuItem in Model.Menus.Where(m => m.ParentId == Model.ParentId).ToList())
+        {
+            <li>
+                <a href="@menuItem.MenuName_eng">@menuItem.MenuName_eng</a>
+                @await Html.PartialAsync("_Menu", new MenuViewModel { Menus = Model.Menus, ParentId = menuItem.MenuId.ToString() })
+            </li>
+        }
+        @if (Model.ParentId == "0")
+        {
+            <li>
+                <a href="Home/Index">Admin</a>
+            </li>
+        }
+    </ul>
+}

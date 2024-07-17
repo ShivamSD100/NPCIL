@@ -1,4 +1,5 @@
-﻿@model NPCIL.Models.BaseWebPageModel;
+﻿@using NPCIL.Models
+@model NPCIL.Models.BaseWebPageModel;
 
 
 <!DOCTYPE html>
@@ -146,20 +147,10 @@
                                         <a href="#" class="mobile-nav__toggler">
                                             <i class="fa fa-bars"></i>
                                         </a>
-                                       @*  <ul class="main-menu__list">
-                                        @foreach (var Menu in Model.Menus)
-                                        {
-                                            if (string.IsNullOrEmpty(Menu.ParentId) || Int32.Parse(Menu.ParentId) == 0)
-                                            {
-                                            
-                                                <li>
-                                                        <a href="+Menu.MenuName_eng+">@Menu.MenuName_eng </a>
-                                                        @Html.ActionLink("","Menu.MenuName_eng")
-                                                </li>
-                                            
-                                            }
-                                        }
-                                        </ul> *@
+
+                                        @await Html.PartialAsync("_Menu", new MenuViewModel { Menus = Model.Menus, ParentId = "0" })
+                                        
+                                        
                                     </div>
 
 
