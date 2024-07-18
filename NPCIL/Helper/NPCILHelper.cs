@@ -103,9 +103,14 @@ namespace NPCIL.Helper
                     id = int.Parse(row["Tender_id"].ToString()),
                     TendorNo = row["Tendor_no"].ToString(),
                     TendorAuthEng = row["Tendor_IssuingAuth_eng"].ToString(),
-                    DateOpening = (DateTime.ParseExact(row["Tender_DateOpening"].ToString(), "dd-MM-yyyy HH:mm:ss", CultureInfo.InvariantCulture)).ToString("d-M-yyyy"),
-                    StartDate_Receiving = (DateTime.ParseExact(row["Tender_StartDate_ReceivingTender"].ToString(), "dd-MM-yyyy HH:mm:ss", CultureInfo.InvariantCulture)).ToString("d-M-yyyy"),
-                    EndDate_Receiving = (DateTime.ParseExact(row["Tender_EndDate_ReceivingTender"].ToString(), "dd-MM-yyyy HH:mm:ss", CultureInfo.InvariantCulture)).ToString("d-M-yyyy")
+                    //DateOpening = (DateTime.ParseExact(row["Tender_DateOpening"].ToString(), "dd-MM-yyyy HH:mm:ss", CultureInfo.InvariantCulture)).ToString("d-M-yyyy"),
+                    //StartDate_Receiving = (DateTime.ParseExact(row["Tender_StartDate_ReceivingTender"].ToString(), "dd-MM-yyyy HH:mm:ss", CultureInfo.InvariantCulture)).ToString("d-M-yyyy"),
+                    
+                    //EndDate_Receiving = (DateTime.ParseExact(row["Tender_EndDate_ReceivingTender"].ToString(), "dd-MM-yyyy HH:mm:ss", CultureInfo.InvariantCulture)).ToString("d-M-yyyy")
+                     DateOpening = row["Tender_DateOpening"].ToString(),
+                    StartDate_Receiving = row["Tender_StartDate_ReceivingTender"].ToString(),
+                    EndDate_Receiving = row["Tender_EndDate_ReceivingTender"].ToString()
+
                 };
                 Tenders.Add(tender);
             }

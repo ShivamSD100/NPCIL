@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using NPCIL.Helper;
 using NPCIL.Models;
 using System;
 using System.Collections.Generic;
@@ -13,10 +14,11 @@ namespace NPCIL.Controllers
     {
         CmnDBWork cmn = new CmnDBWork();
         private readonly Microsoft.AspNetCore.Hosting.IHostingEnvironment hostingEnvironment;
-
-        public TenderController(Microsoft.AspNetCore.Hosting.IHostingEnvironment environment)
+        private readonly INPCILHelper _npcilHelper;
+        public TenderController(Microsoft.AspNetCore.Hosting.IHostingEnvironment environment, INPCILHelper npcilHelper)
         {
             hostingEnvironment = environment;
+            _npcilHelper = npcilHelper;
         }
         public IActionResult Index()
         {
@@ -30,22 +32,7 @@ namespace NPCIL.Controllers
 
         public IActionResult TenderList()
         {
-
-            List<TenderModel> tendorList = new List<TenderModel>();
-            DataTable dt = cmn.GetDatatable("exec PRC_Tender @qtype=2");
-            foreach (DataRow dr in dt.Rows)
-            {
-                TenderModel tenderModel = new TenderModel()
-                {
-                    id = int.Parse(dr["Tender_id"].ToString()),
-                    TendorNo = dr["Tendor_no"].ToString(),
-                    TendorAuthEng = dr["Tendor_IssuingAuth_eng"].ToString(),
-                    DateOpening = (DateTime.ParseExact(dr["Tender_DateOpening"].ToString(), "dd-MM-yyyy HH:mm:ss", CultureInfo.InvariantCulture)).ToString("d-M-yyyy"),
-                    StartDate_Receiving = (DateTime.ParseExact(dr["Tender_StartDate_ReceivingTender"].ToString(), "dd-MM-yyyy HH:mm:ss", CultureInfo.InvariantCulture)).ToString("d-M-yyyy"),
-                    EndDate_Receiving = (DateTime.ParseExact(dr["Tender_EndDate_ReceivingTender"].ToString(), "dd-MM-yyyy HH:mm:ss", CultureInfo.InvariantCulture)).ToString("d-M-yyyy")
-                };
-                tendorList.Add(tenderModel);
-            }
+            var tendorList = _npcilHelper.GetTenders();
             return View(tendorList);
         }
 
