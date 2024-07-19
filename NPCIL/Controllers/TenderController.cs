@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using NPCIL.Helper;
@@ -7,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
+using System.IO;
 
 namespace NPCIL.Controllers
 {
@@ -27,6 +29,8 @@ namespace NPCIL.Controllers
 
         public IActionResult AddTender()
         {
+            ViewBag.Listoftender = TenderTypeList();
+            ViewBag.ListoftenderPos = TenderPositionList();
             return View();
         }
 
@@ -36,9 +40,57 @@ namespace NPCIL.Controllers
             return View(tendorList);
         }
 
-        [HttpPost]
-        public IActionResult AddTender(TenderModel tenderModel)
+        public List<TenderModel> TenderTypeList()
         {
+            List<TenderModel> tenderList = new List<TenderModel>();
+            DataTable dt = cmn.GetDatatable("exec PRC_Tender @Qtype=7");
+            foreach (DataRow dr in dt.Rows)
+            {
+                TenderModel tendermodel = new TenderModel()
+                {
+                    TenderTypeId = int.Parse(dr["TT_id"].ToString()),
+                    TenderTypeName = dr["TT_Title"].ToString()
+                };
+                tenderList.Add(tendermodel);
+            }
+            tenderList.Insert(0, new TenderModel { TenderTypeId = 0, TenderTypeName = "Select" });
+            ViewBag.Listoftender = tenderList;
+            return tenderList;
+        }
+
+        public List<TenderModel> TenderPositionList()
+        {
+            List<TenderModel> tenderPosList = new List<TenderModel>();
+            DataTable dt = cmn.GetDatatable("exec PRC_Tender @Qtype=8");
+            foreach (DataRow dr in dt.Rows)
+            {
+                TenderModel tendermodel = new TenderModel()
+                {
+                    TenderPositionId = int.Parse(dr["TP_id"].ToString()),
+                    TenderPositionName = dr["TP_Title"].ToString()
+                };
+                tenderPosList.Add(tendermodel);
+            }
+            tenderPosList.Insert(0, new TenderModel { TenderPositionId = 0, TenderPositionName = "Select" });
+            ViewBag.ListoftenderPos = tenderPosList;
+            return tenderPosList;
+        }
+
+        [HttpPost]
+        public IActionResult AddTender(TenderModel tenderModel, IFormFile file)
+        {
+            var filePath = "";
+            var filename = "";
+            if (tenderModel.TenderImg != null)
+            {
+                var uniqueFileName = GetUniqueFileName(tenderModel.TenderImg.FileName);
+                var uploads = Path.Combine(hostingEnvironment.WebRootPath, "TenderImages");
+                filePath = Path.Combine(uploads, uniqueFileName);
+                tenderModel.TenderImg.CopyTo(new FileStream(filePath, FileMode.Create));
+                filename = "/TenderImages/" + uniqueFileName;
+            }
+
+            tenderModel.ImagePath = filename == "" ? tenderModel.ImagePath : filename;
             tenderModel.StartDate_Selling = String.Format("{0:MM-dd-yyyy}", tenderModel.StartDate_Selling_Display == null ? "" : tenderModel.StartDate_Selling_Display.Value);
             tenderModel.EndDate_Selling = String.Format("{0:MM-dd-yyyy}", tenderModel.EndDate_Selling_Display == null ? "" : tenderModel.EndDate_Selling_Display.Value);
             tenderModel.DateOpening = String.Format("{0:MM-dd-yyyy}", tenderModel.DateOpening_Display == null ? "" : tenderModel.DateOpening_Display.Value);
@@ -62,6 +114,10 @@ namespace NPCIL.Controllers
                 "@Tender_body_hindi='" + tenderModel.body_hindi + "'," +
                 "@Tender_markImportant='" + tenderModel.markImportant + "'," +
                 "@Tender_cost='" + tenderModel.cost + "'," +
+                "@TenderType='" + tenderModel.TenderTypeId + "'," +
+                "@TenderPosition='" + tenderModel.TenderPositionId + "'," +
+                "@TenderURL='" + tenderModel.Tender_urlname + "'," +
+                "@TenderUpload='" + tenderModel.ImagePath + "'," +
                 "@Tender_EMD='" + tenderModel.EMD + "'");
 
             if (ret == "1")
@@ -74,9 +130,20 @@ namespace NPCIL.Controllers
             }
         }
 
+        private string GetUniqueFileName(string fileName)
+        {
+            fileName = Path.GetFileName(fileName);
+            return Path.GetFileNameWithoutExtension(fileName)
+                      + "_"
+                      + Guid.NewGuid().ToString().Substring(0, 4)
+                      + Path.GetExtension(fileName);
+        }
+
 
         public IActionResult EditTender(int id = 0)
         {
+            ViewBag.ListoftenderPos = TenderPositionList();
+            ViewBag.Listoftender = TenderTypeList();
             TenderModel obj = new TenderModel();
             DataTable dt = cmn.GetDatatable("exec PRC_Tender @qtype='3', " +
                             "@Tender_id='" + id + "'");
@@ -118,13 +185,31 @@ namespace NPCIL.Controllers
                 obj.markImportant = (dt.Rows[0]["Tender_markImportant"].ToString())=="0" ? false : true;
                 obj.cost = dt.Rows[0]["Tender_cost"].ToString();
                 obj.EMD = dt.Rows[0]["Tender_EMD"].ToString();
+                obj.ImagePath = dt.Rows[0]["TenderUpload"].ToString();
+                obj.TenderTypeId = int.Parse(dt.Rows[0]["TenderType"].ToString());
+                obj.TenderTypeName = dt.Rows[0]["TenderType"].ToString();
+                obj.Tender_urlname = dt.Rows[0]["TenderURL"].ToString();
+                obj.TenderPositionId = int.Parse(dt.Rows[0]["TenderPosition"].ToString());
+                obj.TenderPositionName = dt.Rows[0]["TenderPosition"].ToString();
             }
             return View(obj);
         }
 
         [HttpPost]
-        public IActionResult UpdateTender(TenderModel tenderModel)
+        public IActionResult UpdateTender(TenderModel tenderModel, IFormFile file)
         {
+            var filePath = "";
+            var filename = "";
+            if (tenderModel.TenderImg != null)
+            {
+                var uniqueFileName = GetUniqueFileName(tenderModel.TenderImg.FileName);
+                var uploads = Path.Combine(hostingEnvironment.WebRootPath, "TenderImages");
+                filePath = Path.Combine(uploads, uniqueFileName);
+                tenderModel.TenderImg.CopyTo(new FileStream(filePath, FileMode.Create));
+                filename = "/TenderImages/" + uniqueFileName;
+            }
+
+            tenderModel.ImagePath = filename == "" ? tenderModel.ImagePath : filename;
             tenderModel.StartDate_Selling = String.Format("{0:MM-dd-yyyy}", tenderModel.StartDate_Selling_Display == null ? "" : tenderModel.StartDate_Selling_Display.Value);
             tenderModel.EndDate_Selling = String.Format("{0:MM-dd-yyyy}", tenderModel.EndDate_Selling_Display == null ? "" : tenderModel.EndDate_Selling_Display.Value);
             tenderModel.DateOpening = String.Format("{0:MM-dd-yyyy}", tenderModel.DateOpening_Display == null ? "" : tenderModel.DateOpening_Display.Value);
@@ -149,6 +234,10 @@ namespace NPCIL.Controllers
                 "@Tender_body_hindi='" + tenderModel.body_hindi + "'," +
                 "@Tender_markImportant='" + tenderModel.markImportant + "'," +
                 "@Tender_cost='" + tenderModel.cost + "'," +
+                 "@TenderType='" + tenderModel.TenderTypeId + "'," +
+                 "@TenderPosition='" + tenderModel.TenderPositionId + "'," +
+                "@TenderURL='" + tenderModel.Tender_urlname + "'," +
+                "@TenderUpload='" + tenderModel.ImagePath + "'," +
                 "@Tender_EMD='" + tenderModel.EMD + "'");
 
             if (ret == "4")

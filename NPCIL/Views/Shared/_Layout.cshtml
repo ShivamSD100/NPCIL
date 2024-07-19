@@ -143,11 +143,9 @@
                         </a>
                         <ul class="pc-submenu">
                             <li class="pc-item"><a class="pc-link" href="index.html">View Photo Gallery</a></li>
-                            <li class="pc-item"><a class="pc-link" href="index.html">View Photo Gallery Categories</a></li>
-                            <li class="pc-item"><a class="pc-link" href="index.html">Add Photo</a></li>
+                            <li class="pc-item"><a class="pc-link" href="~/PhotoCategory/PhotoCategoryList">View Photo Gallery Categories</a></li>
                             <li class="pc-item"><a class="pc-link" href="index.html">View Video Gallery</a></li>
-                            <li class="pc-item"><a class="pc-link" href="index.html">View Video Gallery Categories</a></li>
-                            <li class="pc-item"><a class="pc-link" href="index.html">Add Video</a></li>
+                            <li class="pc-item"><a class="pc-link" href="~/VideoCategory/VideoCategoryList">View Video Gallery Categories</a></li>
                         </ul>
                     </li>                                               
 
@@ -169,13 +167,19 @@
                         </a>
                     </li>
 
-                    <li class="pc-item">
-                        <a href="~/Tender/TenderList" class="pc-link">
+                    <li class="pc-item pc-hasmenu">
+                        <a href="#!" class="pc-link">
                             <span class="pc-micon">
                                 <i class="ph-duotone ph-projector-screen-chart"></i>
                             </span>
                             <span class="pc-mtext">Tenders</span>
+                            <span class="pc-arrow"><i data-feather="chevron-right"></i></span>
                         </a>
+                        <ul class="pc-submenu">
+                            <li class="pc-item"><a class="pc-link" href="~/TenderPosition/TenderPositionList">View Tender Position</a></li>
+                            <li class="pc-item"><a class="pc-link" href="~/TenderType/TenderTypeList">View Tender Type</a></li>
+                            <li class="pc-item"><a class="pc-link" href="~/Tender/TenderList">View Tenders</a></li>
+                        </ul>
                     </li>
 
 

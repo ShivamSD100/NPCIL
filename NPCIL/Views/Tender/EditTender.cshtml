@@ -35,6 +35,29 @@
             <div class="card-body">
                 <form asp-controller="Tender" asp-action="UpdateTender" method="post" enctype="multipart/form-data" class="validate-me" id="validate-me" data-validate="" novalidate="true">
                     @Html.HiddenFor(m => m.id)
+                    @Html.HiddenFor(m => m.ImagePath)
+                    <div class="mb-3 row">
+                        <label class="col-lg-4 col-form-label text-lg-end">Tender Type</label>
+                        <div class="col-lg-6">
+                            <select asp-for="TenderTypeId"
+                                    class="form-control"
+                                    asp-items="@(new SelectList(@ViewBag.Listoftender,"TenderTypeId", "TenderTypeName"))">
+                            </select>
+                            @Html.ValidationMessageFor(m => m.TenderTypeId, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="mb-3 row">
+                        <label class="col-lg-4 col-form-label text-lg-end">Tender Position</label>
+                        <div class="col-lg-6">
+                            <select asp-for="TenderPositionId"
+                                    class="form-control"
+                                    asp-items="@(new SelectList(@ViewBag.ListoftenderPos,"TenderPositionId", "TenderPositionName"))">
+                            </select>
+                            @Html.ValidationMessageFor(m => m.TenderPositionId, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
                     <div class="mb-3 row">
                         <label class="col-lg-4 col-form-label text-lg-end">Tender No.</label>
                         <div class="col-lg-6">
@@ -153,6 +176,34 @@
                         </div>
                     </div>
 
+                    <div class="mb-3 row">
+                        <label class="col-lg-4 col-form-label text-lg-end">File Upload</label>
+                        <div class="col-lg-6">
+                            <input asp-for="TenderImg" type="file" class="form-control" multiple="true">
+                            @* <p style="color: red; font:small;">Tip: .jpeg .png .gif image only</p> *@
+                            <div class="preview-container" style="margin-top:10px;">
+                                <img id="TenderImg_imgPreview" src="#" alt="Banner Preview" style="max-width: 20%; display: none;">
+                                <video id="TenderImg_videoPreview" controls style="max-width: 20%; display: none;"></video>
+                                <div id="TenderImg_fileNamePreview" style="display: none;"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3 row">
+                        <label class="col-lg-4 col-form-label text-lg-end">Previous Image</label>
+                        <div class="col-lg-6">
+                            <img src="@Model.ImagePath" width="150" alt="Image Not Available" />
+
+                        </div>
+                    </div>
+
+                    <div class="mb-3 row">
+                        <label class="col-lg-4 col-form-label text-lg-end">Tender Link</label>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(m => m.Tender_urlname, new { @class = "form-control", placeholder = "" })
+                        </div>
+                    </div>
+
                     <div class="row mb-0">
                         <div class="col-lg-4 col-form-label"></div>
                         <div class="col-lg-6">
@@ -168,5 +219,49 @@
 
 <script>
     <partial name="_ValidationScriptsPartial" />
+</script>
+
+<script>
+        document.addEventListener("DOMContentLoaded", function () {
+            setupFileInputPreview('TenderImg');
+        });
+    function setupFileInputPreview(inputId) {
+        var input = document.getElementById(inputId);
+        var imgPreview = document.getElementById(inputId + '_imgPreview');
+        var videoPreview = document.getElementById(inputId + '_videoPreview');
+        var fileNamePreview = document.getElementById(inputId + '_fileNamePreview');
+
+        input.addEventListener('change', function (event) {
+            var file = event.target.files[0];
+            var reader = new FileReader();
+
+            // Hide all previews initially
+            imgPreview.style.display = 'none';
+            videoPreview.style.display = 'none';
+            fileNamePreview.style.display = 'none';
+
+            if (file) {
+                if (file.type.startsWith('image/')) {
+                    reader.onload = function (e) {
+                        imgPreview.setAttribute('src', e.target.result);
+                        imgPreview.style.display = 'block';
+                    };
+                    reader.readAsDataURL(file);
+                } else if (file.type.startsWith('video/')) {
+                    reader.onload = function (e) {
+                        videoPreview.setAttribute('src', e.target.result);
+                        videoPreview.style.display = 'block';
+                    };
+                    reader.readAsDataURL(file);
+                } else {
+                    fileNamePreview.textContent = 'Selected file: ' + file.name;
+                    fileNamePreview.style.display = 'block';
+                }
+            }
+        });
+    }
+
+    // Initialize the file input previews
+
 </script>
 

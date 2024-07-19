@@ -1,0 +1,62 @@
+﻿@model NPCIL.Models.VideoCategoryModel;
+@{
+    ViewData["Title"] = "Edit Video Category";
+}
+
+<div class="page-header">
+    <div class="page-block">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <ul class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="~/Home/Index">Dashboard</a></li>
+                    <li class="breadcrumb-item"><a href="javascript: void(0)">Media Gallery</a></li>
+                    <li class="breadcrumb-item" aria-current="page">Update Video Category</li>
+                </ul>
+                <div class="page-header-title">
+                    <h2 class="mb-0">Update Video Category</h2>
+                </div>
+            </div>
+            <div class="col-md-6 text-end">
+                <a href="~/VideoCategory/VideoCategoryList" class="btn btn-primary">View Video Category</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="row">
+    <!-- [ Form Validation ] start -->
+
+    <div class="col-sm-12">
+        <div class="card">
+            <div class="card-header">
+                <h5>Update Video Category</h5>
+            </div>
+            <div class="card-body">
+                <form asp-controller="VideoCategory" asp-action="UpdateVideoCategory" method="post" enctype="multipart/form-data" class="validate-me" id="validate-me" data-validate="" novalidate="true">
+                    @Html.HiddenFor(m => m.VCid)
+                    <div class="mb-3 row">
+                        <label class="col-lg-4 col-form-label text-lg-end">Video Category Name</label>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(m => m.VCtitle, new { @class = "form-control", placeholder = "" })
+                            @Html.ValidationMessageFor(m => m.VCtitle, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="row mb-0">
+                        <div class="col-lg-4 col-form-label"></div>
+                        <div class="col-lg-6">
+                            <input type="submit" class="btn btn-primary" value="Update" fdprocessedid="6yalqo">
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- [ Form Validation ] end -->
+</div>
+
+<script>
+    <partial name="_ValidationScriptsPartial" />
+</script>
+

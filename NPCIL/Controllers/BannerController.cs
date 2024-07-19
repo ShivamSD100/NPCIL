@@ -149,30 +149,6 @@ namespace WebApplication1.Controllers
             if (filePath == "")
                 filePath = bannerModel.ImagePath;
 
-            //var filePath = bannerModel.ImagePath; 
-            //var filename = bannerModel.ImagePath; 
-
-            //if (bannerModel.BannerImg != null)
-            //{
-            //    var uniqueFileName = GetUniqueFileName(bannerModel.BannerImg.FileName);
-            //    var uploads = Path.Combine(hostingEnvironment.WebRootPath, "BannerImages");
-            //    filePath = Path.Combine(uploads, uniqueFileName);
-
-
-            //    using (var fileStream = new FileStream(filePath, FileMode.Create))
-            //    {
-            //        bannerModel.BannerImg.CopyTo(fileStream);
-            //    }
-
-            //    filename = "/BannerImages/" + uniqueFileName;
-            //}
-
-
-            //if (filePath == bannerModel.ImagePath)
-            //{
-            //    filePath = bannerModel.ImagePath;
-            //}
-
             string ret = cmn.AddDelMod("exec PRC_AddBanner @qtype='2'," +
                 "@ban_sno='" + bannerModel.BannerId + "'," +
                 "@ban_title='" + bannerModel.BannerTitle + "'," +

@@ -1,0 +1,85 @@
+﻿@model IEnumerable<NPCIL.Models.TenderPositionModel>
+@{
+    ViewData["Title"] = "View Tender Position List";
+}
+
+<link href="~/datatables/css/buttons.datatables.css" rel="stylesheet" />
+<link href="~/datatables/css/datatables.datatables.css" rel="stylesheet" />
+
+
+<div class="page-header">
+    <div class="page-block">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <ul class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="../dashboard/index.html">Dashboard</a></li>
+                    <li class="breadcrumb-item"><a href="javascript: void(0)">View Tender Position</a></li>
+                    @* <li class="breadcrumb-item" aria-current="page">Form Validation</li> *@
+                </ul>
+                <div class="page-header-title">
+                    <h2 class="mb-0">View Tender Position</h2>
+                </div>
+            </div>
+            <div class="col-md-6 text-end">
+                <a href="~/TenderPosition/AddTenderPosition" class="btn btn-primary">Add Tender Position</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="row">
+    <!-- [ basic-table ] start -->
+    <div class="col-xl-12">
+        <div class="card">
+            <div class="card-header">
+                <h5>View Tender Position</h5>
+            </div>
+            <div class="card-body table-border-style">
+                @*  <button class="btn btn-light-primary mb-1 btn-sm csv">Export CSV</button>
+                <button class="btn btn-light-primary mb-1 btn-sm sql">Export SQL</button>
+                <button class="btn btn-light-primary mb-1 btn-sm txt">Export TXT</button>
+                <button class="btn btn-light-primary mb-1 btn-sm json">Export JSON</button> *@
+                <div class="table-responsive">
+                    <table id="PcTbl" class="display nowrap table">
+                        <thead>
+                            <tr>
+                                <th>Id</th>
+                                <th>Title</th>
+                                <th>Edit</th>
+                                <th>Delete</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var tp in Model)
+                            {
+                                <tr style="align-content:center;">
+                                    <td>@tp.TPid</td>
+                                    <td>@tp.TPtitle</td>
+                                    <td style="text-align:center">@Html.ActionLink("", "EditTenderPosition", new { id = @tp.TPid }, new { @class = "fa fa-plus-square", aria_hidden = "true" })</td>
+                                    <td style="text-align:center">@Html.ActionLink("", "DeleteTenderPosition", new { id = @tp.TPid }, new { @class = "fa-regular fa-trash", aria_hidden = "true" })</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- [ basic-table ] end -->
+</div>
+<!-- [ Main Content ] end -->
+
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#PcTbl').DataTable({
+            layout: {
+                topStart: {
+                    buttons: ['copy', 'csv', 'excel', 'pdf', 'print']
+                }
+            }
+        });
+    });
+</script>

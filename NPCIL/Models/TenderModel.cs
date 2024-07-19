@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace NPCIL.Models
@@ -52,5 +53,16 @@ namespace NPCIL.Models
         public string EMD { get; set; } = "";
         public bool IsArchived { get; set; }
         public string archived_date { get; set; } = "";
+
+        public IFormFile TenderImg { get; set; } = null;
+        public string ImagePath { get; set; } = "";
+        public string Tender_urlname { get; set; } = "";
+        public int TenderType { get; set; } = 0;
+        public int TenderTypeId { get; set; } = 0;
+        public string TenderTypeName { get; set; } = "";
+
+        public int TenderPosition { get; set; } = 0;
+        public int TenderPositionId { get; set; } = 0;
+        public string TenderPositionName { get; set; } = "";
     }
 }
