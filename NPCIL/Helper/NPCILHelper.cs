@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
+using System.Linq;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using NPCIL.Models;
 using WebApplication1.Models;
@@ -38,6 +39,11 @@ namespace NPCIL.Helper
             return Banners;
 
         }
+        public List<BannerModel> GetActiveBanners()
+        {
+            return GetBanners();
+
+        }
         public List<MenuModel> GetMenus()
         {
 
@@ -56,7 +62,7 @@ namespace NPCIL.Helper
                     MenuType_Name = row["mtype"].ToString(),
                     ImagePath = row["menu_img"].ToString(),
                     ParentId = row["ParentId"].ToString(),
-                    tabActive = row["tab_Active"].ToString(),
+                    tabActive = row["tab_Active"].ToString()
                 };
                 Menus.Add(menu);
             }
@@ -65,6 +71,10 @@ namespace NPCIL.Helper
 
         }
 
+        public List<MenuModel> GetActiveMenus()
+        {
+            return GetMenus().Where(m => m.tabActive == "1").ToList();
+        }
         public List<MenuModel> GetSubMenus(int id)
         {
 
@@ -92,6 +102,10 @@ namespace NPCIL.Helper
 
         }
 
+        public List<MenuModel> GetActiveSubMenus(int id)
+        {
+            return GetSubMenus(id).Where(sm => sm.tabActive == "1").ToList();
+        }
         public List<TenderModel> GetTenders()
         {
             DataTable dt = cmn.GetDatatable("exec PRC_Tender @Qtype=2");
@@ -103,20 +117,20 @@ namespace NPCIL.Helper
                     id = int.Parse(row["Tender_id"].ToString()),
                     TendorNo = row["Tendor_no"].ToString(),
                     TendorAuthEng = row["Tendor_IssuingAuth_eng"].ToString(),
-                    //DateOpening = (DateTime.ParseExact(row["Tender_DateOpening"].ToString(), "dd-MM-yyyy HH:mm:ss", CultureInfo.InvariantCulture)).ToString("d-M-yyyy"),
-                    //StartDate_Receiving = (DateTime.ParseExact(row["Tender_StartDate_ReceivingTender"].ToString(), "dd-MM-yyyy HH:mm:ss", CultureInfo.InvariantCulture)).ToString("d-M-yyyy"),
-                    
-                    //EndDate_Receiving = (DateTime.ParseExact(row["Tender_EndDate_ReceivingTender"].ToString(), "dd-MM-yyyy HH:mm:ss", CultureInfo.InvariantCulture)).ToString("d-M-yyyy")
-                     DateOpening = row["Tender_DateOpening"].ToString(),
+                    DateOpening = row["Tender_DateOpening"].ToString(),
                     StartDate_Receiving = row["Tender_StartDate_ReceivingTender"].ToString(),
-                    EndDate_Receiving = row["Tender_EndDate_ReceivingTender"].ToString()
+                    EndDate_Receiving = row["Tender_EndDate_ReceivingTender"].ToString(),
+                    IsArchived = Boolean.Parse(row["Tender_IsArchived"].ToString())
 
                 };
                 Tenders.Add(tender);
             }
             return Tenders;
         }
-
+        public List<TenderModel> GetActiveTenders()
+        {
+            return GetTenders().Where(t => t.IsArchived == false).ToList();
+        }
         public List<VerticalNewsModel> GetVerticalNews()
         {
             DataTable dt = cmn.GetDatatable("exec PRC_AddVerticalNews @qtype=2");
@@ -131,17 +145,22 @@ namespace NPCIL.Helper
                     VN_Title = row["VN_Title"].ToString(),
                     VN_Description = row["VN_Description"].ToString(),
                     VN_StartDate = row["startdate"].ToString(),
-                    VN_EndDate = row["enddate"].ToString()
+                    VN_EndDate = row["enddate"].ToString(),
+                    VN_IsArchived = Boolean.Parse(row["VN_IsArchived"].ToString())
                 };
                 VerticalNews.Add(verticalNewsModel);
             }
             return VerticalNews;
         }
 
+        public List<VerticalNewsModel> GetActiveVerticalNews()
+        {
+            return GetVerticalNews().Where(t => t.VN_IsArchived == false).ToList();
+        }
         public List<HorizontalNewsModel> GetHorizontalNews()
         {
             DataTable dt = cmn.GetDatatable("exec PRC_AddHorizontalNews @qtype=2");
-            List <HorizontalNewsModel> HorizontalNews = [];
+            List<HorizontalNewsModel> HorizontalNews = [];
             foreach (DataRow row in dt.Rows)
             {
                 HorizontalNewsModel horizontalNewsModel = new HorizontalNewsModel()
@@ -157,6 +176,11 @@ namespace NPCIL.Helper
                 HorizontalNews.Add(horizontalNewsModel);
             }
             return HorizontalNews;
+        }
+
+        public List<HorizontalNewsModel> GetActiveHorizontalNews()
+        {
+            return GetHorizontalNews().Where(t => t.HN_IsArchived == false).ToList();
         }
 
     }
