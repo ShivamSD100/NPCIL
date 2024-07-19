@@ -40,5 +40,7 @@ namespace NPCIL.Models
 
         public int HN_ContentId { get; set; }
         public string HN_ContentName { get; set; } = "";
+
+        public Boolean? HN_IsArchived { get; set; }
     }
 }

@@ -38,5 +38,7 @@ namespace NPCIL.Models
 
         public int VN_ContentId { get; set; }
         public string VN_ContentName { get; set; } = "";
+
+        public Boolean? VN_IsArchived { get; set; }
     }
 }
