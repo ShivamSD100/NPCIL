@@ -63,6 +63,10 @@ namespace NPCIL.Models
         public List<SelectListItem> TabActiveOptions { get; set; }
         public List<SelectListItem> MenuOptions { get; set; }
         public string? ParentId { get; set; } 
+        public string ParentName { get; set; }
+
+        public string? Controller { get; set; }
+
 
     }
 }

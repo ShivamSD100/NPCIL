@@ -8,7 +8,14 @@
         @foreach (var menuItem in Model.Menus.Where(m => m.ParentId == Model.ParentId).ToList())
         {
             <li>
-                <a href="@menuItem.MenuName_eng">@menuItem.MenuName_eng</a>
+                @if(menuItem.MenuType_Name == "Link")
+                {
+                    <a href="@menuItem.link_urlname">@menuItem.MenuName_eng</a>
+                }
+                else
+                {
+                    <a asp-controller="Page" action="Index" asp-route-id="@menuItem.MenuId">@menuItem.MenuName_eng</a>
+                }
                 @await Html.PartialAsync("_Menu", new MenuViewModel { Menus = Model.Menus, ParentId = menuItem.MenuId.ToString() })
             </li>
         }

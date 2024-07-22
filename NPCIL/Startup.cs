@@ -24,6 +24,8 @@ namespace NPCIL
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton<INPCILHelper, NPCILHelper>();
+            services.AddSingleton<IDynamicPageHelper, DynamicPageHelper>();
+            services.AddSingleton<IPageService, PageService>();
             services.AddControllersWithViews();
         }
 
@@ -36,8 +38,11 @@ namespace NPCIL
             }
             else
             {
-                app.UseExceptionHandler("/Home/Error");
+                app.UseExceptionHandler("/Error/500"); // Redirect to ErrorController action for other errors
+                app.UseStatusCodePagesWithReExecute("/Error/{0}"); // Redirect to ErrorController action for 404 errors
+                app.UseHsts();
             }
+            app.UseStatusCodePagesWithReExecute("/Error/{0}");
             app.UseStaticFiles();
 
             app.UseRouting();

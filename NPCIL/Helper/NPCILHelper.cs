@@ -44,6 +44,10 @@ namespace NPCIL.Helper
             return GetBanners();
 
         }
+        public MenuModel BindMenuFromDt(DataRow row)
+        {
+            return new MenuModel();
+        }
         public List<MenuModel> GetMenus()
         {
 
@@ -62,7 +66,9 @@ namespace NPCIL.Helper
                     MenuType_Name = row["mtype"].ToString(),
                     ImagePath = row["menu_img"].ToString(),
                     ParentId = row["ParentId"].ToString(),
-                    tabActive = row["tab_Active"].ToString()
+                    tabActive = row["tab_Active"].ToString(),
+                    Controller = row["controller"].ToString(),
+                    link_urlname = row["link_urlname"].ToString()
                 };
                 Menus.Add(menu);
             }
@@ -75,11 +81,27 @@ namespace NPCIL.Helper
         {
             return GetMenus().Where(m => m.tabActive == "1").ToList();
         }
+
+        public MenuModel GetMenuFromId(int id)
+        {
+            DataTable dt = cmn.GetDatatable("exec PRC_AddMenu @qtype=7, @sno='\"+id+\"'");
+            MenuModel menu = new MenuModel()
+            {
+                MenuId = int.Parse(dt.Rows[0]["menu_sno"].ToString()),
+                MenuName_eng = dt.Rows[0]["menu_name_eng"].ToString(),
+                MenuName_hind = dt.Rows[0]["menu_name_hind"].ToString(),
+                MenuPosition_Name = dt.Rows[0]["position"].ToString(),
+                MenuType_Name = dt.Rows[0]["mtype"].ToString(),
+                ImagePath = dt.Rows[0]["menu_img"].ToString(),
+                ParentId = dt.Rows[0]["ParentId"].ToString(),
+                tabActive = dt.Rows[0]["tab_Active"].ToString(),
+                Controller = dt.Rows[0]["controller"].ToString()
+            };
+            return menu;
+        }
         public List<MenuModel> GetSubMenus(int id)
         {
-
             DataTable dt = cmn.GetDatatable("exec PRC_AddMenu @qtype=5 , @parentid='\" + id + \"'");
-
             List<MenuModel> Menus = [];
 
             foreach (DataRow row in dt.Rows)
@@ -94,12 +116,11 @@ namespace NPCIL.Helper
                     ImagePath = row["menu_img"].ToString(),
                     ParentId = row["ParentId"].ToString(),
                     tabActive = row["tab_Active"].ToString(),
+                    Controller = row["controller"].ToString()
                 };
                 Menus.Add(menu);
             }
-
             return Menus;
-
         }
 
         public List<MenuModel> GetActiveSubMenus(int id)
@@ -127,6 +148,7 @@ namespace NPCIL.Helper
             }
             return Tenders;
         }
+
         public List<TenderModel> GetActiveTenders()
         {
             return GetTenders().Where(t => t.IsArchived == false).ToList();
