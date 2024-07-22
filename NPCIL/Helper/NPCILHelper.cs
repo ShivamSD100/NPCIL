@@ -62,9 +62,8 @@ namespace NPCIL.Helper
                 Content_MenuName_hindi = row["Content_hind"].ToString(),
                 Content_MenuName_eng = row["content_eng"].ToString(),
                 linkTypeId = int.Parse(row["linkTypeId"].ToString()),
-                LinkTypeName = GetLinkTypeFromID(row["linkTypeId"].ToString()),
-                ParentId = row["Parentid"].ToString()
-            }
+                LinkTypeName = GetLinkTypeFromID(int.Parse(row["linkTypeId"].ToString()))
+            };
         }
         public List<MenuModel> GetMenus()
         {
@@ -196,9 +195,7 @@ namespace NPCIL.Helper
         }
         public string GetLinkTypeFromID(int id)
         {
-            List<LinkTypeModel> linkTypeList = new List<LinkTypeModel>();
             DataTable dt = cmn.GetDatatable("exec PRC_linkList @qtype=2, @id=" + id);
-
             return dt.Rows[0][1].ToString();
         }
     }
