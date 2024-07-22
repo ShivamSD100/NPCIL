@@ -4798,6 +4798,7 @@ Team Details
             /* background-color: white; */
             padding: 5px 0px;
             color: white;
+            color: #13175a;
         }
 
         .team-details__skills-box .title span {
@@ -6447,7 +6448,6 @@ History Timeline
 
 .latest-news {
     background-color: #ebebeb;
-    padding: 12px 0px;
     margin: 40px 0px;
 }
 
@@ -6456,7 +6456,10 @@ History Timeline
         font-weight: 600;
         padding: 12px 30px 13px 50px;
         background-image: linear-gradient(268deg, #13175a, #13175a);
-        margin-right: 10px;
+    }
+    .latest-news .pt-10{
+        padding-top:15px;
+        padding-left:0px
     }
 
     .latest-news img {
@@ -6534,3 +6537,13 @@ History Timeline
     background-color: #fbb216;
     color: white;
 }
+
+.latest-articles-grid {
+    max-height: 400px;
+    overflow: auto;
+}
+
+    .latest-articles-grid .text-box {
+        border-bottom: 1px solid #c9c9c9;
+        background-color: white;
+    }

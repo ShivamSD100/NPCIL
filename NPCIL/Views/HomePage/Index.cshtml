@@ -46,8 +46,20 @@
 </section>
 <!--End Main Slider-->
 <section class="latest-news">
-
-    <p class="fs-16 font-w600"><span class="title-news fs-18 mr-2">What's New</span> <span class="news-text">26/09/2023 Interacting Young Minds to Spread Awareness About Nucle... </span></p>
+    <p class="fs-16 font-w600">
+        <div class="row">
+            <div class="col-md-2 title-news fs-18 mr-2 text-center">What's New</div>
+            <div class="col-md-10 pt-10">
+                <marquee onMouseOver="this.stop()" onMouseOut="this.start()" width="100%" direction="left" height="18px" style="line-height: 15px">
+                    @foreach (var horizontal in Model.HorizontalNews)
+                    {
+                        <span class="news-text">@horizontal.HN_StartDate - </span>
+                        <span class="news-text">@horizontal.HN_Title &nbsp;&nbsp; | &nbsp;&nbsp;</span>
+                    }
+                </marquee>
+            </div>
+        </div>
+    </p>
 
 </section>
 
@@ -114,28 +126,13 @@
 
                     </div>
                     <div class="latest-news-grid" style="min-height: 425px;max-height: 445px;">
-                        @* <div class="text-box">
-                            <div class="d-flex">
-                                <div class="news-icon-container">  <img class="news-icon" src="~/CustomAssets/images/news-icon.png" /></div>
-
-                                <div class="ps-3 py-2">
-                                    <p>
-                                        NPCIL Participation in National Technology Week 2023.
-                                    </p>
-                                    <p class="date">DATE:08/06/2023</p>
-                                    <p class="size">Size:25 KB  I  Language : Hindi</p>
-                                </div>
-                            </div>
-
-
-                        </div> *@
 
                         <div class="text-box">
-                             @foreach (var vertical in Model.VerticalNews)
-                                {
-                            <div class="d-flex">
-                                <div class="news-icon-container">  <img class="news-icon" src="~/CustomAssets/images/news-icon.png" /></div>
-                               
+                            @foreach (var vertical in Model.VerticalNews)
+                            {
+                                <div class="d-flex">
+                                    <div class="news-icon-container">  <img class="news-icon" src="~/CustomAssets/images/news-icon.png" /></div>
+
                                     <div class="ps-3 py-2">
                                         <p>
                                             @vertical.VN_Title
@@ -143,8 +140,8 @@
                                         <p class="date">DATE : @vertical.VN_StartDate</p>
                                         <p class="size">Size:25 KB  I  Language : @vertical.VN_LangName</p>
                                     </div>
-                                
-                            </div>
+
+                                </div>
                             }
                         </div>
                     </div>
@@ -157,8 +154,6 @@
             </div>
 
 
-
-
             <div class="col-xl-7">
                 <div class="team-details__skills-box">
                     <div class="title">
@@ -168,10 +163,11 @@
                         <li class="active"><a data-toggle="tab" href="#home">Public Awareness</a></li>
                         <li><a data-toggle="tab" href="#menu1">Articles</a></li>
                         <li><a data-toggle="tab" href="#menu2">Responses</a></li>
+                        <li><a data-toggle="tab" href="#menu2">Tenders</a></li>
                     </ul>
 
                     <div class="tab-content">
-                        <div id="home" class="tab-pane  active">
+                        <div id="home" class="tab-pane active">
                             <div class="latest-news-grid">
                                 <div class="text-box">
                                     <div class="d-flex">
@@ -246,18 +242,31 @@
                                             <p class="size">Size:25 KB  I  Language : Hindi</p>
                                         </div>
                                     </div>
+                                </div>
+                            </div>
 
+                        </div>
+                        <div id="menu1" class="tab-pane">
+                            <div class="latest-articles-grid">
+                                <div class="text-box">
+                                    <div class="d-flex">
+                                        <div class="news-icon-schems-container">  <img class="schems-icon" src="~/CustomAssets/images/pdf-icon.png"></div>
+
+                                        <div class="py-2">
+                                            <p>
+                                                NPCIL Participation in National Technology Week 2023.
+                                            </p>
+                                            <p class="date">DATE:08/06/2023</p>
+                                            <p class="size">Size:25 KB  I  Language : Hindi</p>
+                                        </div>
+                                    </div>
 
 
                                 </div>
                             </div>
 
                         </div>
-                        <div id="menu1" class="tab-pane fade">
-                            asf.g;dzj;
-                        </div>
-                        <div id="menu2" class="tab-pane fade">
-                            dsamg;nmhf;dg
+                        <div id="menu2" class="tab-pane">
                         </div>
                     </div>
                     <div class="btn-box mt-4">
@@ -265,6 +274,9 @@
                             <span class="txt">View All News <i class="fa fa-arrow-right"></i></span>
                         </a>
                     </div>
+
+          
+                
                 </div>
             </div>
         </div>
