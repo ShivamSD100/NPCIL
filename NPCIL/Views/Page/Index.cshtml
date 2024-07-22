@@ -2,3 +2,92 @@
     Layout = "_LayoutWebPage";
 }
 @model NPCIL.Models.MenuModel
+
+@{
+    string fileType = GetFileType(Model.ImagePath);
+}
+
+
+
+
+<div id="engMenu">
+
+    @if (fileType == "image")
+    {
+        <img src="@Model.ImagePath" alt="@Model.MenuName_eng" />
+    }
+    else if (fileType == "video")
+    {
+        <video src="@Model.ImagePath" alt="@Model.MenuName_eng" />
+    }
+    else if (fileType == "pdf")
+    {
+        <a href="@Model.ImagePath" target="_blank">Download PDF</a>
+    }
+    else if (fileType == "docx")
+    {
+        <a href="@Model.ImagePath" target="_blank">Download Document</a>
+    }
+    else
+    {
+        <a href="@Model.ImagePath" target="_blank">Download File</a>
+    }
+</div>
+<div id="hndMenu">
+    @if (fileType == "image")
+    {
+        <img src="@Model.ImagePath" alt="@Model.MenuName_eng" />
+    }
+    else if (fileType == "video")
+    {
+        <video src="@Model.ImagePath" alt="@Model.MenuName_eng" />
+    }
+    else if (fileType == "pdf")
+    {
+        <a href="@Model.ImagePath" target="_blank">Download PDF</a>
+    }
+    else if (fileType == "docx")
+    {
+        <a href="@Model.ImagePath" target="_blank">Download Document</a>
+    }
+    else
+    {
+        <a href="@Model.ImagePath" target="_blank">Download File</a>
+    }
+</div>
+
+
+    @functions {
+        string GetFileType(string url)
+        {
+            string fileType = "";
+            Uri uri = new Uri(url);
+            string extension = System.IO.Path.GetExtension(uri.LocalPath);
+
+            switch (extension.ToLower())
+            {
+                case ".jpg":
+                case ".jpeg":
+                case ".png":
+                case ".gif":
+                    fileType = "image";
+                    break;
+                case ".mp4":
+                case ".avi":
+                case ".mov":
+                    fileType = "video";
+                    break;
+                case ".pdf":
+                    fileType = "pdf";
+                    break;
+                case ".docx":
+                    fileType = "docx";
+                    break;
+                default:
+                    fileType = "unknown";
+                    break;
+            }
+
+            return fileType;
+        }
+    }

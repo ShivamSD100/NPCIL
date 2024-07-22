@@ -28,11 +28,11 @@ namespace NPCIL.Controllers
 
             HomeModel model = new HomeModel()
             {
-                Banners = _npcilHelper.GetBanners(),
-                Menus = _npcilHelper.GetMenus(),
-                HorizontalNews = _npcilHelper.GetHorizontalNews(),
-                VerticalNews = _npcilHelper.GetVerticalNews(),
-                Tenders = _npcilHelper.GetTenders()
+                Banners = _npcilHelper.GetActiveBanners(),
+                Menus = _npcilHelper.GetActiveMenus(),
+                HorizontalNews = _npcilHelper.GetActiveHorizontalNews(),
+                VerticalNews = _npcilHelper.GetActiveVerticalNews(),
+                Tenders = _npcilHelper.GetActiveTenders()
             };
 
             return View(model);

@@ -17,7 +17,10 @@ namespace NPCIL.Controllers
         }
         public IActionResult Index(int id)
         {
-            MenuModel model = _npcilHelper.GetMenuFromId(id);
+            HomeModel model = new HomeModel()
+            {
+                Menu = _npcilHelper.GetMenuFromId(id)
+            };
             return View(model);
         }
     }

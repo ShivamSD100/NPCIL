@@ -46,35 +46,33 @@ namespace NPCIL.Helper
         }
         public MenuModel BindMenuFromDt(DataRow row)
         {
-            return new MenuModel();
+            return new MenuModel()
+            {
+                MenuId = int.Parse(row["menu_sno"].ToString()),
+                MenuName_eng = row["menu_name_eng"].ToString(),
+                MenuName_hind = row["menu_name_hind"].ToString(),
+                MenuPosition_Name = row["position"].ToString(),
+                MenuType_Name = row["mtype"].ToString(),
+                ImagePath = row["menu_img"].ToString(),
+                Imagepath2 = row["file_img"].ToString(),
+                ParentId = row["ParentId"].ToString(),
+                tabActive = row["tab_Active"].ToString(),
+                Controller = row["controller"].ToString(),
+                link_urlname = row["link_urlname"].ToString(),
+                Content_MenuName_hindi = row["Content_hind"].ToString(),
+                Content_MenuName_eng = row["content_eng"].ToString(),
+                linkTypeId = int.Parse(row["linkTypeId"].ToString()),
+                LinkTypeName = GetLinkTypeFromID(row["linkTypeId"].ToString()),
+                ParentId = row["Parentid"].ToString()
+            }
         }
         public List<MenuModel> GetMenus()
         {
-
             DataTable dt = cmn.GetDatatable("exec PRC_AddMenu @qtype=2");
-
-             List<MenuModel> Menus = [];
-
+            List<MenuModel> Menus = [];
             foreach (DataRow row in dt.Rows)
-            {
-                MenuModel menu = new MenuModel()
-                {
-                    MenuId = int.Parse(row["menu_sno"].ToString()),
-                    MenuName_eng = row["menu_name_eng"].ToString(),
-                    MenuName_hind = row["menu_name_hind"].ToString(),
-                    MenuPosition_Name = row["position"].ToString(),
-                    MenuType_Name = row["mtype"].ToString(),
-                    ImagePath = row["menu_img"].ToString(),
-                    ParentId = row["ParentId"].ToString(),
-                    tabActive = row["tab_Active"].ToString(),
-                    Controller = row["controller"].ToString(),
-                    link_urlname = row["link_urlname"].ToString()
-                };
-                Menus.Add(menu);
-            }
-
+                Menus.Add(BindMenuFromDt(row));
             return Menus;
-
         }
 
         public List<MenuModel> GetActiveMenus()
@@ -84,41 +82,16 @@ namespace NPCIL.Helper
 
         public MenuModel GetMenuFromId(int id)
         {
-            DataTable dt = cmn.GetDatatable("exec PRC_AddMenu @qtype=7, @sno='\"+id+\"'");
-            MenuModel menu = new MenuModel()
-            {
-                MenuId = int.Parse(dt.Rows[0]["menu_sno"].ToString()),
-                MenuName_eng = dt.Rows[0]["menu_name_eng"].ToString(),
-                MenuName_hind = dt.Rows[0]["menu_name_hind"].ToString(),
-                MenuPosition_Name = dt.Rows[0]["position"].ToString(),
-                MenuType_Name = dt.Rows[0]["mtype"].ToString(),
-                ImagePath = dt.Rows[0]["menu_img"].ToString(),
-                ParentId = dt.Rows[0]["ParentId"].ToString(),
-                tabActive = dt.Rows[0]["tab_Active"].ToString(),
-                Controller = dt.Rows[0]["controller"].ToString()
-            };
-            return menu;
+            DataTable dt = cmn.GetDatatable("exec PRC_AddMenu @qtype=7, @sno="+id);
+            return BindMenuFromDt(dt.Rows[0]);
         }
         public List<MenuModel> GetSubMenus(int id)
         {
-            DataTable dt = cmn.GetDatatable("exec PRC_AddMenu @qtype=5 , @parentid='\" + id + \"'");
+            DataTable dt = cmn.GetDatatable("exec PRC_AddMenu @qtype=5 , @parentid="+id);
             List<MenuModel> Menus = [];
-
             foreach (DataRow row in dt.Rows)
             {
-                MenuModel menu = new MenuModel()
-                {
-                    MenuId = int.Parse(row["menu_sno"].ToString()),
-                    MenuName_eng = row["menu_name_eng"].ToString(),
-                    MenuName_hind = row["menu_name_hind"].ToString(),
-                    MenuPosition_Name = row["position"].ToString(),
-                    MenuType_Name = row["mtype"].ToString(),
-                    ImagePath = row["menu_img"].ToString(),
-                    ParentId = row["ParentId"].ToString(),
-                    tabActive = row["tab_Active"].ToString(),
-                    Controller = row["controller"].ToString()
-                };
-                Menus.Add(menu);
+                Menus.Add(BindMenuFromDt(row));
             }
             return Menus;
         }
@@ -205,5 +178,28 @@ namespace NPCIL.Helper
             return GetHorizontalNews().Where(t => t.HN_IsArchived == false).ToList();
         }
 
+
+        public List<LinkTypeModel> GetLinkTypes()
+        {
+            List<LinkTypeModel> linkTypeList = new List<LinkTypeModel>();
+            DataTable dt = cmn.GetDatatable("exec PRC_linkList @qtype = 1");
+            foreach (DataRow dr in dt.Rows)
+            {
+                LinkTypeModel menuModel = new LinkTypeModel()
+                {
+                    LinkTypeId = int.Parse(dr["link_id"].ToString()),
+                    LinkType = dr["link_name"].ToString()
+                };
+                linkTypeList.Add(menuModel);
+            }
+            return linkTypeList;
+        }
+        public string GetLinkTypeFromID(int id)
+        {
+            List<LinkTypeModel> linkTypeList = new List<LinkTypeModel>();
+            DataTable dt = cmn.GetDatatable("exec PRC_linkList @qtype=2, @id=" + id);
+
+            return dt.Rows[0][1].ToString();
+        }
     }
 }

@@ -10,7 +10,10 @@
             <li>
                 @if(menuItem.MenuType_Name == "Link")
                 {
-                    <a href="@menuItem.link_urlname">@menuItem.MenuName_eng</a>
+
+                           <a href = @menuItem.link_urlname.StartsWith("http", StringComparison.OrdinalIgnoreCase)
+                           ? @menuItem.link_urlname
+                           : $"https://{@menuItem.link_urlname}" target = "_blank"> @menuItem.MenuName_eng</a>
                 }
                 else
                 {

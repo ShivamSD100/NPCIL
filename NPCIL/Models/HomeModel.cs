@@ -9,5 +9,7 @@ namespace NPCIL.Models
         public List<HorizontalNewsModel> HorizontalNews { get; set; }
 
         public virtual ICollection<MenuModel> SubMenus { get; set; } = new List<MenuModel>();
+
+        public MenuModel Menu { get; set; }
     }
 }
