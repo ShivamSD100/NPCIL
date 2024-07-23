@@ -54,7 +54,7 @@ namespace NPCIL.Helper
                 MenuPosition_Name = row["position"].ToString(),
                 MenuType_Name = row["mtype"].ToString(),
                 ImagePath = row["menu_img"].ToString(),
-                Imagepath2 = row["file_img"].ToString(),
+                Imagepath2 = row["file_image"].ToString(),
                 ParentId = row["ParentId"].ToString(),
                 tabActive = row["tab_Active"].ToString(),
                 Controller = row["controller"].ToString(),
@@ -196,7 +196,15 @@ namespace NPCIL.Helper
         public string GetLinkTypeFromID(int id)
         {
             DataTable dt = cmn.GetDatatable("exec PRC_linkList @qtype=2, @id=" + id);
-            return dt.Rows[0][1].ToString();
+            if (dt.Rows.Count > 0)
+            {
+                return dt.Rows[0]["link_name"].ToString();
+            }
+            else
+            {
+                return null;
+            }
+           
         }
     }
 }

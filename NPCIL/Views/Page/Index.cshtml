@@ -5,12 +5,14 @@
 
 @{
     string fileType = GetFileType(Model.ImagePath);
+    
 }
 
 
 
 
 <div id="engMenu">
+    <p>@Model.Content_MenuName_eng</p>
 
     @if (fileType == "image")
     {
@@ -34,6 +36,9 @@
     }
 </div>
 <div id="hndMenu">
+    <p>@Model.Content_MenuName_hindi</p>
+
+
     @if (fileType == "image")
     {
         <img src="@Model.ImagePath" alt="@Model.MenuName_eng" />
