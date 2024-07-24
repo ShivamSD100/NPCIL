@@ -23,8 +23,6 @@ namespace NPCIL.Controllers
                 Menus = _npcilHelper.GetActiveMenus(),
                 Menu = _npcilHelper.GetMenuFromId(id)
             };
-            var language = HttpContext.Session.GetString("Language") ?? "English";
-            ViewBag.SelectedLanguage = language;
             return View(model);
         }
     }

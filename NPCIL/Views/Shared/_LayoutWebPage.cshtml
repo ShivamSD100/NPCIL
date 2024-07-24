@@ -319,14 +319,38 @@
 
     <script>
 
+        function getCookie(name) {
+            const nameEQ = name + "=";
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                let c = cookies[i];
+                while (c.charAt(0) === ' ') c = c.substring(1);
+                if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
+            }
+            return null;
+        }
+
+        function setCookie(name, value, days) {
+            let expires = "";
+            if (days) {
+                const date = new Date();
+                date.setTime(date.getTime() + (days * 60 * 60 * 1000));
+                expires = "; expires=" + date.toUTCString();
+            }
+            document.cookie = name + "=" + (value || "") + expires + "; path=/";
+        }
+
+
         document.addEventListener("DOMContentLoaded", function () {
-            var selectedLanguage = '@ViewBag.SelectedLanguage';
+            var selectedLanguage = getCookie("lang");
             var selectElement = document.getElementById("languageSelect");
 
             if (selectElement) {
                 selectElement.value = selectedLanguage;
             }
-            changeLanguage(document.getElementById("languageSelect"));
+            UpdateNavbar(selectedLanguage);
+            UpdateLangDivs(selectedLanguage)
+            setDropdownValue(selectedLanguage)
         });
         function getSelectedValue() {
             var niceSelect = document.querySelector("div.nice-select.language");
@@ -337,6 +361,26 @@
                 }
             }
             return null;
+        }
+        function setDropdownValue(value) {
+            var selectElement = document.querySelector("select.language");
+            var niceSelect = document.querySelector("div.nice-select.language");
+
+            if (selectElement) {
+                selectElement.value = value; // Set value of hidden <select>
+            }
+
+            if (niceSelect) {
+                var options = niceSelect.querySelectorAll("li.option");
+                options.forEach(function (option) {
+                    if (option.textContent.trim() === value) {
+                        option.classList.add("selected");
+                        niceSelect.querySelector("span.current").textContent = value;
+                    } else {
+                        option.classList.remove("selected");
+                    }
+                });
+            }
         }
         function UpdateNavbar(selectedLanguage) {
             var menuLists = document.querySelectorAll("ul[id^='menulist']");
@@ -357,28 +401,7 @@
                 });
             });
         }
-
-        function changeLanguage(select) {
-            var selectValue = select.selectedOptions[0].innerText;
-
-             fetch('/Home/SetLanguage', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                },
-                body: new URLSearchParams({
-                    'language': selectValue
-                })
-            })
-            .then(response => {
-                if (response.redirected) {
-                    window.location.href = response.url; // Redirect to the new URL
-                }
-            })
-            .catch(error => console.error('Error:', error));
-
-            UpdateNavbar(selectValue);
-
+        function UpdateLangDivs(selectValue){
             if (selectValue == "English") {
                 if (document.getElementById("engMenu")) {
                     document.getElementById("engMenu").style.display = "contents";
@@ -389,9 +412,17 @@
             else if (selectValue == "Hindi") {
                 if (document.getElementById("hndMenu")) {
                     document.getElementById("engMenu").style.display = "none";
-                document.getElementById("hndMenu").style.display = "contents";
+                    document.getElementById("hndMenu").style.display = "contents";
                 }
             }
+        }
+        function changeLanguage(select) {
+            var selectValue = select.selectedOptions[0].innerText;
+            setCookie("lang", selectValue, 1);
+
+            UpdateNavbar(selectValue);
+            UpdateLangDivs(selectValue);
+           
 
         }
     </script>
