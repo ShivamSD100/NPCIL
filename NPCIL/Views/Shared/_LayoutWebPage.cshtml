@@ -422,8 +422,35 @@
 
             UpdateNavbar(selectValue);
             UpdateLangDivs(selectValue);
-           
+            UpdateNonDynamicDiv(selectValue);
 
+        }
+        function UpdateNonDynamicDiv(selectValue) {
+            const elements = document.querySelectorAll('[id]');
+
+            for (const element of elements) {
+                const originalText = element.textContent;
+                const translatedText = await translateText(originalText, selectValue);
+                element.textContent = translatedText;
+            }
+        }
+
+        const apiKey = 'AIzaSyB41DRUbKWJHPxaFjMAwdrzWzbVKartNGg'; // Replace with your actual API key
+
+        async function translateText(text, targetLanguage) {
+            const url = `https://translation.googleapis.com/language/translate/v2?key=${apiKey}`;
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    q: text,
+                    target: targetLanguage
+                })
+            });
+            const data = await response.json();
+            return data.data.translations[0].translatedText;
         }
     </script>
 
