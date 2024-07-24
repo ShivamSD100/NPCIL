@@ -64,6 +64,7 @@ namespace NPCIL.Models
         public List<SelectListItem> MenuOptions { get; set; }
         public string? ParentId { get; set; } 
         public string ParentName { get; set; }
+        public int mOrder { get; set; } = 0;
 
         public string? Controller { get; set; }
 
