@@ -5,7 +5,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-        <meta charset="UTF-8" />
+    <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>NPCIL</title>
     <!-- Favicons Icons -->
@@ -35,7 +35,7 @@
 </head>
 <body>
 
- <div class="page-wrapper">
+    <div class="page-wrapper">
 
         <!--Start Main Header One-->
         <header class="main-header main-header-one">
@@ -82,10 +82,9 @@
                                     </div>
                                 </li>
                                 <li>
-                                    <select id="languageSelect" name="language" >
+                                    <select name="cars" class="language" onchange="changeLanguage(this)">
                                         <option value="English">English</option>
                                         <option value="Hindi">Hindi</option>
-
                                     </select>
 
                                 </li>
@@ -149,8 +148,8 @@
                                         </a>
 
                                         @await Html.PartialAsync("_Menu", new MenuViewModel { Menus = Model.Menus, ParentId = "0" })
-                                        
-                                        
+
+
                                     </div>
 
 
@@ -185,9 +184,6 @@
 
         </header>
         <!--End Main Header One-->
-
-
-
         <!-- Body-->
         @RenderBody()
         <!-- Body-->
@@ -282,77 +278,77 @@
 
 
     </div>
-                    <!-- /.page-wrapper -->
+    <!-- /.page-wrapper -->
 
-                    <div class="mobile-nav__wrapper">
-                        <div class="mobile-nav__overlay mobile-nav__toggler"></div>
-                        <div class="mobile-nav__content">
-                            <span class="mobile-nav__close mobile-nav__toggler">
-                                <i class="icon-plus"></i>
-                            </span>
+    <div class="mobile-nav__wrapper">
+        <div class="mobile-nav__overlay mobile-nav__toggler"></div>
+        <div class="mobile-nav__content">
+            <span class="mobile-nav__close mobile-nav__toggler">
+                <i class="icon-plus"></i>
+            </span>
 
-                            <div class="mobile-nav__container"></div>
+            <div class="mobile-nav__container"></div>
 
-                            <div class="mobile-nav__social">
-                                <a href="#" class="fab fa-facebook"></a>
-                                <a href="#" class="fab fa-twitter"></a>
-                                <a href="#" class="fab fa-youtube"></a>
+            <div class="mobile-nav__social">
+                <a href="#" class="fab fa-facebook"></a>
+                <a href="#" class="fab fa-twitter"></a>
+                <a href="#" class="fab fa-youtube"></a>
 
-                            </div>
+            </div>
 
-                        </div>
-                    </div>
+        </div>
+    </div>
 
-                    <div class="search-popup">
-                        <div class="search-popup__overlay search-toggler"></div>
-                        <div class="search-popup__content">
-                            <form action="#">
-                                <label for="search" class="sr-only">search here</label>
-                                <input type="text" id="search" placeholder="Search Here..." />
-                                <button type="submit" aria-label="search submit" class="thm-btn">
-                                    <i class="icon-magnifying-glass"></i>
-                                </button>
-                            </form>
-                        </div>
-                    </div>
+    <div class="search-popup">
+        <div class="search-popup__overlay search-toggler"></div>
+        <div class="search-popup__content">
+            <form action="#">
+                <label for="search" class="sr-only">search here</label>
+                <input type="text" id="search" placeholder="Search Here..." />
+                <button type="submit" aria-label="search submit" class="thm-btn">
+                    <i class="icon-magnifying-glass"></i>
+                </button>
+            </form>
+        </div>
+    </div>
 
 
-                    <a href="#" data-target="html" class="scroll-to-target scroll-to-top">
-                        <i class="icon-down-arrow"></i>
-                    </a>
+    <a href="#" data-target="html" class="scroll-to-target scroll-to-top">
+        <i class="icon-down-arrow"></i>
+    </a>
 
-                    <script src="~/CustomAssets/vendors/jquery/jquery-3.6.0.min.js"></script>
-                    <script src="~/CustomAssets/vendors/bootstrap/js/bootstrap.bundle.min.js"></script>
-                    <script src="~/CustomAssets/vendors/bootstrap-select/js/bootstrap-select.min.js"></script>
-                    <script src="~/CustomAssets/vendors/nice-select/jquery.nice-select.min.js"></script>                
-                    <script src="~/CustomAssets/vendors/swiper/swiper.min.js"></script>
-                    <script src="~/CustomAssets/vendors/timepicker/timePicker.js"></script>
-                    <script src="~/CustomAssets/vendors/tiny-slider/tiny-slider.min.js"></script>                              
-                    <script src="~/CustomAssets/vendors/wow/wow.js"></script>                                   
-                    <script src="~/CustomAssets/js/custom.js"></script>
-    <script src="~/js/site.js"></script>
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            debugger;
-            var languageSelect = document.getElementById("languageSelect");
-            var menuItems = document.querySelectorAll("#menuList li");
+        function changeLanguage(select) {
+            var selectValue = $(select).find(select.value).text();
+            if (selectValue == "English") {
+                if (document.getElementById("engMenu")) {
+                    document.getElementById("engMenu").style.display = "contents";
+                    document.getElementById("hndMenu").style.display = "none";
+                }
 
-            languageSelect.addEventListener("change", function () {
-                var selectedLanguage = this.value;
-                menuItems.forEach(function (menuItem) {
-                    var englishName = menuItem.getAttribute("data-english-name");
-                    var hindiName = menuItem.getAttribute("data-hindi-name");
-
-                    var link = menuItem.querySelector("a");
-                    if (selectedLanguage === "Hindi" && hindiName) {
-                        link.textContent = hindiName;
-                    } else {
-                        link.textContent = englishName;
-                    }
-                });
-            });
-        });
+            }
+            else if (selectValue == "Hindi") {
+                if (document.getElementById("hndMenu")) {
+                    document.getElementById("engMenu").style.display = "none";
+                document.getElementById("hndMenu").style.display = "contents";
+                }
+            }
+        }
     </script>
+
+    <script src="~/CustomAssets/vendors/jquery/jquery-3.6.0.min.js"></script>
+    <script src="~/CustomAssets/vendors/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="~/CustomAssets/vendors/bootstrap-select/js/bootstrap-select.min.js"></script>
+    <script src="~/CustomAssets/vendors/nice-select/jquery.nice-select.min.js"></script>
+    <script src="~/CustomAssets/vendors/swiper/swiper.min.js"></script>
+    <script src="~/CustomAssets/vendors/timepicker/timePicker.js"></script>
+    <script src="~/CustomAssets/vendors/tiny-slider/tiny-slider.min.js"></script>
+    <script src="~/CustomAssets/vendors/wow/wow.js"></script>
+    <script src="~/CustomAssets/js/custom.js"></script>
+    <script src="~/js/site.js"></script>
+
+
 </body>
-   
+
+
 </html>
