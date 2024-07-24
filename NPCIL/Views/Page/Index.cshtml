@@ -1,71 +1,84 @@
 ﻿@{
     Layout = "_LayoutWebPage";
 }
-@model NPCIL.Models.MenuModel
+@model NPCIL.Models.HomeModel
 
 @{
-    string fileType = GetFileType(Model.ImagePath);
+    string fileType = GetFileType(Model.Menu.ImagePath);
     
 }
 
 <div id="engMenu">
-    <p>@Model.Content_MenuName_eng</p>
+    <p>@Model.Menu.Content_MenuName_eng</p>
 
     @if (fileType == "image")
     {
-        <img src="@Model.ImagePath" alt="@Model.MenuName_eng" />
+        <img src="@Model.Menu.ImagePath" alt="@Model.Menu.MenuName_eng" />
     }
     else if (fileType == "video")
     {
-        <video src="@Model.ImagePath" alt="@Model.MenuName_eng" />
+        <video src="@Model.Menu.ImagePath" alt="@Model.Menu.MenuName_eng" />
     }
     else if (fileType == "pdf")
     {
-        <a href="@Model.ImagePath" target="_blank">Download PDF</a>
+        <a href="@Model.Menu.ImagePath" target="_blank">Download PDF</a>
     }
     else if (fileType == "docx")
     {
-        <a href="@Model.ImagePath" target="_blank">Download Document</a>
+        <a href="@Model.Menu.ImagePath" target="_blank">Download Document</a>
     }
     else
     {
-        <a href="@Model.ImagePath" target="_blank">Download File</a>
+        <a href="@Model.Menu.ImagePath" target="_blank">Download File</a>
     }
 </div>
 <div id="hndMenu">
-    <p>@Model.Content_MenuName_hindi</p>
+    <p>@Model.Menu.Content_MenuName_hindi</p>
 
 
     @if (fileType == "image")
     {
-        <img src="@Model.ImagePath" alt="@Model.MenuName_eng" />
+        <img src="@Model.Menu.ImagePath" alt="@Model.Menu.MenuName_eng" />
     }
     else if (fileType == "video")
     {
-        <video src="@Model.ImagePath" alt="@Model.MenuName_eng" />
+        <video src="@Model.Menu.ImagePath" alt="@Model.Menu.MenuName_eng" />
     }
     else if (fileType == "pdf")
     {
-        <a href="@Model.ImagePath" target="_blank">Download PDF</a>
+        <a href="@Model.Menu.ImagePath" target="_blank">Download PDF</a>
     }
     else if (fileType == "docx")
     {
-        <a href="@Model.ImagePath" target="_blank">Download Document</a>
+        <a href="@Model.Menu.ImagePath" target="_blank">Download Document</a>
     }
     else
     {
-        <a href="@Model.ImagePath" target="_blank">Download File</a>
+        <a href="@Model.Menu.ImagePath" target="_blank">Download File</a>
     }
 </div>
 
 
     @functions {
-        string GetFileType(string url)
+    string GetFileType(string url)
+    {
+        string fileType = "";
+
+        // Check if the URL is null or empty
+        if (string.IsNullOrEmpty(url))
         {
-            string fileType = "";
+            return "unknown";
+        }
+
+        try
+        {
+            // Create a Uri object from the URL
             Uri uri = new Uri(url);
+
+            // Get the file extension from the URL
             string extension = System.IO.Path.GetExtension(uri.LocalPath);
 
+            // Determine the file type based on the file extension
             switch (extension.ToLower())
             {
                 case ".jpg":
@@ -89,7 +102,14 @@
                     fileType = "unknown";
                     break;
             }
-
-            return fileType;
         }
+        catch (UriFormatException)
+        {
+            // Handle the UriFormatException
+            fileType = "unknown";
+        }
+
+        return fileType;
+    }
+
     }
