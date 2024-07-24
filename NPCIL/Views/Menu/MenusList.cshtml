@@ -1,9 +1,9 @@
 ﻿@model IEnumerable<NPCIL.Models.MenuModel>
 @{
     ViewData["Title"] = "View Menu";
-    }
+}
 
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
 
 <style>
     .status-oval {
@@ -22,7 +22,6 @@
     .status-inactive {
         background-color: red;
     }
-
 </style>
 
 <div class="page-header">
@@ -38,24 +37,68 @@
                 </div>
             </div>
             <div class="col-md-6 text-end">
-                @Html.ActionLink("Add Menu", "CMSMenuAdd", "Menu", new { id = ViewData["ParentId"] },new {@class="btn btn-primary"})
+                @Html.ActionLink("Add Menu", "CMSMenuAdd", "Menu", new { id = ViewData["ParentId"] }, new { @class = "btn btn-primary" })
             </div>
         </div>
     </div>
 </div>
-
 
 <div class="row">
     <div class="col-xl-12">
         <div class="card">
             <div class="card-header">
                 <h5>View Menu</h5>
-
             </div>
-            <div class="card-body table-border-style">
-                <div class="table-responsive">
-
+                <div class="card-body table-border-style" id="MenuDiv">
+                    <div class="table-responsive">
+                    <button type="buton" class="btn btn-primary" id="ViewUpdateSeq">Update Menu Sequence</button>
                     <table id="menulTbl" class="display nowrap" style="width:100%">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Main Menu</th>
+                                    <th>Parent Menu</th>
+                                    <th>Menu Position</th>
+                                    <th>Menu Type</th>
+                                    <th>Sub Menu</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @for (int i = 0; i < Model.Count(); i++)
+                                {
+                                    <tr>
+                                        <td>@Model.ElementAt(i).MenuId</td>
+                                        <td>@Model.ElementAt(i).MenuName_eng</td>
+                                        <td>
+                                            <select name="menulist[@i].ParentId" class="form-control" asp-for="@Model.ElementAt(i).ParentId" asp-items="@Model.ElementAt(i).MenuOptions"></select>
+                                        </td>
+                                        <td>@Model.ElementAt(i).MenuPosition_Name</td>
+                                        <td>@Model.ElementAt(i).MenuType_Name</td>
+                                        <td style="text-align:center">@Html.ActionLink("", "MenusList", "Menu", new { id = @Model.ElementAt(i).MenuId }, new { @class = "fa fa-plus-square", aria_hidden = "true" })</td>
+                                        <td>
+                                            @if (Model.ElementAt(i).tabActive == "1")
+                                            {
+                                                <span class="status-oval status-active">Active</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="status-oval status-inactive">Inactive</span>
+                                            }
+                                        </td>
+                                        <td style="text-align:center">@Html.ActionLink("", "EditMenu", "Menu", new { id = @Model.ElementAt(i).MenuId }, new { @class = "fas fa-edit", aria_hidden = "true" })</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            <div class="card-body table-border-style" id="UpdateSeqDiv">
+                <div class="table-responsive">
+                    <button type="button" class="btn btn-primary" id="ViewMenus">Menus</button>
+                    <button type="button" id="update-order" class="btn btn-primary">Update</button>
+                    <table id="menulSeqTbl" class="display nowrap" style="width:100%">
                         <thead>
                             <tr>
                                 <th>ID</th>
@@ -63,30 +106,26 @@
                                 <th>Parent Menu</th>
                                 <th>Menu Position</th>
                                 <th>Menu Type</th>
-                                @* <th>Thumbnail</th> *@
                                 <th>Sub Menu</th>
                                 <th>Status</th>
                                 <th>Action</th>
+                                <th>Sequence</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach (var man in Model)
+                            @for (int i = 0; i < Model.Count(); i++)
                             {
                                 <tr>
-                                    <td>@man.MenuId</td>
-                                     <td>@man.MenuName_eng</td>
-                                    @* <td>@Html.ActionLink(@man.MenuName_eng, "AddContent", "ContentManager", new { id = @man.MenuId })</td> *@
+                                    <td>@Model.ElementAt(i).MenuId</td>
+                                    <td>@Model.ElementAt(i).MenuName_eng</td>
                                     <td>
-                                        <select asp-for="@man.ParentId" class="form-control" asp-items="@man.MenuOptions">
-                                        </select>
+                                        <select name="menulist[@i].ParentId" class="form-control" asp-for="@Model.ElementAt(i).ParentId" asp-items="@Model.ElementAt(i).MenuOptions"></select>
                                     </td>
-                                    <td>@man.MenuPosition_Name</td>
-                                    <td>@man.MenuType_Name</td>
-                                  <td style="text-align:center">@Html.ActionLink("", "MenusList", "Menu", new { id = @man.MenuId }, new { @class = "fa fa-plus-square", aria_hidden = "true" })</td>
-                                    
-
+                                    <td>@Model.ElementAt(i).MenuPosition_Name</td>
+                                    <td>@Model.ElementAt(i).MenuType_Name</td>
+                                    <td style="text-align:center">@Html.ActionLink("", "MenusList", "Menu", new { id = @Model.ElementAt(i).MenuId }, new { @class = "fa fa-plus-square", aria_hidden = "true" })</td>
                                     <td>
-                                        @if (man.tabActive == "1")
+                                        @if (Model.ElementAt(i).tabActive == "1")
                                         {
                                             <span class="status-oval status-active">Active</span>
                                         }
@@ -95,31 +134,130 @@
                                             <span class="status-oval status-inactive">Inactive</span>
                                         }
                                     </td>
-
-                                    <td style="text-align:center">@Html.ActionLink("", "EditMenu", "Menu", new { id = @man.MenuId }, new { @class = "fas fa-edit", aria_hidden = "true" })</td>
-
-
+                                    <td style="text-align:center">@Html.ActionLink("", "EditMenu", "Menu", new { id = @Model.ElementAt(i).MenuId }, new { @class = "fas fa-edit", aria_hidden = "true" })</td>
+                                    <td>
+                                        <i class="fas fa-arrows-alt handle"></i> <!-- draggable handle -->
+                                        <input type="hidden" name="@i+menuId" value="@Model.ElementAt(i).MenuId" />
+                                    </td>
                                 </tr>
                             }
                         </tbody>
                     </table>
-                </div>
-            </div>
+                    </<div>
 
+                    </div>
         </div>
     </div>
 </div>
 
-<script type="text/javascript">
-    $(document).ready(function () { 
-        $('#menulTbl').DataTable({
-            layout: {
-                topStart: {
-                    buttons: ['copy', 'csv', 'excel', 'pdf', 'print']
+<script>
+            $(document).ready(function () {
+                var urlParams = new URLSearchParams(window.location.search);
+                var view = urlParams.get('view');
+
+                function updateUrlParameter(param, value) {
+                    if (urlParams.has(param)) {
+                        urlParams.set(param, value);
+                    } else {
+                        urlParams.append(param, value);
+                    }
+                    return window.location.pathname + '?' + urlParams.toString();
                 }
+
+
+                if (view === 'update') {
+                    $('#UpdateSeqDiv').css('display', 'block');
+                    $('#MenuDiv').css('display', 'none');
+                } else {
+                    $('#UpdateSeqDiv').css('display', 'none');
+                    $('#MenuDiv').css('display', 'block');
+                }
+
+                $('#ViewMenus').click(function () {
+
+                    var newUrl = updateUrlParameter('view', 'menus');
+                    window.location.href = newUrl;
+                });
+
+                $('#ViewUpdateSeq').click(function () {
+
+                    var newUrl = updateUrlParameter('view', 'update');
+                    window.location.href = newUrl;
+                });
+            });
+
+    $(document).ready(function () {   
+
+         $('#menulSeqTbl tbody').sortable({
+            handle: '.handle',
+            update: function (event, ui) {
+                var rows = $(this).find('tr');
+                rows.each(function (index) {
+                    var sequenceInput = $(this).find('input[name*=".Sequence"]');
+                    sequenceInput.val(index + 1);
+                });
             }
+        });
+
+        $('#update-order').click(function () {
+            var menuData = [];
+            var seq = 0;
+            $('#menulSeqTbl tbody tr').each(function () {
+                var row = $(this);
+                seq++;
+                var menuId = row[0].cells[0].innerHTML;
+                menuData.push({ MenuId: menuId, Sequence: seq });
+            });
+
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("UpdateSeq", "Menu")',
+                contentType: 'application/json',
+                data: JSON.stringify(menuData),
+                success: function (response) {
+                    debugger;
+                    if (response["success"] != true)
+                    {
+                        alert('Error updating order');
+                    }
+                    else
+                    {
+                        alert('Order updated successfully');
+                    }
+                },
+                error: function (error) {
+                    alert('Error updating order');
+                }
+            });
         });
     });
 </script>
 
+<script type="text/javascript">
+    $(document).ready(function () { 
+                $('#menulTbl').DataTable({
+                    order: [],
+                    columnDefs: [{ searchable: false, targets: 2 }],
+                    layout: {
+                        topStart: {
+                            buttons: ['copy', 'csv', 'excel', 'pdf', 'print']
+                        }
+                    }
+                });
+            });
+            $(document).ready(function () {
+                $('#menulSeqTbl').DataTable({
+                    bInfo: false, //Dont display info e.g. "Showing 1 to 4 of 4 entries"
+                    paging: false,//Dont want paging
+                    bPaginate: false,//Dont want paging
+                    order: [],
+                    columnDefs: [{ searchable: false, targets: 2 }],
+                    layout: {
+                        topStart: {
+                            buttons: ['copy', 'csv', 'excel', 'pdf', 'print']
+                        }
+                    }
+                });
+            });
+</script>
 

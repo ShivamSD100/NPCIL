@@ -1,13 +1,11 @@
-﻿@using NPCIL.Models
-@model NPCIL.Models.MenuViewModel
+﻿@model NPCIL.Models.MenuViewModel
 
 @if (Model.Menus.Where(m => m.ParentId == Model.ParentId).ToList().Any())
 {
-    <ul class="main-menu__list">
-        
-        @foreach (var menuItem in Model.Menus.Where(m => m.ParentId == Model.ParentId).ToList())
+    <ul class="main-menu__list" id="menulist">
+        @foreach (var menuItem in Model.Menus.Where(m => m.ParentId == Model.ParentId).OrderBy(m => m.Sequence))
         {
-            <li>
+            <li data-english-name="@menuItem.MenuName_eng" data-hindi-name="@menuItem.MenuName_hind">
                 @if(menuItem.MenuType_Name == "Link")
                 {
 
@@ -19,7 +17,7 @@
                 {
                     <a asp-controller="Page" action="Index" asp-route-id="@menuItem.MenuId">@menuItem.MenuName_eng</a>
                 }
-                @await Html.PartialAsync("_Menu", new MenuViewModel { Menus = Model.Menus, ParentId = menuItem.MenuId.ToString() })
+                @await Html.PartialAsync("_Menu", new NPCIL.Models.MenuViewModel { Menus = Model.Menus.Where(menu => menu.ParentId == menuItem.MenuId.ToString()).OrderBy(menu => menu.Sequence).ToList(), ParentId = menuItem.MenuId.ToString() })
             </li>
         }
         @if (Model.ParentId == "0")

@@ -82,7 +82,7 @@
                                     </div>
                                 </li>
                                 <li>
-                                    <select name="cars" class="language">
+                                    <select id="languageSelect" name="language" >
                                         <option value="English">English</option>
                                         <option value="Hindi">Hindi</option>
 
@@ -331,5 +331,28 @@
                     <script src="~/CustomAssets/vendors/wow/wow.js"></script>                                   
                     <script src="~/CustomAssets/js/custom.js"></script>
     <script src="~/js/site.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            debugger;
+            var languageSelect = document.getElementById("languageSelect");
+            var menuItems = document.querySelectorAll("#menuList li");
+
+            languageSelect.addEventListener("change", function () {
+                var selectedLanguage = this.value;
+                menuItems.forEach(function (menuItem) {
+                    var englishName = menuItem.getAttribute("data-english-name");
+                    var hindiName = menuItem.getAttribute("data-hindi-name");
+
+                    var link = menuItem.querySelector("a");
+                    if (selectedLanguage === "Hindi" && hindiName) {
+                        link.textContent = hindiName;
+                    } else {
+                        link.textContent = englishName;
+                    }
+                });
+            });
+        });
+    </script>
 </body>
+   
 </html>

@@ -67,6 +67,8 @@ namespace NPCIL.Models
 
         public string? Controller { get; set; }
 
+        public string Sequence { get; set; }
+
 
     }
 }

@@ -216,15 +216,9 @@ namespace NPCIL.Controllers
             DataTable dt = new DataTable();
             DataTable dtMenuOptions  = cmn.GetDatatable("exec PRC_AddMenu @qtype=6");
 
-            if (id == 0)
-            {
-                dt = cmn.GetDatatable("exec PRC_AddMenu @qtype=2");
-            }
-            else if (id > 0)
-            {
+
                 ViewData["ParentId"] = id;
                 dt = cmn.GetDatatable("exec PRC_AddMenu @qtype=5 , @parentid='" + id + "'");
-            }
             foreach (DataRow dr in dt.Rows)
             {
                 MenuModel menuModel = new MenuModel()
@@ -237,6 +231,7 @@ namespace NPCIL.Controllers
                     ImagePath = dr["menu_img"].ToString(),
                     ParentId = dr["ParentId"].ToString(),
                     tabActive = dr["tab_Active"].ToString(),
+                    Sequence = dr["menuOrder"].ToString(),
                     MenuOptions = new List<SelectListItem>()
 
                 };
@@ -249,6 +244,7 @@ namespace NPCIL.Controllers
 
                 menuList.Add(menuModel);
             };
+
             ViewBag.ListofLink = LinkType();
             ViewBag.ListofMenu = CMSMenu();
             return View(menuList);
@@ -396,6 +392,29 @@ namespace NPCIL.Controllers
             {
                 return View();
             }
+        }
+
+        [HttpPost]
+        public IActionResult UpdateSeq([FromBody] List<MenuSeqModel> menuData)
+        {
+
+            Boolean Success = true;
+            foreach (MenuSeqModel model in menuData)
+            {
+
+                if (model.Sequence != null || model.Sequence != Int32.Parse(_npcilHelper.GetMenuFromId(Int32.Parse(model.MenuId)).Sequence))
+                {
+                    string ret = cmn.AddDelMod("exec PRC_AddMenu @qtype='8'," + "@sno='" + model.MenuId + "',@sequence=" + model.Sequence);
+                    if (ret != "4")
+                    {
+                        Success = false;
+                        break;
+                    }
+                }
+
+            }
+
+            return Json(new { success = Success });
         }
     }
 }

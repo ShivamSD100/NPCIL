@@ -54,7 +54,7 @@ namespace NPCIL.Helper
                 MenuPosition_Name = row["position"].ToString(),
                 MenuType_Name = row["mtype"].ToString(),
                 ImagePath = row["menu_img"].ToString(),
-                Imagepath2 = row["file_img"].ToString(),
+                Imagepath2 = row["file_image"].ToString(),
                 ParentId = row["ParentId"].ToString(),
                 tabActive = row["tab_Active"].ToString(),
                 Controller = row["controller"].ToString(),
@@ -62,7 +62,8 @@ namespace NPCIL.Helper
                 Content_MenuName_hindi = row["Content_hind"].ToString(),
                 Content_MenuName_eng = row["content_eng"].ToString(),
                 linkTypeId = int.Parse(row["linkTypeId"].ToString()),
-                LinkTypeName = GetLinkTypeFromID(int.Parse(row["linkTypeId"].ToString()))
+                LinkTypeName = GetLinkTypeFromID(int.Parse(row["linkTypeId"].ToString())),
+                Sequence = row["menuOrder"].ToString()
             };
         }
         public List<MenuModel> GetMenus()
@@ -196,7 +197,11 @@ namespace NPCIL.Helper
         public string GetLinkTypeFromID(int id)
         {
             DataTable dt = cmn.GetDatatable("exec PRC_linkList @qtype=2, @id=" + id);
-            return dt.Rows[0][1].ToString();
+
+            if (dt.Rows.Count > 0)
+                return String.IsNullOrEmpty(dt.Rows[0][1].ToString()) ? "" : dt.Rows[0][1].ToString();
+            else
+                return "";
         }
     }
 }
