@@ -2,7 +2,7 @@
 
 @if (Model.Menus.Where(m => m.ParentId == Model.ParentId).ToList().Any())
 {
-    <ul class="main-menu__list" id="menulist">
+    <ul class="main-menu__list" id="menulist + @Model.ParentId">
         @foreach (var menuItem in Model.Menus.Where(m => m.ParentId == Model.ParentId).OrderBy(m => m.Sequence))
         {
             <li data-english-name="@menuItem.MenuName_eng" data-hindi-name="@menuItem.MenuName_hind">

@@ -35,10 +35,21 @@ namespace NPCIL.Controllers
                 VerticalNews = _npcilHelper.GetActiveVerticalNews(),
                 Tenders = _npcilHelper.GetActiveTenders()
             };
-
+            var language = HttpContext.Session.GetString("Language") ?? "English";
+            ViewBag.SelectedLanguage = language;
             return View(model);
         }
-
+        [HttpPost]
+        public IActionResult SetLanguage(string language)
+        {
+            HttpContext.Session.SetString("Language", language);
+            var returnUrl = Request.Headers["Referer"].ToString(); // Get the previous page URL
+            if (string.IsNullOrEmpty(returnUrl))
+            {
+                returnUrl = Url.Action("Index", "Home"); // Default page if Referer is empty
+            }
+            return RedirectToAction("returnUrl");
+        }
 
         public ActionResult Details(int id)
         {
