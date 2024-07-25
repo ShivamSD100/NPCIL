@@ -1,5 +1,8 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.AspNetCore.Mvc.Routing;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -26,6 +29,13 @@ namespace NPCIL
             services.AddSingleton<INPCILHelper, NPCILHelper>();
             services.AddSingleton<IDynamicPageHelper, DynamicPageHelper>();
             services.AddSingleton<IPageService, PageService>();
+            //services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
+            //services.AddSingleton<IUrlHelper>(sp =>
+            //{
+            //    var actionContext = sp.GetService<IActionContextAccessor>().ActionContext;
+            //    return new UrlHelper(actionContext);
+            //});
+            //services.AddScoped<IUrlService, UrlService>();
             services.AddControllersWithViews();
         }
 

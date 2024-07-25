@@ -5,66 +5,126 @@
 
 @{
     string fileType = GetFileType(Model.Menu.ImagePath);
-    
+    string fileurl = GetFileUrl(Model.Menu.ImagePath);
+    System.Diagnostics.Debug.WriteLine($"fileType: {fileType}, fileurl: {fileurl}");
 }
 
 <div id="engMenu">
     @Html.Raw(Model.Menu.Content_MenuName_eng)
+    @Html.Raw(fileurl)
+    @Html.Raw(fileType)
+    @Html.Raw(Model.Menu.ImagePath)
 
-    @if (fileType == "image")
+    <video width="640" height="480" controls>
+        <source src="@Model.Menu.ImagePath" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+    @if (fileurl != "unknown")
     {
-        <img src="@Model.Menu.ImagePath" alt="@Model.Menu.MenuName_eng" />
-    }
-    else if (fileType == "video")
-    {
-        <video src="@Model.Menu.ImagePath" alt="@Model.Menu.MenuName_eng" />
-    }
-    else if (fileType == "pdf")
-    {
-        <a href="@Model.Menu.ImagePath" target="_blank">Download PDF</a>
-    }
-    else if (fileType == "docx")
-    {
-        <a href="@Model.Menu.ImagePath" target="_blank">Download Document</a>
-    }
-    else
-    {
-        <a href="@Model.Menu.ImagePath" target="_blank">Download File</a>
+        if (fileType == "image")
+        {
+            <div>
+                <img src="@fileurl" alt="@Model.Menu.MenuName_eng" />
+                <br />
+                <a href="@fileurl" download>Download Image</a>
+                <button onclick="printImage('@fileurl')">Print Image</button>
+            </div>
+        }
+        else if (fileType == "video")
+        {
+            <div>
+                <video controls>
+                    <source src="@fileurl" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+                <br />
+                <a href="@fileurl" download>Download Video</a>
+            </div>
+        }
+        else if (fileType == "pdf")
+        {
+            <div>
+                <iframe src="@fileurl" style="width:100%; height:600px;" frameborder="0"></iframe>
+                <br />
+                <a href="@fileurl" download>Download PDF</a>
+                <a href="javascript:void(0)" onclick="printPDF('@fileurl')">Print PDF</a>
+            </div>
+        }
+        else if (fileType == "docx")
+        {
+            <div>
+                <iframe src="https://view.officeapps.live.com/op/embed.aspx?src=@Uri.EscapeDataString(fileurl)" style="width:100%; height:600px;" frameborder="0"></iframe>
+                <br />
+                <a href="@fileurl" download>Download Document</a>
+            </div>
+        }
+        else
+        {
+            <div>
+                <iframe src="@fileurl" style="width:100%; height:600px;" frameborder="0"></iframe>
+                <br />
+                <a href="@fileurl" download>Download File</a>
+            </div>
+        }
     }
 </div>
-<div id="hndMenu">
 
+<div id="hndMenu">
     @Html.Raw(Model.Menu.Content_MenuName_hindi)
 
-    @if (fileType == "image")
+    @if (fileurl != "unknown")
     {
-        <img src="@Model.Menu.ImagePath" alt="@Model.Menu.MenuName_eng" />
-    }
-    else if (fileType == "video")
-    {
-        <video src="@Model.Menu.ImagePath" alt="@Model.Menu.MenuName_eng" />
-    }
-    else if (fileType == "pdf")
-    {
-        <a href="@Model.Menu.ImagePath" target="_blank">Download PDF</a>
-    }
-    else if (fileType == "docx")
-    {
-        <a href="@Model.Menu.ImagePath" target="_blank">Download Document</a>
-    }
-    else
-    {
-        <a href="@Model.Menu.ImagePath" target="_blank">Download File</a>
+        if (fileType == "image")
+        {
+            <div>
+                <img src="@fileurl" alt="@Model.Menu.MenuName_eng" />
+                <br />
+                <a href="@fileurl" download>Download Image</a>
+                <button onclick="printImage('@fileurl')">Print Image</button>
+            </div>
+        }
+        else if (fileType == "video")
+        {
+            <div>
+                <video controls>
+                    <source src="@fileurl" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+                <br />
+                <a href="@fileurl" download>Download Video</a>
+            </div>
+        }
+        else if (fileType == "pdf")
+        {
+            <div>
+                <iframe src="@fileurl" style="width:100%; height:600px;" frameborder="0"></iframe>
+                <br />
+                <a href="@fileurl" download>Download PDF</a>
+                <a href="javascript:void(0)" onclick="printPDF('@fileurl')">Print PDF</a>
+            </div>
+        }
+        else if (fileType == "docx")
+        {
+            <div>
+                <iframe src="https://view.officeapps.live.com/op/embed.aspx?src=@Uri.EscapeDataString(fileurl)" style="width:100%; height:600px;" frameborder="0"></iframe>
+                <br />
+                <a href="@fileurl" download>Download Document</a>
+            </div>
+        }
+        else
+        {
+            <div>
+                <iframe src="@fileurl" style="width:100%; height:600px;" frameborder="0"></iframe>
+                <br />
+                <a href="@fileurl" download>Download File</a>
+            </div>
+        }
     }
 </div>
 
-
-    @functions {
+@functions {
     string GetFileType(string url)
     {
-        string fileType = "";
-
-        // Check if the URL is null or empty
         if (string.IsNullOrEmpty(url))
         {
             return "unknown";
@@ -72,44 +132,59 @@
 
         try
         {
-            // Create a Uri object from the URL
             Uri uri = new Uri(url);
-
-            // Get the file extension from the URL
             string extension = System.IO.Path.GetExtension(uri.LocalPath);
 
-            // Determine the file type based on the file extension
             switch (extension.ToLower())
             {
                 case ".jpg":
                 case ".jpeg":
                 case ".png":
                 case ".gif":
-                    fileType = "image";
-                    break;
+                    return "image";
                 case ".mp4":
                 case ".avi":
                 case ".mov":
-                    fileType = "video";
-                    break;
+                    return "video";
                 case ".pdf":
-                    fileType = "pdf";
-                    break;
+                    return "pdf";
                 case ".docx":
-                    fileType = "docx";
-                    break;
+                    return "docx";
                 default:
-                    fileType = "unknown";
-                    break;
+                    return "unknown";
             }
         }
         catch (UriFormatException)
         {
-            // Handle the UriFormatException
-            fileType = "unknown";
+            return "unknown";
         }
-
-        return fileType;
     }
 
+    string GetFileUrl(string url)
+    {
+        try
+        {
+            return Url.Content($"~/{url}");
+        }
+        catch (UriFormatException)
+        {
+            return "unknown";
+        }
     }
+}
+
+<script>
+    function printImage(src) {
+        var printWindow = window.open(src, '_blank');
+        printWindow.onload = function () {
+            printWindow.print();
+        };
+    }
+
+    function printPDF(src) {
+        var printWindow = window.open(src, '_blank');
+        printWindow.onload = function () {
+            printWindow.print();
+        };
+    }
+</script>

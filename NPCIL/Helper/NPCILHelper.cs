@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
 using System.Linq;
+using System.Security.Policy;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using NPCIL.Models;
 using WebApplication1.Models;
@@ -13,7 +15,6 @@ namespace NPCIL.Helper
     {
         CmnDBWork cmn = new CmnDBWork();
         private readonly Microsoft.AspNetCore.Hosting.IHostingEnvironment hostingEnvironment;
-
         public NPCILHelper(Microsoft.AspNetCore.Hosting.IHostingEnvironment environment)
         {
             hostingEnvironment = environment;
@@ -53,8 +54,10 @@ namespace NPCIL.Helper
                 MenuName_hind = row["menu_name_hind"].ToString(),
                 MenuPosition_Name = row["position"].ToString(),
                 MenuType_Name = row["mtype"].ToString(),
-                ImagePath = row["menu_img"].ToString(),
-                Imagepath2 = row["file_image"].ToString(),
+                //ImagePath = _urlService.GetVideoUrl(row["menu_img"].ToString()),
+                //Imagepath2 = _urlService.GetVideoUrl(row["file_image"].ToString()),
+                ImagePath = "~/wwwroot"+row["menu_img"].ToString(),
+                Imagepath2 = "~/wwwroot"+row["file_image"].ToString(),
                 ParentId = row["ParentId"].ToString(),
                 tabActive = row["tab_Active"].ToString(),
                 Controller = row["controller"].ToString(),

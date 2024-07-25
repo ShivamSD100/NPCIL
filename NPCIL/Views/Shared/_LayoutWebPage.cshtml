@@ -379,7 +379,8 @@
                     } else {
                         option.classList.remove("selected");
                     }
-                });
+                
+
             }
         }
         function UpdateNavbar(selectedLanguage) {
@@ -416,16 +417,16 @@
                 }
             }
         }
-        function changeLanguage(select) {
+        async function changeLanguage(select) {
             var selectValue = select.selectedOptions[0].innerText;
             setCookie("lang", selectValue, 1);
 
             UpdateNavbar(selectValue);
             UpdateLangDivs(selectValue);
-            UpdateNonDynamicDiv(selectValue);
+            await UpdateNonDynamicDiv(selectValue);
 
         }
-        function UpdateNonDynamicDiv(selectValue) {
+        async function UpdateNonDynamicDiv(selectValue) {
             const elements = document.querySelectorAll('[id]');
 
             for (const element of elements) {
