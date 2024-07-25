@@ -135,7 +135,6 @@ namespace NPCIL.Controllers
 
             if (_npcilHelper.GetMenus().Where(m => m.MenuName_eng == menuModel.MenuName_eng).Count()==0)
             {
-                menuModel.Controller = Regex.Replace(menuModel.MenuName_eng, @"[^a-zA-Z0-9]+", "");
                 var filePath = "";
                 var filename = "";
                 var filename2 = "";
@@ -179,12 +178,10 @@ namespace NPCIL.Controllers
                     "@linkType='" + menuModel.linkTypeId + "'," +
                     "@eventyear='" + menuModel.event_year + "'," +
                     "@tabActive='" + menuModel.tabActive + "'," +
-                    "@controller='" + menuModel.Controller + "'," +
                     "@parentid='" + menuModel.ParentId + "'");
 
                 if (ret == "1")
                 {
-                    _dynamicPageHelper.CreateControllerAndView(menuModel.MenuName_eng, hostingEnvironment.ContentRootPath);
                     return RedirectToAction("MenusList");
                 }
                 else
@@ -342,14 +339,7 @@ namespace NPCIL.Controllers
 
             menuModel.file_StartDate = String.Format("{0:MM-dd-yyyy}", menuModel.file_StartDate_Display == null ? "" : menuModel.file_StartDate_Display.Value);
             menuModel.file_EndDate = String.Format("{0:MM-dd-yyyy}", menuModel.file_EndDate_Display == null ? "" : menuModel.file_EndDate_Display.Value);
-            MenuModel orgmenuModel = _npcilHelper.GetMenus().Where(m => m.MenuId == menuModel.MenuId).FirstOrDefault();
-            menuModel.Controller = Regex.Replace(menuModel.MenuName_eng, @"[^a-zA-Z0-9]+", "");
-            if (orgmenuModel.Controller != menuModel.Controller)
-            {
-                if(!string.IsNullOrEmpty(orgmenuModel.Controller))
-                _dynamicPageHelper.DeleteControllerAndView(orgmenuModel.Controller, hostingEnvironment.ContentRootPath);  
-                _dynamicPageHelper.CreateControllerAndView(menuModel.Controller, hostingEnvironment.ContentRootPath);
-            }
+
             string ret = cmn.AddDelMod("exec PRC_AddMenu @qtype='4'," +
                 "@sno='" + menuModel.MenuId + "'," +
                 "@nameEng='" + menuModel.MenuName_eng + "'," +
@@ -368,7 +358,6 @@ namespace NPCIL.Controllers
                "@linkType='" + menuModel.linkTypeId + "'," +
                "@tabActive='" + menuModel.tabActive+ "',"+
                "@parentid='" + menuModel.ParentId + "',"+
-               "@controller='" + menuModel.Controller + "',"+
                "@eventyear='" + menuModel.event_year + "'");
             if (ret == "4")
             {
