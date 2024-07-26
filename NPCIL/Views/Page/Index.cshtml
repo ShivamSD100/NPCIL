@@ -4,122 +4,181 @@
 @model NPCIL.Models.HomeModel
 
 @{
-    string fileType = GetFileType(Model.Menu.ImagePath);
-    string fileurl = GetFileUrl(Model.Menu.ImagePath);
-    System.Diagnostics.Debug.WriteLine($"fileType: {fileType}, fileurl: {fileurl}");
+    string fileType = GetFileType(Model.Menu.Imagepath2);
+    string fileType2 = GetFileType(Model.Menu.Imagepath2);
+    var encodedUrl = Uri.EscapeDataString(Model.Menu.Imagepath2);
 }
-
+<div id="langtoggle" class="langtoggle"></div>
 <div id="engMenu">
-    @Html.Raw(Model.Menu.Content_MenuName_eng)
-    @Html.Raw(fileurl)
-    @Html.Raw(fileType)
-    @Html.Raw(Model.Menu.ImagePath)
+    <div id="engMenuHeading">
+        <div id="engMenuThumbnail">
+            <img src="@Model.Menu.ImagePath" alt="@Model.Menu.MenuName_eng" />
+        </div>
+        <div id="engMenuName">
+            @Model.Menu.MenuName_eng
+        </div>
+    </div>
+    <div id="engMenuDescription">
+        <p>
+            @Model.Menu.MenuDesc_eng
+        </p>
+    </div>
 
-    <video width="640" height="480" controls>
-        <source src="@Model.Menu.ImagePath" type="video/mp4">
-        Your browser does not support the video tag.
-    </video>
-    @if (fileurl != "unknown")
-    {
-        if (fileType == "image")
+    <div id="engMenuType">
+        @if(Model.Menu.MenuType.ToString() == "Content")
         {
-            <div>
-                <img src="@fileurl" alt="@Model.Menu.MenuName_eng" />
-                <br />
-                <a href="@fileurl" download>Download Image</a>
-                <button onclick="printImage('@fileurl')">Print Image</button>
+            <div id="engMenuContent">
+                <div class="menuContent">
+                    <p>
+                        @Model.Menu.Content_MenuName_eng
+                    </p>
+                    </div>
             </div>
         }
-        else if (fileType == "video")
+        else if (Model.Menu.MenuType.ToString() == "File" || Model.Menu.MenuType.ToString() == "Image" || Model.Menu.MenuType.ToString() == "Video")
         {
-            <div>
-                <video controls>
-                    <source src="@fileurl" type="video/mp4">
-                    Your browser does not support the video tag.
-                </video>
-                <br />
-                <a href="@fileurl" download>Download Video</a>
-            </div>
+            @if (fileType == "image")
+            {
+                <div>
+                    <img src="@Model.Menu.Imagepath2" alt="@Model.Menu.MenuName_eng" />
+                    <br />
+                </div>
+            }
+            else if (fileType == "video")
+            {
+                <div>
+                    <video controls>
+                        <source src="@Model.Menu.Imagepath2" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                    <br />
+                </div>
+            }
+            else if (fileType == "pdf")
+            {
+                <div>
+                    <iframe src="@Model.Menu.Imagepath2" style="width:100%; height:600px;" frameborder="0"></iframe>
+                    <br />
+                    <a href="javascript:void(0)" onclick="printPDF('@Model.Menu.Imagepath2')">Print PDF</a>
+                </div>
+            }
+            else if (fileType == "docx")
+            {
+                <div>
+                    <iframe src="https://view.officeapps.live.com/op/embed.aspx?src=@Uri.EscapeDataString(Model.Menu.Imagepath2)" style="width:100%; height:600px;" frameborder="0"></iframe>
+                    <br />
+                    <a href="@Model.Menu.Imagepath2" download>Download Document</a>
+                </div>
+            }
+            else
+            {
+                <div>
+                    <iframe src="@Model.Menu.Imagepath2" style="width:100%; height:600px;" frameborder="0"></iframe>
+                    <br />
+                    <a href="@Model.Menu.Imagepath2" download>Download File</a>
+                </div>
+            }
+            
         }
-        else if (fileType == "pdf")
+        else if (Model.Menu.MenuType.ToString() == "Link")
         {
-            <div>
-                <iframe src="@fileurl" style="width:100%; height:600px;" frameborder="0"></iframe>
-                <br />
-                <a href="@fileurl" download>Download PDF</a>
-                <a href="javascript:void(0)" onclick="printPDF('@fileurl')">Print PDF</a>
-            </div>
+            <a href="@Model.Menu.link_urlname"></a>
         }
-        else if (fileType == "docx")
+        else if (Model.Menu.MenuType.ToString() == "Custom Page")
         {
-            <div>
-                <iframe src="https://view.officeapps.live.com/op/embed.aspx?src=@Uri.EscapeDataString(fileurl)" style="width:100%; height:600px;" frameborder="0"></iframe>
-                <br />
-                <a href="@fileurl" download>Download Document</a>
-            </div>
+            
         }
-        else
+        else if (Model.Menu.MenuType.ToString() == "Event")
         {
-            <div>
-                <iframe src="@fileurl" style="width:100%; height:600px;" frameborder="0"></iframe>
-                <br />
-                <a href="@fileurl" download>Download File</a>
-            </div>
+            @Model.Menu.event_year
         }
-    }
+    </div>   
 </div>
 
 <div id="hndMenu">
-    @Html.Raw(Model.Menu.Content_MenuName_hindi)
+    <div id="hndMenuHeading">
+        <div id="hndMenuThumbnail">
+            <img src="@Model.Menu.ImagePath" alt="@Model.Menu.ImagePath" />
+        </div>
+        <div id="hndMenuName">
+            @Model.Menu.MenuName_hind
+        </div>
+    </div>
+    <div id="hndMenuDescription">
+        <p>
+            @Model.Menu.MenuDesc_hind
+        </p>
+    </div>
 
-    @if (fileurl != "unknown")
-    {
-        if (fileType == "image")
+    <div id="hndMenuType">
+        @if (Model.Menu.MenuType.ToString() == "Content")
         {
-            <div>
-                <img src="@fileurl" alt="@Model.Menu.MenuName_eng" />
-                <br />
-                <a href="@fileurl" download>Download Image</a>
-                <button onclick="printImage('@fileurl')">Print Image</button>
+            <div id="hndMenuContent">
+                <div class="menuContent">
+                    <p>
+                        @Model.Menu.Content_MenuName_eng
+                    </p>
+                </div>
             </div>
         }
-        else if (fileType == "video")
+        else if (Model.Menu.MenuType.ToString() == "File" || Model.Menu.MenuType.ToString() == "Image" || Model.Menu.MenuType.ToString() == "Video")
         {
-            <div>
-                <video controls>
-                    <source src="@fileurl" type="video/mp4">
-                    Your browser does not support the video tag.
-                </video>
-                <br />
-                <a href="@fileurl" download>Download Video</a>
-            </div>
+            @if (fileType == "image")
+            {
+                <div>
+                    <img src="@Model.Menu.Imagepath2" alt="@Model.Menu.MenuName_eng" />
+                    <br />
+                </div>
+            }
+            else if (fileType == "video")
+            {
+                <div>
+                    <video controls>
+                        <source src="@Model.Menu.Imagepath2" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                    <br />
+                </div>
+            }
+            else if (fileType == "pdf")
+            {
+                <div>
+                    <iframe src="@Model.Menu.Imagepath2" style="width:100%; height:600px;" frameborder="0"></iframe>
+                    <br />
+                    <a href="javascript:void(0)" onclick="printPDF('@Model.Menu.Imagepath2')">Print PDF</a>
+                </div>
+            }
+            else if (fileType == "docx")
+            {
+                <div>
+                    <iframe src="https://view.officeapps.live.com/op/embed.aspx?src=@Uri.EscapeDataString(Model.Menu.Imagepath2)" style="width:100%; height:600px;" frameborder="0"></iframe>
+                    <br />
+                    <a href="@Model.Menu.Imagepath2" download>Download Document</a>
+                </div>
+            }
+            else
+            {
+                <div>
+                    <iframe src="@Model.Menu.Imagepath2" style="width:100%; height:600px;" frameborder="0"></iframe>
+                    <br />
+                    <a href="@Model.Menu.Imagepath2" download>Download File</a>
+                </div>
+            }
+
         }
-        else if (fileType == "pdf")
+        else if (Model.Menu.MenuType.ToString() == "Link")
         {
-            <div>
-                <iframe src="@fileurl" style="width:100%; height:600px;" frameborder="0"></iframe>
-                <br />
-                <a href="@fileurl" download>Download PDF</a>
-                <a href="javascript:void(0)" onclick="printPDF('@fileurl')">Print PDF</a>
-            </div>
+            <a href="@Model.Menu.link_urlname"></a>
         }
-        else if (fileType == "docx")
+        else if (Model.Menu.MenuType.ToString() == "Custom Page")
         {
-            <div>
-                <iframe src="https://view.officeapps.live.com/op/embed.aspx?src=@Uri.EscapeDataString(fileurl)" style="width:100%; height:600px;" frameborder="0"></iframe>
-                <br />
-                <a href="@fileurl" download>Download Document</a>
-            </div>
+
         }
-        else
+        else if (Model.Menu.MenuType.ToString() == "Event")
         {
-            <div>
-                <iframe src="@fileurl" style="width:100%; height:600px;" frameborder="0"></iframe>
-                <br />
-                <a href="@fileurl" download>Download File</a>
-            </div>
+            @Model.Menu.event_year
         }
-    }
+    </div>
 </div>
 
 @functions {
@@ -132,7 +191,8 @@
 
         try
         {
-            Uri uri = new Uri(url);
+            string absoluteUrl = new Uri(new Uri("https://example.com"), url).ToString();
+            Uri uri = new Uri(Uri.UnescapeDataString(absoluteUrl));
             string extension = System.IO.Path.GetExtension(uri.LocalPath);
 
             switch (extension.ToLower())
@@ -153,18 +213,6 @@
                 default:
                     return "unknown";
             }
-        }
-        catch (UriFormatException)
-        {
-            return "unknown";
-        }
-    }
-
-    string GetFileUrl(string url)
-    {
-        try
-        {
-            return Url.Content($"~/{url}");
         }
         catch (UriFormatException)
         {

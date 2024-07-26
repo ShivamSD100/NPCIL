@@ -163,7 +163,7 @@ namespace NPCIL.Controllers
 
                 string ret = cmn.AddDelMod("exec PRC_AddMenu @qtype='1'," +
                     "@nameEng='" + menuModel.MenuName_eng + "'," +
-                    "@nameHindi='" + menuModel.MenuName_hind + "'," +
+                    "@nameHindi=N'" + menuModel.MenuName_hind + "'," +
                     "@img='" + menuModel.ImagePath + "'," +
                     "@position='" + menuModel.MenuPositionId + "'," +
                     "@menutype='" + menuModel.MenuTypeId + "'," +
@@ -361,11 +361,11 @@ namespace NPCIL.Controllers
                "@eventyear='" + menuModel.event_year + "'");
             if (ret == "4")
             {
-                return RedirectToAction("MenusList");
+                return RedirectToAction("MenusList",new{ id = menuModel.ParentId});
             }
             else
             {
-                return RedirectToAction("EditMenu", new { id = menuModel.MenuId });
+                return RedirectToAction("EditMenu", new{ id = menuModel.MenuId });
             }
         }
 

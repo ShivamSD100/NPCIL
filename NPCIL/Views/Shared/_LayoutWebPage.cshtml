@@ -317,8 +317,47 @@
         <i class="icon-down-arrow"></i>
     </a>
 
-    <script>
+    @functions {
+        string GetFileType(string url)
+        {
+            if (string.IsNullOrEmpty(url))
+            {
+                return "unknown";
+            }
 
+            try
+            {
+                string absoluteUrl = new Uri(new Uri("https://example.com"), url).ToString();
+                Uri uri = new Uri(Uri.UnescapeDataString(absoluteUrl));
+                string extension = System.IO.Path.GetExtension(uri.LocalPath);
+
+                switch (extension.ToLower())
+                {
+                    case ".jpg":
+                    case ".jpeg":
+                    case ".png":
+                    case ".gif":
+                        return "image";
+                    case ".mp4":
+                    case ".avi":
+                    case ".mov":
+                        return "video";
+                    case ".pdf":
+                        return "pdf";
+                    case ".docx":
+                        return "docx";
+                    default:
+                        return "unknown";
+                }
+            }
+            catch (UriFormatException)
+            {
+                return "unknown";
+            }
+        }
+    }
+    <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    <script>
         function getCookie(name) {
             const nameEQ = name + "=";
             const cookies = document.cookie.split(';');
@@ -362,10 +401,10 @@
             }
             return null;
         }
-        function setDropdownValue(value) {
+        function setDropdownValue(value="") {
+            value = value == "" ? "English" : "Hindi";
             var selectElement = document.querySelector("select.language");
             var niceSelect = document.querySelector("div.nice-select.language");
-
             if (selectElement) {
                 selectElement.value = value; // Set value of hidden <select>
             }
@@ -379,8 +418,9 @@
                     } else {
                         option.classList.remove("selected");
                     }
-                
 
+
+                });
             }
         }
         function UpdateNavbar(selectedLanguage) {
@@ -402,7 +442,7 @@
                 });
             });
         }
-        function UpdateLangDivs(selectValue){
+        function UpdateLangDivs(selectValue) {
             if (selectValue == "English") {
                 if (document.getElementById("engMenu")) {
                     document.getElementById("engMenu").style.display = "contents";
@@ -417,42 +457,39 @@
                 }
             }
         }
-        async function changeLanguage(select) {
+        function changeLanguage(select) {
+            debugger;
             var selectValue = select.selectedOptions[0].innerText;
             setCookie("lang", selectValue, 1);
 
             UpdateNavbar(selectValue);
             UpdateLangDivs(selectValue);
-            await UpdateNonDynamicDiv(selectValue);
-
+  
+            UpdateNonDynamicDiv(selectValue)
         }
-        async function UpdateNonDynamicDiv(selectValue) {
-            const elements = document.querySelectorAll('[id]');
+         function UpdateNonDynamicDiv(selectValue) {
+            const elements = document.querySelectorAll('.langtoggle');
 
             for (const element of elements) {
                 const originalText = element.textContent;
-                const translatedText = await translateText(originalText, selectValue);
+                const translatedText = await translateText(originalText, selectValue=="English"?"en":"hnd");
                 element.textContent = translatedText;
             }
         }
 
-        const apiKey = 'AIzaSyB41DRUbKWJHPxaFjMAwdrzWzbVKartNGg'; // Replace with your actual API key
 
-        async function translateText(text, targetLanguage) {
-            const url = `https://translation.googleapis.com/language/translate/v2?key=${apiKey}`;
-            const response = await fetch(url, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    q: text,
-                    target: targetLanguage
-                })
-            });
-            const data = await response.json();
-            return data.data.translations[0].translatedText;
+
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: en,
+                layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+            }, 'langtoggle');
         }
+        function translateText(text, targetLanguage) {
+            var translateElement = document.getElementById('langtoggle');
+            translateElement.translate(text, targetLanguage);
+        }
+
     </script>
 
     <script src="~/CustomAssets/vendors/jquery/jquery-3.6.0.min.js"></script>
@@ -466,7 +503,7 @@
     <script src="~/CustomAssets/js/custom.js"></script>
     <script src="~/js/site.js"></script>
 
-   
+
 </body>
 
 

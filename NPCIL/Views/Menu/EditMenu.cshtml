@@ -2,7 +2,10 @@
 @{
     ViewData["Title"] = "Edit Menu";
 }
-
+@{
+    string fileType = GetFileType(Model.Imagepath2);
+    var encodedUrl = Uri.EscapeDataString(Model.Imagepath2);
+}
 
 <div class="page-header">
     <div class="page-block">
@@ -106,22 +109,58 @@
                             <label class="col-lg-4 col-form-label text-lg-end">File Upload</label>
                             <div class="col-lg-6">
                                 <input asp-for="file_MenuImg" type="file" class="form-control">
-                                @* <img id="fileImagePrev" src="#" alt="File Image Preview" style="max-width: 20%;  display: none;"> *@
-                                @* <p style="color: red; font:small;">Tip: .jpeg .png .gif image only</p> *@
                                 <div class="preview-container">
-                                    <img id="file_MenuImg_imgPreview" src="#" alt="Banner Preview" style="max-width: 20%; display: none;">
-                                    <video id="file_MenuImg_videoPreview" controls style="max-width: 20%; display: none;"></video>
-                                    <div id="file_MenuImg_fileNamePreview" style="display: none;"></div>
+                                    <img id="file_MenuImg_imgPreview" src="#" alt="Banner Preview" style="max-width: 100%; display: none;">
+                                    <video id="file_MenuImg_videoPreview" controls style="max-width: 100%; display: none;"></video>
+                                    <iframe style="width:100%; height:600px; display: none;" frameborder="0" id="file_MenuImg_pdfPreview"></iframe>
+                                    <iframe style="width:100%; height:600px; display: none;" frameborder="0" id="file_MenuImg_docPreview"></iframe>
+                                    <iframe style="width:100%; height:600px; display: none;" frameborder="0" id="file_MenuImg_otherPreview"></iframe>
                                 </div>
                                 
                             </div>
                         </div>
 
-                         <div class="mb-3 row">
-                        <label class="col-lg-4 col-form-label text-lg-end">Previous Image</label>
+                        <div class="mb-3 row" id="file_MenuImg_currPrev">
+                        <label class="col-lg-4 col-form-label text-lg-end">Current File</label>
                         <div class="col-lg-6">
-                                <img src="@Model.Imagepath2" width="150" alt="Image Not Available" />
-                                
+                                @if (fileType == "image")
+                                {
+                                    <div>
+                                        <img src="@Model.Imagepath2" alt="@Model.MenuName_eng" />
+                                        <br />
+                                    </div>
+                                }
+                                else if (fileType == "video")
+                                {
+                                    <div>
+                                        <video controls>
+                                            <source src="@Model.Imagepath2" type="video/mp4">
+                                            Your browser does not support the video tag.
+                                        </video>
+                                        <br />
+                                    </div>
+                                }
+                                else if (fileType == "pdf")
+                                {
+                                    <div>
+                                        <iframe src="http://173.249.52.210/NPCIL/@Model.Imagepath2" style="width:100%; height:600px;" frameborder="0"></iframe>
+                                        <br />
+                                    </div>
+                                }
+                                else if (fileType == "docx")
+                                {
+                                    <div>
+                                        <iframe src="https://view.officeapps.live.com/op/embed.aspx?src=@Uri.EscapeDataString(Model.Imagepath2)" style="width:100%; height:600px;" frameborder="0"></iframe>
+                                        <br />
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div>
+                                        <iframe src="@Model.Imagepath2" style="width:100%; height:600px;" frameborder="0"></iframe>
+                                        <br />
+                                    </div>
+                                }
                         </div>
                     </div>
 
@@ -173,20 +212,14 @@
                     <div class="mb-3 row">
                         <label class="col-lg-4 col-form-label text-lg-end">Thumbnail Image</label>
                         <div class="col-lg-6">
-                            <input asp-for="MenuImg" type="file" class="form-control">
-                            @* <img id="menuImagePrev" src="#" alt="File Image Preview" style="max-width: 20%;  display: none;"> *@
-                            @* <p style="color: red; font:small;">Tip: .jpeg .png .gif image only</p> *@
-                            @* @Html.ValidationMessageFor(m => m.MenuImg, "", new { @class = "text-danger" }) *@
+                            <input asp-for="MenuImg" type="file" class="form-control" accept="image/*">
                             <div class="preview-container">
-                                <img id="MenuImg_imgPreview" src="#" alt="Banner Preview" style="max-width: 20%; display: none;">
-                                <video id="MenuImg_videoPreview" controls style="max-width: 20%; display: none;"></video>
-                                <div id="MenuImg_fileNamePreview" style="display: none;"></div>
-                            </div>
+                                <img id="MenuImg_imgPreview" src="#" alt="Banner Preview" style="max-width: 20%; display: none;"></div>
                         </div>
                     </div>
 
-                     <div class="mb-3 row">
-                        <label class="col-lg-4 col-form-label text-lg-end">Previous Image</label>
+                    <div class="mb-3 row" id="MenuImg_currPrev">
+                        <label class="col-lg-4 col-form-label text-lg-end">Thumbnail</label>
                         <div class="col-lg-6">
                             <img src="@Model.ImagePath" width="150" alt="Image Not Available" />
                         </div>
@@ -232,6 +265,46 @@
     </div>
     <!-- [ Form Validation ] end -->
 </div>
+
+@functions {
+    string GetFileType(string url)
+    {
+        if (string.IsNullOrEmpty(url))
+        {
+            return "unknown";
+        }
+
+        try
+        {
+            string absoluteUrl = new Uri(new Uri("https://example.com"), url).ToString();
+            Uri uri = new Uri(Uri.UnescapeDataString(absoluteUrl));
+            string extension = System.IO.Path.GetExtension(uri.LocalPath);
+
+            switch (extension.ToLower())
+            {
+                case ".jpg":
+                case ".jpeg":
+                case ".png":
+                case ".gif":
+                    return "image";
+                case ".mp4":
+                case ".avi":
+                case ".mov":
+                    return "video";
+                case ".pdf":
+                    return "pdf";
+                case ".docx":
+                    return "docx";
+                default:
+                    return "unknown";
+            }
+        }
+        catch (UriFormatException)
+        {
+            return "unknown";
+        }
+    }
+}
 
 <script>
     // <partial name="_ValidationScriptsPartial" />
@@ -303,7 +376,6 @@
         quillHind.root.innerHTML = hindEngText;
 
         function saveContent() {
-            debugger;
             var contentEng = document.getElementById('Content_MenuName_eng');
             contentEng.value = quillEng.root.innerHTML;
 
@@ -313,29 +385,6 @@
 
         window.saveContent = saveContent;
     });
-    // document.getElementById('file_MenuImg').addEventListener('change', function (event) {
-    //     var file = event.target.files[0];
-    //     var reader = new FileReader();
-
-    //     reader.onload = function (e) {
-    //         document.getElementById('fileImagePrev').setAttribute('src', e.target.result);
-    //         document.getElementById('fileImagePrev').style.display = 'block';
-    //     };
-
-    //     reader.readAsDataURL(file);
-    // });
-    // document.getElementById('MenuImg').addEventListener('change', function (event) {
-    //     var file = event.target.files[0];
-    //     var reader = new FileReader();
-
-    //     reader.onload = function (e) {
-    //         document.getElementById('menuImagePrev').setAttribute('src', e.target.result);
-    //         document.getElementById('menuImagePrev').style.display = 'block';
-    //     };
-
-    //     reader.readAsDataURL(file);
-    // });
-
 
 </script>
 <script>
@@ -347,16 +396,22 @@
         var input = document.getElementById(inputId);
         var imgPreview = document.getElementById(inputId + '_imgPreview');
         var videoPreview = document.getElementById(inputId + '_videoPreview');
-        var fileNamePreview = document.getElementById(inputId + '_fileNamePreview');
+        var pdfPreview = document.getElementById(inputId + '_pdfPreview')
+        var docPreview = document.getElementById(inputId + '_docPreview')
+        var otherPreview = document.getElementById(inputId + '_otherPreview');
+        var currentPrev = document.getElementById(inputId + '_currPrev');
 
         input.addEventListener('change', function (event) {
+            var baseUrl = window.location.origin;
             var file = event.target.files[0];
             var reader = new FileReader();
 
             // Hide all previews initially
             imgPreview.style.display = 'none';
             videoPreview.style.display = 'none';
-            fileNamePreview.style.display = 'none';
+            pdfPreview.style.display = 'none';
+            docPreview.style.display = 'none';
+            otherPreview.style.display = 'none';
 
             if (file) {
                 if (file.type.startsWith('image/')) {
@@ -371,15 +426,44 @@
                         videoPreview.style.display = 'block';
                     };
                     reader.readAsDataURL(file);
+                } else if (file.type === 'application/pdf') {
+                    reader.onload = function (e) {
+                        docPreview.setAttribute('src', e.target.result);
+                        pdfPreview.style.display = 'block';
+                    };
+                    reader.readAsDataURL(file);
+                } else if (file.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' ||
+                    file.type === 'application/msword') {
+                    var link = "";
+                           docPreview.setAttribute('src', 'https://view.officeapps.live.com/op/embed.aspx?src=' + encodeURIComponent(link));
+                            docPreview.style.display = 'block';
+                    // var formData = new FormData();
+                    // formData.append('file', file);
+                    // fetch('/File/upload', {  
+                    //     method: 'POST',
+                    //     body: formData
+                    // })
+                    //     .then(response => response.json())
+                    //     .then(data => {
+                    //         var link = baseUrl + data.fileUrl;
+                    //         docPreview.setAttribute('src', 'https://view.officeapps.live.com/op/embed.aspx?src=' + encodeURIComponent(link));
+                    //         docPreview.style.display = 'block';
+                    //     })
+                    //     .catch(error => console.error('Error:', error));
                 } else {
-                    fileNamePreview.textContent = 'Selected file: ' + file.name;
-                    fileNamePreview.style.display = 'block';
+                    reader.onload = function (e) {
+                        document.getElementById('otherPreview').textContent = e.target.result;
+                        document.getElementById('otherPreview').style.display = 'block';
+                    };
+                    reader.readAsDataURL(file);
                 }
+                currentPrev.style.display = 'none';
+            }
+            else{
+                //currentPrev.style.display = 'block';
             }
         });
     }
-
-    // Initialize the file input previews
    
 </script>
 
