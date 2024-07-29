@@ -133,7 +133,7 @@ namespace NPCIL.Controllers
             ViewBag.ListofType = CMSMenuType();
             ViewBag.ListofLink = LinkType();
 
-            if (_npcilHelper.GetMenus().Where(m => m.MenuName_eng == menuModel.MenuName_eng).Count()==0)
+            if (_npcilHelper.GetMenus(Request).Where(m => m.MenuName_eng == menuModel.MenuName_eng).Count()==0)
             {
                 var filePath = "";
                 var filename = "";
@@ -273,7 +273,7 @@ namespace NPCIL.Controllers
                 obj.MenuId = int.Parse(dt.Rows[0]["menu_sno"].ToString());
                 obj.MenuName_eng = dt.Rows[0]["menu_name_eng"].ToString();
                 obj.MenuName_hind = dt.Rows[0]["menu_name_hind"].ToString();
-                obj.ImagePath = dt.Rows[0]["menu_img"].ToString();
+                obj.ImagePath = $"{Request.Scheme}://{Request.Host}{Request.PathBase}{dt.Rows[0]["menu_img"].ToString()}";
                 obj.MenuPositionId = int.Parse(dt.Rows[0]["menu_position"].ToString());
                 obj.MenuPosition_Name = dt.Rows[0]["menu_position"].ToString();
                 obj.MenuTypeId = int.Parse(dt.Rows[0]["menu_type"].ToString());
@@ -282,7 +282,7 @@ namespace NPCIL.Controllers
                 obj.MenuDesc_hind = dt.Rows[0]["menu_desc_hind"].ToString();
                 obj.Content_MenuName_eng = dt.Rows[0]["content_eng"].ToString();
                 obj.Content_MenuName_hindi = dt.Rows[0]["Content_hind"].ToString();
-                obj.Imagepath2 = dt.Rows[0]["file_image"].ToString();
+                obj.Imagepath2 = $"{Request.Scheme}://{Request.Host}{Request.PathBase}{dt.Rows[0]["file_image"].ToString()}";
 
                 if (!String.IsNullOrEmpty(dt.Rows[0]["file_Startdate"].ToString()))
                 {
@@ -374,7 +374,7 @@ namespace NPCIL.Controllers
             string ret = cmn.AddDelMod("exec PRC_AddMenu @qtype='6'," +"@sno='" + id + "'");
             if (ret == "5")
             {
-                MenuModel menu = _npcilHelper.GetMenus().Where(m => m.MenuId == id).FirstOrDefault();
+                MenuModel menu = _npcilHelper.GetMenus(Request).Where(m => m.MenuId == id).FirstOrDefault();
                 _dynamicPageHelper.DeleteControllerAndView(menu.MenuName_eng, hostingEnvironment.ContentRootPath);
                 return RedirectToAction("MenuList");
             }
@@ -392,7 +392,7 @@ namespace NPCIL.Controllers
             foreach (MenuSeqModel model in menuData)
             {
 
-                if (model.Sequence != null || model.Sequence != Int32.Parse(_npcilHelper.GetMenuFromId(Int32.Parse(model.MenuId)).Sequence))
+                if (model.Sequence != null || model.Sequence != Int32.Parse(_npcilHelper.GetMenuFromId(Request,Int32.Parse(model.MenuId)).Sequence))
                 {
                     string ret = cmn.AddDelMod("exec PRC_AddMenu @qtype='8'," + "@sno='" + model.MenuId + "',@sequence=" + model.Sequence);
                     if (ret != "4")

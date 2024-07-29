@@ -36,7 +36,7 @@ namespace NPCIL.Controllers
 
         public IActionResult TenderList()
         {
-            var tendorList = _npcilHelper.GetTenders();
+            var tendorList = _npcilHelper.GetTenders(Request);
             return View(tendorList);
         }
 

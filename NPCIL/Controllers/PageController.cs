@@ -20,8 +20,8 @@ namespace NPCIL.Controllers
         {
             HomeModel model = new HomeModel()
             {
-                Menus = _npcilHelper.GetActiveMenus(),
-                Menu = _npcilHelper.GetMenuFromId(id)
+                Menus = _npcilHelper.GetActiveMenus(Request),
+                Menu = _npcilHelper.GetMenuFromId(Request,id)
             };
             return View(model);
         }
