@@ -11,6 +11,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using NPCIL.DbModels;
+using Microsoft.EntityFrameworkCore;
 
 namespace NPCIL
 {
@@ -26,16 +28,15 @@ namespace NPCIL
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<NPCIL_DBContext>(options =>
+            {
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
+            });
             services.AddSingleton<INPCILHelper, NPCILHelper>();
             services.AddSingleton<IDynamicPageHelper, DynamicPageHelper>();
             services.AddSingleton<IPageService, PageService>();
-            //services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
-            //services.AddSingleton<IUrlHelper>(sp =>
-            //{
-            //    var actionContext = sp.GetService<IActionContextAccessor>().ActionContext;
-            //    return new UrlHelper(actionContext);
-            //});
-            //services.AddScoped<IUrlService, UrlService>();
+            services.AddSingleton<IFileHelper, FileHelper>();
+            services.AddAutoMapper(typeof(MappingProfile));
             services.AddControllersWithViews();
         }
 

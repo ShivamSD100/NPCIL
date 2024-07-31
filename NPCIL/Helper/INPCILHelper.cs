@@ -21,6 +21,7 @@ namespace NPCIL.Helper
         public List<TenderModel> GetActiveTenders(HttpRequest req);
         public List<VerticalNewsModel> GetActiveVerticalNews();
         public List<HorizontalNewsModel> GetActiveHorizontalNews();
+        public bool ValidateMenu(HttpRequest req,MenuModel model);
 
     }
 }

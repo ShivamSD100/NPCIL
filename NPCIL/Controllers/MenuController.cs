@@ -12,6 +12,9 @@ using NPCIL.Helper;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using AutoMapper;
+using NPCIL.DbModels;
 
 namespace NPCIL.Controllers
 {
@@ -21,12 +24,20 @@ namespace NPCIL.Controllers
         CmnDBWork cmn = new CmnDBWork();
         private readonly Microsoft.AspNetCore.Hosting.IHostingEnvironment hostingEnvironment;
         private readonly INPCILHelper _npcilHelper;
-        private readonly IDynamicPageHelper _dynamicPageHelper;
-        public MenuController(Microsoft.AspNetCore.Hosting.IHostingEnvironment environment, INPCILHelper npcilHelper,IDynamicPageHelper dynamicPageHelper)
+        private readonly IFileHelper _fileHelper;
+        private readonly NPCIL_DBContext _dbcontext;
+        private readonly IMapper _mapper;
+        public MenuController(Microsoft.AspNetCore.Hosting.IHostingEnvironment environment,
+            INPCILHelper npcilHelper,
+            IFileHelper fileHelper, 
+            NPCIL_DBContext dbContext, 
+            IMapper mapper)
         {
             hostingEnvironment = environment;
             _npcilHelper = npcilHelper;
-            _dynamicPageHelper = dynamicPageHelper;
+            _fileHelper = fileHelper;
+            _dbcontext = dbContext;
+            _mapper = mapper;
         }
         public IActionResult Index()
         {
@@ -132,80 +143,51 @@ namespace NPCIL.Controllers
             ViewBag.ListofPosition = CMSMenuPosition();
             ViewBag.ListofType = CMSMenuType();
             ViewBag.ListofLink = LinkType();
-
-            if (_npcilHelper.GetMenus(Request).Where(m => m.MenuName_eng == menuModel.MenuName_eng).Count()==0)
+            if (_npcilHelper.GetMenus(Request).Where(m => m.MenuName_eng == menuModel.MenuName_eng).Count() == 0)
             {
-                var filePath = "";
-                var filename = "";
-                var filename2 = "";
                 if (menuModel.MenuImg != null)
                 {
-                    var uniqueFileName = GetUniqueFileName(menuModel.MenuImg.FileName);
-                    var uploads = Path.Combine(hostingEnvironment.WebRootPath, "MenuImages");
-                    filePath = Path.Combine(uploads, uniqueFileName);
-                    menuModel.MenuImg.CopyTo(new FileStream(filePath, FileMode.Create));
-                    filename = "/MenuImages/" + uniqueFileName;
+                    menuModel.ImagePath = _fileHelper.UploadAndGetFileName(menuModel.MenuImg, menuModel.file_MenuImg.FileName);
                 }
 
                 if ((menuModel.MenuTypeId == 2 || menuModel.MenuTypeId == 7) && menuModel.file_MenuImg != null)
                 {
-                    var uniqueFileName = GetUniqueFileName(menuModel.file_MenuImg.FileName);
-                    var uploads = Path.Combine(hostingEnvironment.WebRootPath, "MenuImages");
-                    filePath = Path.Combine(uploads, uniqueFileName);
-                    menuModel.file_MenuImg.CopyTo(new FileStream(filePath, FileMode.Create));
-                    filename2 = "/MenuImages/" + uniqueFileName;
+                    menuModel.Imagepath2 = _fileHelper.UploadAndGetFileName(menuModel.file_MenuImg, menuModel.file_MenuImg.FileName);
                 }
 
-                menuModel.Imagepath2 = filename2 == "" ? menuModel.Imagepath2 : filename2;
-                menuModel.ImagePath = filename == "" ? menuModel.ImagePath : filename;
                 menuModel.file_StartDate = String.Format("{0:MM-dd-yyyy}", menuModel.file_StartDate_Display == null ? "" : menuModel.file_StartDate_Display.Value);
                 menuModel.file_EndDate = String.Format("{0:MM-dd-yyyy}", menuModel.file_EndDate_Display == null ? "" : menuModel.file_EndDate_Display.Value);
 
-                string ret = cmn.AddDelMod("exec PRC_AddMenu @qtype='1'," +
-                    "@nameEng='" + menuModel.MenuName_eng + "'," +
-                    "@nameHindi=N'" + menuModel.MenuName_hind + "'," +
-                    "@img='" + menuModel.ImagePath + "'," +
-                    "@position='" + menuModel.MenuPositionId + "'," +
-                    "@menutype='" + menuModel.MenuTypeId + "'," +
-                    "@descEng='" + menuModel.MenuDesc_eng + "'," +
-                    "@descHindi='" + menuModel.MenuDesc_hind + "'," +
-                    "@content_eng='" + menuModel.Content_MenuName_eng + "'," +
-                    "@Content_hind='" + menuModel.Content_MenuName_hindi + "'," +
-                    "@file_image='" + menuModel.Imagepath2 + "'," +
-                    "@file_Startdate='" + menuModel.file_StartDate + "'," +
-                    "@file_Enddate='" + menuModel.file_EndDate + "'," +
-                    "@link_urlname='" + menuModel.link_urlname + "'," +
-                    "@linkType='" + menuModel.linkTypeId + "'," +
-                    "@eventyear='" + menuModel.event_year + "'," +
-                    "@tabActive='" + menuModel.tabActive + "'," +
-                    "@parentid='" + menuModel.ParentId + "'");
-
-                if (ret == "1")
+                try
                 {
+                    var entity = _mapper.Map<TblAddMenu>(menuModel);
+                    _dbcontext.TblAddMenu.Add(entity);
+                    _dbcontext.SaveChanges();
                     return RedirectToAction("MenusList");
                 }
-                else
+                catch (Exception ex)
                 {
-                    ViewBag.Error = "Some Error Occurred";
-                    return View();
+                    _dbcontext.Logs.Add(new Logs()
+                    {
+                        LogDate = DateTime.Now,
+                        LogMessage = "Menu creation failed",
+                        ExceptionMessage = ex.Message,
+                        StackTrace = ex.StackTrace,
+                        UserId = Int32.Parse(Request.Cookies["NPCIL_username"].ToString())
+                    });
+                    ViewBag.Error = "Something went wrong";
+                    return View(menuModel);
                 }
             }
             else
             {
-                ViewBag.Error = "Same name menu is already in place";
-                return View();
+                ViewBag.Error = "Menu with same name already present";
+                return View(menuModel);
             }
-           
+
         }
 
-        private string GetUniqueFileName(string fileName)
-        {
-            fileName = Path.GetFileName(fileName);
-            return Path.GetFileNameWithoutExtension(fileName)
-                      + "_"
-                      + Guid.NewGuid().ToString().Substring(0, 4)
-                      + Path.GetExtension(fileName);
-        }
+
 
         public IActionResult MenusList(int? id = 0)
         {
@@ -314,74 +296,85 @@ namespace NPCIL.Controllers
         [HttpPost]
         public IActionResult UpdateMenu(MenuModel menuModel,IFormFile file)
         {      
-            var filePath = ""; 
-            var filename = "";
-            var filename2 = "";
-            if (menuModel.MenuImg != null)
-            {
-                var uniqueFileName = GetUniqueFileName(menuModel.MenuImg.FileName);
-                var uploads = Path.Combine(hostingEnvironment.WebRootPath, "MenuImages");
-                filePath = Path.Combine(uploads, uniqueFileName);
-                menuModel.MenuImg.CopyTo(new FileStream(filePath, FileMode.Create));
-                filename = "/MenuImages/" + uniqueFileName;
-            }
 
-            if ((menuModel.MenuTypeId == 2 || menuModel.MenuTypeId == 7) && menuModel.file_MenuImg != null)
+            if (_npcilHelper.ValidateMenu(Request, menuModel))
             {
-                var uniqueFileName = GetUniqueFileName(menuModel.file_MenuImg.FileName);
-                var uploads = Path.Combine(hostingEnvironment.WebRootPath, "MenuImages");
-                filePath = Path.Combine(uploads, uniqueFileName);
-                menuModel.file_MenuImg.CopyTo(new FileStream(filePath, FileMode.Create));
-                filename2 = "/MenuImages/" + uniqueFileName;
-            }
-            menuModel.Imagepath2 = filename2 == "" ? menuModel.Imagepath2 : filename2;
-            menuModel.ImagePath = filename == "" ? menuModel.ImagePath : filename;
+                if (menuModel.MenuImg != null)
+                {
+                    menuModel.ImagePath = _fileHelper.UploadAndGetFileName(menuModel.MenuImg, menuModel.file_MenuImg.FileName);
+                }
 
-            menuModel.file_StartDate = String.Format("{0:MM-dd-yyyy}", menuModel.file_StartDate_Display == null ? "" : menuModel.file_StartDate_Display.Value);
-            menuModel.file_EndDate = String.Format("{0:MM-dd-yyyy}", menuModel.file_EndDate_Display == null ? "" : menuModel.file_EndDate_Display.Value);
+                if ((menuModel.MenuTypeId == 2 || menuModel.MenuTypeId == 7) && menuModel.file_MenuImg != null)
+                {
+                    menuModel.Imagepath2 = _fileHelper.UploadAndGetFileName(menuModel.file_MenuImg, menuModel.file_MenuImg.FileName);
+                }
 
-            string ret = cmn.AddDelMod("exec PRC_AddMenu @qtype='4'," +
-                "@sno='" + menuModel.MenuId + "'," +
-                "@nameEng='" + menuModel.MenuName_eng + "'," +
-                "@nameHindi='" + menuModel.MenuName_hind + "'," +
-                "@img='" + menuModel.ImagePath + "'," +
-                "@position='" + menuModel.MenuPositionId + "'," +
-                "@menutype='" + menuModel.MenuTypeId + "'," +
-                "@descEng='" + menuModel.MenuDesc_eng + "'," +
-                "@descHindi='" + menuModel.MenuDesc_hind + "'," +
-                "@content_eng='" + menuModel.Content_MenuName_eng + "'," +
-               "@Content_hind='" + menuModel.Content_MenuName_hindi + "'," +
-               "@file_image='" + menuModel.Imagepath2 + "'," +
-               "@file_Startdate='" + menuModel.file_StartDate + "'," +
-               "@file_Enddate='" + menuModel.file_EndDate + "'," +
-               "@link_urlname='" + menuModel.link_urlname + "'," +
-               "@linkType='" + menuModel.linkTypeId + "'," +
-               "@tabActive='" + menuModel.tabActive+ "',"+
-               "@parentid='" + menuModel.ParentId + "',"+
-               "@eventyear='" + menuModel.event_year + "'");
-            if (ret == "4")
-            {
-                return RedirectToAction("MenusList",new{ id = menuModel.ParentId});
+                menuModel.file_StartDate = String.Format("{0:MM-dd-yyyy}", menuModel.file_StartDate_Display == null ? "" : menuModel.file_StartDate_Display.Value);
+                menuModel.file_EndDate = String.Format("{0:MM-dd-yyyy}", menuModel.file_EndDate_Display == null ? "" : menuModel.file_EndDate_Display.Value);
+
+                string ret = cmn.AddDelMod("exec PRC_AddMenu @qtype='4'," +
+                    "@sno='" + menuModel.MenuId + "'," +
+                    "@nameEng='" + menuModel.MenuName_eng + "'," +
+                    "@nameHindi='" + menuModel.MenuName_hind + "'," +
+                    "@img='" + menuModel.ImagePath + "'," +
+                    "@position='" + menuModel.MenuPositionId + "'," +
+                    "@menutype='" + menuModel.MenuTypeId + "'," +
+                    "@descEng='" + menuModel.MenuDesc_eng + "'," +
+                    "@descHindi='" + menuModel.MenuDesc_hind + "'," +
+                    "@content_eng='" + menuModel.Content_MenuName_eng + "'," +
+                   "@Content_hind='" + menuModel.Content_MenuName_hindi + "'," +
+                   "@file_image='" + menuModel.Imagepath2 + "'," +
+                   "@file_Startdate='" + menuModel.file_StartDate + "'," +
+                   "@file_Enddate='" + menuModel.file_EndDate + "'," +
+                   "@link_urlname='" + menuModel.link_urlname + "'," +
+                   "@linkType='" + menuModel.linkTypeId + "'," +
+                   "@tabActive='" + menuModel.tabActive + "'," +
+                   "@parentid='" + menuModel.ParentId + "'," +
+                   "@eventyear='" + menuModel.event_year + "'");
+                if (ret == "4")
+                {
+                    return RedirectToAction("MenusList", new { id = menuModel.ParentId });
+                }
+                else
+                {
+                    return RedirectToAction("EditMenu", new { id = menuModel.MenuId });
+                }
             }
             else
             {
-                return RedirectToAction("EditMenu", new{ id = menuModel.MenuId });
+                return RedirectToAction("EditMenu", new { id = menuModel.MenuId });
             }
         }
 
         public IActionResult DeleteMenu(int id)
         {
-            string ret = cmn.AddDelMod("exec PRC_AddMenu @qtype='6'," +"@sno='" + id + "'");
-            if (ret == "5")
+            var Menu = _dbcontext.TblAddMenu.Where(m => m.MenuSno == id).FirstOrDefault();
+            var ParentId = Menu.ParentId;
+            if (Menu != null)
             {
-                MenuModel menu = _npcilHelper.GetMenus(Request).Where(m => m.MenuId == id).FirstOrDefault();
-                _dynamicPageHelper.DeleteControllerAndView(menu.MenuName_eng, hostingEnvironment.ContentRootPath);
-                return RedirectToAction("MenuList");
+                try
+                {
+                    _dbcontext.TblAddMenu.Remove(Menu);
+                    _dbcontext.SaveChanges();
+                }
+                catch (Exception ex)
+                {
+                    _dbcontext.Logs.Add(new Logs()
+                    {
+                        LogDate = DateTime.Now,
+                        LogMessage = "Menu deletion failed",
+                        ExceptionMessage = ex.Message,
+                        StackTrace = ex.StackTrace,
+                        UserId = Int32.Parse(Request.Cookies["NPCIL_username"].ToString())
+                    });
+                    ViewBag.Error = "Something went wrong";
+                }
             }
             else
             {
-                return View();
+                ViewBag.Error = "No menu with particular id to delete";
             }
+            return RedirectToAction("MenusList", new { id = ParentId });
         }
 
         [HttpPost]

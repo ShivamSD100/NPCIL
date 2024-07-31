@@ -205,5 +205,10 @@ namespace NPCIL.Helper
             else
                 return "";
         }
+
+        bool INPCILHelper.ValidateMenu(HttpRequest req,MenuModel model)
+        {
+            return GetMenus(req).Where(m => (m.MenuName_eng == model.MenuName_eng || m.MenuName_hind == model.MenuName_hind) && m.MenuId != model.MenuId).Any();
+        }
     }
 }

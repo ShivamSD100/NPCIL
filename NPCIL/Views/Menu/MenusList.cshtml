@@ -63,6 +63,7 @@
                                     <th>Sub Menu</th>
                                     <th>Status</th>
                                     <th>Action</th>
+                                    <th>Delete</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -88,6 +89,7 @@
                                             }
                                         </td>
                                         <td style="text-align:center">@Html.ActionLink("", "EditMenu", "Menu", new { id = @Model.ElementAt(i).MenuId }, new { @class = "fas fa-edit", aria_hidden = "true" })</td>
+                                        <td style="text-align:center">@Html.ActionLink("", "DeleteMenu", new { id = @Model.ElementAt(i).MenuId }, new { @class = "fa-regular fa-trash", aria_hidden = "true" })</td>
                                     </tr>
                                 }
                             </tbody>
@@ -109,7 +111,9 @@
                                 <th>Sub Menu</th>
                                 <th>Status</th>
                                 <th>Action</th>
+                                <th>Delete</th>
                                 <th>Sequence</th>
+
                             </tr>
                         </thead>
                         <tbody>
@@ -133,8 +137,10 @@
                                         {
                                             <span class="status-oval status-inactive">Inactive</span>
                                         }
+
                                     </td>
                                     <td style="text-align:center">@Html.ActionLink("", "EditMenu", "Menu", new { id = @Model.ElementAt(i).MenuId }, new { @class = "fas fa-edit", aria_hidden = "true" })</td>
+                                    <td style="text-align:center">@Html.ActionLink("", "DeleteMenu", new { id = @Model.ElementAt(i).MenuId }, new { @class = "fa-regular fa-trash", aria_hidden = "true" })</td>
                                     <td>
                                         <i class="fas fa-arrows-alt handle"></i> <!-- draggable handle -->
                                         <input type="hidden" name="@i+menuId" value="@Model.ElementAt(i).MenuId" />
