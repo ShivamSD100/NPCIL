@@ -32,7 +32,7 @@ namespace NPCIL
             {
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
             });
-            services.AddSingleton<INPCILHelper, NPCILHelper>();
+            services.AddScoped<INPCILHelper, NPCILHelper>();
             services.AddSingleton<IDynamicPageHelper, DynamicPageHelper>();
             services.AddSingleton<IPageService, PageService>();
             services.AddSingleton<IFileHelper, FileHelper>();

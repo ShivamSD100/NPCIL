@@ -10,6 +10,6 @@ namespace NPCIL.DbModels
         public string LogMessage { get; set; }
         public string ExceptionMessage { get; set; }
         public string StackTrace { get; set; }
-        public int? UserId { get; set; }
+        public string UserId { get; set; }
     }
 }

@@ -27,7 +27,7 @@ namespace NPCIL.DbModels
         public DateTime? MenuUpdateddate { get; set; }
         public int? TabActive { get; set; }
         public int? ParentId { get; set; }
-        public string Controller { get; set; }
+        public string DataListBind { get; set; }
         public int? MenuOrder { get; set; }
     }
 }

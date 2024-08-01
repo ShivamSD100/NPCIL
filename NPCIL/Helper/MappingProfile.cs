@@ -1,34 +1,43 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using NPCIL.DbModels;
 using NPCIL.Models;
 using System;
+using System.Collections.Generic;
 
 namespace NPCIL.Helper
 {
     public class MappingProfile:Profile
     {
-        public MappingProfile()
+
+        public MappingProfile(NPCIL_DBContext dbcontext)
         {
             CreateMap<TblAddMenu, MenuModel>()
-                .ForMember(dest => dest.MenuId, opt => opt.MapFrom(src => src.MenuSno))
-                .ForMember(dest => dest.MenuName_eng, opt => opt.MapFrom(src => src.MenuNameEng))
-                .ForMember(dest => dest.MenuName_hind, opt => opt.MapFrom(src => src.MenuNameHind))
-                .ForMember(dest => dest.MenuPosition, opt => opt.MapFrom(src => src.MenuPosition.GetValueOrDefault()))
-                .ForMember(dest => dest.MenuType, opt => opt.MapFrom(src => src.MenuType.GetValueOrDefault()))
-                .ForMember(dest => dest.MenuImg, opt => opt.Ignore()) // Custom handling required for IFormFile
-                .ForMember(dest => dest.MenuDesc_eng, opt => opt.MapFrom(src => src.MenuDescEng))
-                .ForMember(dest => dest.MenuDesc_hind, opt => opt.MapFrom(src => src.MenuDescHind))
-                .ForMember(dest => dest.ImagePath, opt => opt.MapFrom(src => src.FileImage))
-                .ForMember(dest => dest.file_StartDate, opt => opt.MapFrom(src => Parsing.ParseDateTime(src.FileStartdate.HasValue ? src.FileStartdate.Value.ToString("yyyy-MM-dd") : null)))
-                .ForMember(dest => dest.file_EndDate, opt => opt.MapFrom(src => Parsing.ParseDateTime(src.FileEnddate.HasValue ? src.FileEnddate.Value.ToString("yyyy-MM-dd") : null)))
-                .ForMember(dest => dest.link_urlname, opt => opt.MapFrom(src => src.LinkUrlname))
-                .ForMember(dest => dest.linkType, opt => opt.MapFrom(src => src.LinkType.GetValueOrDefault()))
-                .ForMember(dest => dest.event_year, opt => opt.MapFrom(src => src.Eventyear))
-                .ForMember(dest => dest.tabActive, opt => opt.MapFrom(src => src.TabActive.GetValueOrDefault().ToString()))
-                .ForMember(dest => dest.ParentId, opt => opt.MapFrom(src => Parsing.ParseInt(src.ParentId.HasValue ? src.ParentId.Value.ToString() : null)))
-                .ForMember(dest => dest.mOrder, opt => opt.MapFrom(src => src.MenuOrder.GetValueOrDefault()))
-                .ForMember(dest => dest.Controller, opt => opt.MapFrom(src => src.Controller))
-                .ForMember(dest => dest.Sequence, opt => opt.MapFrom(src => src.MenuOrder));
+                 .ForMember(dest => dest.MenuId, opt => opt.MapFrom(src => src.MenuSno))
+                 .ForMember(dest => dest.MenuName_eng, opt => opt.MapFrom(src => src.MenuNameEng))
+                 .ForMember(dest => dest.MenuName_hind, opt => opt.MapFrom(src => src.MenuNameHind))
+                 .ForMember(dest => dest.MenuPosition, opt => opt.MapFrom(src => src.MenuPosition.GetValueOrDefault()))
+                 .ForMember(dest => dest.MenuType, opt => opt.MapFrom(src => src.MenuType.GetValueOrDefault()))
+                 .ForMember(dest => dest.MenuImg, opt => opt.Ignore()) // Custom handling required for IFormFile
+                 .ForMember(dest => dest.MenuDesc_eng, opt => opt.MapFrom(src => src.MenuDescEng))
+                 .ForMember(dest => dest.MenuDesc_hind, opt => opt.MapFrom(src => src.MenuDescHind))
+                 .ForMember(dest => dest.ImagePath, opt => opt.MapFrom(src => src.FileImage))
+                 .ForMember(dest => dest.file_StartDate, opt => opt.MapFrom(src => Parsing.ParseDateTime(src.FileStartdate.HasValue ? src.FileStartdate.Value.ToString("yyyy-MM-dd") : null)))
+                 .ForMember(dest => dest.file_EndDate, opt => opt.MapFrom(src => Parsing.ParseDateTime(src.FileEnddate.HasValue ? src.FileEnddate.Value.ToString("yyyy-MM-dd") : null)))
+                 .ForMember(dest => dest.link_urlname, opt => opt.MapFrom(src => src.LinkUrlname))
+                 .ForMember(dest => dest.linkType, opt => opt.MapFrom(src => src.LinkType.GetValueOrDefault()))
+                 .ForMember(dest => dest.event_year, opt => opt.MapFrom(src => src.Eventyear))
+                 .ForMember(dest => dest.tabActive, opt => opt.MapFrom(src => src.TabActive.GetValueOrDefault().ToString()))
+                 .ForMember(dest => dest.ParentId, opt => opt.MapFrom(src => Parsing.ParseInt(src.ParentId.HasValue ? src.ParentId.Value.ToString() : null)))
+                 .ForMember(dest => dest.mOrder, opt => opt.MapFrom(src => src.MenuOrder.GetValueOrDefault()))
+                 .ForMember(dest => dest.DataListBind, opt => opt.MapFrom(src => src.DataListBind))
+                 .ForMember(dest => dest.Sequence, opt => opt.MapFrom(src => src.MenuOrder))
+                .ForMember(dest => dest.MenuOptions, opt => opt.MapFrom(src => new List<SelectListItem>()))
+                .ForMember(dest => dest.PageBindingOptions, opt => opt.MapFrom(src => new List<SelectListItem>()))
+                .ForMember(dest => dest.TabActiveOptions, opt => opt.MapFrom(src => new List<SelectListItem>()));
+
+
 
             CreateMap<MenuModel, TblAddMenu>()
                 .ForMember(dest => dest.MenuSno, opt => opt.MapFrom(src => src.MenuId))
@@ -48,8 +57,37 @@ namespace NPCIL.Helper
                 .ForMember(dest => dest.TabActive, opt => opt.MapFrom(src => Parsing.ParseInt(src.tabActive)))
                 .ForMember(dest => dest.ParentId, opt => opt.MapFrom(src => Parsing.ParseInt(src.ParentId)))
                 .ForMember(dest => dest.MenuOrder, opt => opt.MapFrom(src => src.mOrder))
-                .ForMember(dest => dest.Controller, opt => opt.MapFrom(src => src.Controller))
-                .ForMember(dest => dest.MenuOrder, opt => opt.MapFrom(src => src.Sequence)); 
+                .ForMember(dest => dest.DataListBind, opt => opt.MapFrom(src => src.DataListBind))
+                .ForMember(dest => dest.DataListBind, opt => opt.MapFrom(src => src.DataListBind))
+                .ForMember(dest => dest.MenuOrder, opt => opt.MapFrom(src => src.Sequence));
+
+        CreateMap<MenuModel, MenuHierarchyModel>()
+            .ForMember(dest => dest.MenuSno, opt => opt.MapFrom(src => src.MenuId))
+            .ForMember(dest => dest.MenuNameEng, opt => opt.MapFrom(src => src.MenuName_eng))
+            .ForMember(dest => dest.ParentId, opt => opt.MapFrom(src => src.ParentId))
+            .ForMember(dest => dest.MenuPosition, opt => opt.MapFrom(src => src.MenuPosition));
+            //.ForMember(dest => dest.FullPath, opt => opt.MapFrom(src => GetFullPath(src)))
+            //.ForMember(dest => dest.Level, opt => opt.MapFrom(src => GetLevel(src)));
+
+            CreateMap<MenuHierarchyModel, MenuModel>()
+                .ForMember(dest => dest.MenuId, opt => opt.MapFrom(src => src.MenuSno))
+                .ForMember(dest => dest.MenuName_eng, opt => opt.MapFrom(src => src.MenuNameEng))
+                .ForMember(dest => dest.ParentId, opt => opt.MapFrom(src => src.ParentId))
+                .ForMember(dest => dest.MenuPosition, opt => opt.MapFrom(src => src.MenuPosition));
+
+            CreateMap<TblAddMenu, MenuHierarchyModel>()
+          .ForMember(dest => dest.MenuSno, opt => opt.MapFrom(src => src.MenuSno))
+          .ForMember(dest => dest.MenuNameEng, opt => opt.MapFrom(src => src.MenuNameEng))
+          .ForMember(dest => dest.ParentId, opt => opt.MapFrom(src => src.ParentId))
+          .ForMember(dest => dest.MenuPosition, opt => opt.MapFrom(src => src.MenuPosition))
+            .ForMember(dest => dest.Sequence, opt => opt.MapFrom(src => src.MenuOrder));
+
+            CreateMap<MenuHierarchyModel, TblAddMenu>()
+               .ForMember(dest => dest.MenuSno, opt => opt.MapFrom(src => src.MenuSno))
+               .ForMember(dest => dest.MenuNameEng, opt => opt.MapFrom(src => src.MenuNameEng))
+               .ForMember(dest => dest.ParentId, opt => opt.MapFrom(src => src.ParentId))
+               .ForMember(dest => dest.MenuPosition, opt => opt.MapFrom(src => src.MenuPosition))
+            .ForMember(dest => dest.MenuOrder, opt => opt.MapFrom(src => src.Sequence));
         }
     }
 }

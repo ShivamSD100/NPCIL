@@ -15,6 +15,7 @@ namespace NPCIL.DbModels
         {
         }
 
+        public virtual DbSet<PageDataBind> PageDataBinds { get; set; }
         public virtual DbSet<Logs> Logs { get; set; }
         public virtual DbSet<TblAddMenu> TblAddMenu { get; set; }
         public virtual DbSet<TblBanner> TblBanner { get; set; }
@@ -47,7 +48,6 @@ namespace NPCIL.DbModels
         {
             if (!optionsBuilder.IsConfigured)
             {
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
                 optionsBuilder.UseSqlServer("Server=173.249.52.210,7160;Database=NPCIL_DB;User Id=sa;Password=Jabit_7160;TrustServerCertificate=True;");
             }
         }
@@ -70,6 +70,8 @@ namespace NPCIL.DbModels
                 entity.Property(e => e.StackTrace).IsUnicode(false);
             });
 
+
+
             modelBuilder.Entity<TblAddMenu>(entity =>
             {
                 entity.HasKey(e => e.MenuSno);
@@ -84,7 +86,7 @@ namespace NPCIL.DbModels
 
                 entity.Property(e => e.ContentHind).HasColumnName("Content_hind");
 
-                entity.Property(e => e.Controller).IsUnicode(false);
+                entity.Property(e => e.DataListBind).IsUnicode(false);
 
                 entity.Property(e => e.Eventyear)
                     .HasColumnName("eventyear")

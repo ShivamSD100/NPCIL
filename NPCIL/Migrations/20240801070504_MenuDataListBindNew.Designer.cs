@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NPCIL.DbModels;
 
 namespace NPCIL.Migrations
 {
     [DbContext(typeof(NPCIL_DBContext))]
-    partial class NPCIL_DBContextModelSnapshot : ModelSnapshot
+    [Migration("20240801070504_MenuDataListBindNew")]
+    partial class MenuDataListBindNew
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -50,21 +52,6 @@ namespace NPCIL.Migrations
                         .HasName("PK__Logs__5E5486486551B04B");
 
                     b.ToTable("Logs");
-                });
-
-            modelBuilder.Entity("NPCIL.DbModels.PageDataBind", b =>
-                {
-                    b.Property<int>("id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("DataBindTag")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("id");
-
-                    b.ToTable("PageDataBinds");
                 });
 
             modelBuilder.Entity("NPCIL.DbModels.TblAddMenu", b =>

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http.Features;
 using NPCIL.Models;
 using System.Collections.Generic;
+using System.Linq;
 using WebApplication1.Models;
 
 namespace NPCIL.Helper
@@ -22,6 +23,7 @@ namespace NPCIL.Helper
         public List<VerticalNewsModel> GetActiveVerticalNews();
         public List<HorizontalNewsModel> GetActiveHorizontalNews();
         public bool ValidateMenu(HttpRequest req,MenuModel model);
+        public List<MenuHierarchyModel> GetMenuHierarchy(int parentid=0);
 
     }
 }

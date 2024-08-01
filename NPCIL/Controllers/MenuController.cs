@@ -50,12 +50,22 @@ namespace NPCIL.Controllers
             {
                 MenuOptions = new List<SelectListItem>()
             };
-            DataTable dtMenuOptions = cmn.GetDatatable("exec PRC_AddMenu @qtype=6");
-            model.MenuOptions.Add(new SelectListItem() { Value = "0", Text = "" });
-            foreach (DataRow dr1 in dtMenuOptions.Rows)
+
+            List<MenuModel> ParentMenuOptions = _npcilHelper.GetMenus(Request);
+            model.MenuOptions.Add(new SelectListItem() { Value = "0", Text = "Select" });
+            foreach (var m in _dbcontext.TblAddMenu.ToList())
             {
-                model.MenuOptions.Add(new SelectListItem() { Value = dr1["menu_sno"].ToString(), Text = dr1["menu_name_eng"].ToString() });
+                model.MenuOptions.Add(new SelectListItem() { Value =m.MenuSno.ToString(), Text = m.MenuNameEng.ToString() });
             }
+            List<PageDataBind> datalistbind = _dbcontext.PageDataBinds.ToList();
+            model.PageBindingOptions = new List<SelectListItem>();
+            model.PageBindingOptions.Add(new SelectListItem() { Value = "0", Text = "" });
+
+            foreach (PageDataBind db in datalistbind)
+            {
+                model.PageBindingOptions.Add(new SelectListItem() { Value = db.id.ToString(), Text = db.DataBindTag });
+            }
+
 
             model.ParentId = id > 0 ? id.ToString() : "";
 
@@ -170,11 +180,12 @@ namespace NPCIL.Controllers
                     _dbcontext.Logs.Add(new Logs()
                     {
                         LogDate = DateTime.Now,
-                        LogMessage = "Menu creation failed",
+                        LogMessage = "Menu creation failed for Menu ID-"+menuModel.MenuId,
                         ExceptionMessage = ex.Message,
                         StackTrace = ex.StackTrace,
-                        UserId = Int32.Parse(Request.Cookies["NPCIL_username"].ToString())
+                        UserId = Request.Cookies["NPCIL_username"].ToString()
                     });
+                    _dbcontext.SaveChanges();
                     ViewBag.Error = "Something went wrong";
                     return View(menuModel);
                 }
@@ -191,35 +202,16 @@ namespace NPCIL.Controllers
 
         public IActionResult MenusList(int? id = 0)
         {
-
-            List<MenuModel> menuList = new List<MenuModel>();
-            DataTable dt = new DataTable();
-            DataTable dtMenuOptions  = cmn.GetDatatable("exec PRC_AddMenu @qtype=6");
-
-
-                ViewData["ParentId"] = id;
-                dt = cmn.GetDatatable("exec PRC_AddMenu @qtype=5 , @parentid='" + id + "'");
-            foreach (DataRow dr in dt.Rows)
+            List<MenuHierarchyModel> menuHierarchy = _npcilHelper.GetMenuHierarchy();
+             List<MenuModel> menuList = new List<MenuModel>();
+            List<TblAddMenu> menuListdt = _dbcontext.TblAddMenu.Where(m => m.ParentId == id).ToList();
+            foreach (TblAddMenu menu in menuListdt)
             {
-                MenuModel menuModel = new MenuModel()
-                {
-                    MenuId = int.Parse(dr["menu_sno"].ToString()),
-                    MenuName_eng = dr["menu_name_eng"].ToString(),
-                    MenuName_hind = dr["menu_name_hind"].ToString(),
-                    MenuPosition_Name = dr["position"].ToString(),
-                    MenuType_Name = dr["mtype"].ToString(),
-                    ImagePath = dr["menu_img"].ToString(),
-                    ParentId = dr["ParentId"].ToString(),
-                    tabActive = dr["tab_Active"].ToString(),
-                    Sequence = dr["menuOrder"].ToString(),
-                    MenuOptions = new List<SelectListItem>()
-
-                };
-
+                MenuModel menuModel = _mapper.Map<MenuModel>(menu);
                 menuModel.MenuOptions.Add(new SelectListItem() { Value = "0", Text = "" });
-                foreach (DataRow dr1 in dtMenuOptions.Rows)
+                foreach (MenuHierarchyModel heirarchy in menuHierarchy)
                 {
-                    menuModel.MenuOptions.Add(new SelectListItem (){ Value = dr1["menu_sno"].ToString(), Text = dr1["menu_name_eng"].ToString() });
+                    menuModel.MenuOptions.Add(new SelectListItem (){ Value = heirarchy.MenuSno.ToString(), Text = heirarchy.MenuNameEng.ToString() });
                 }
 
                 menuList.Add(menuModel);
@@ -236,60 +228,26 @@ namespace NPCIL.Controllers
             ViewBag.ListofType = CMSMenuType();
             ViewBag.ListofLink = LinkType();
             ViewBag.abc = "Submit";
-            MenuModel obj = new MenuModel()
+            MenuModel obj = _npcilHelper.GetMenuFromId(Request,id);
+            obj.MenuOptions.Add(new SelectListItem() { Value = "0", Text = "Salect" });
+            obj.TabActiveOptions = new List<SelectListItem>
+                                                {
+                                                    new SelectListItem { Value = "1", Text = "Yes" },
+                                                    new SelectListItem { Value = "0", Text = "No" }
+                                                };
+            foreach (var m in _dbcontext.TblAddMenu.ToList())
             {
-                MenuOptions = new List<SelectListItem>()
-            };
-            DataTable dtMenuOptions = cmn.GetDatatable("exec PRC_AddMenu @qtype=6");
-            obj.MenuOptions.Add(new SelectListItem() { Value = "0", Text = "" });
-            foreach (DataRow dr1 in dtMenuOptions.Rows)
-            {
-                obj.MenuOptions.Add(new SelectListItem() { Value = dr1["menu_sno"].ToString(), Text = dr1["menu_name_eng"].ToString() });
+                obj.MenuOptions.Add(new SelectListItem() { Value = m.MenuSno.ToString(), Text = m.MenuNameEng.ToString() });
             }
-
-            DataTable dt = cmn.GetDatatable("exec PRC_AddMenu @qtype='3', " +
-                            "@sno='" + id + "'");
-
-            if (dt.Rows.Count > 0)
+            List<PageDataBind> datalistbind = _dbcontext.PageDataBinds.ToList();
+            obj.PageBindingOptions = new List<SelectListItem>();
+            obj.PageBindingOptions.Add(new SelectListItem() { Value = "0", Text = "" });
+            foreach (PageDataBind db in datalistbind)
             {
-                obj.MenuId = int.Parse(dt.Rows[0]["menu_sno"].ToString());
-                obj.MenuName_eng = dt.Rows[0]["menu_name_eng"].ToString();
-                obj.MenuName_hind = dt.Rows[0]["menu_name_hind"].ToString();
-                obj.ImagePath = $"{Request.Scheme}://{Request.Host}{Request.PathBase}{dt.Rows[0]["menu_img"].ToString()}";
-                obj.MenuPositionId = int.Parse(dt.Rows[0]["menu_position"].ToString());
-                obj.MenuPosition_Name = dt.Rows[0]["menu_position"].ToString();
-                obj.MenuTypeId = int.Parse(dt.Rows[0]["menu_type"].ToString());
-                obj.MenuType_Name = dt.Rows[0]["menu_type"].ToString();
-                obj.MenuDesc_eng = dt.Rows[0]["menu_desc_eng"].ToString();
-                obj.MenuDesc_hind = dt.Rows[0]["menu_desc_hind"].ToString();
-                obj.Content_MenuName_eng = dt.Rows[0]["content_eng"].ToString();
-                obj.Content_MenuName_hindi = dt.Rows[0]["Content_hind"].ToString();
-                obj.Imagepath2 = $"{Request.Scheme}://{Request.Host}{Request.PathBase}{dt.Rows[0]["file_image"].ToString()}";
-
-                if (!String.IsNullOrEmpty(dt.Rows[0]["file_Startdate"].ToString()))
-                {
-                    obj.file_StartDate_Display = Convert.ToDateTime(dt.Rows[0]["file_Startdate"].ToString());
-                }
-                if (!String.IsNullOrEmpty(dt.Rows[0]["file_Enddate"].ToString()))
-                {
-                    obj.file_EndDate_Display = Convert.ToDateTime(dt.Rows[0]["file_Enddate"].ToString());
-                }
-
-                obj.link_urlname = dt.Rows[0]["link_urlname"].ToString();
-                obj.linkTypeId = int.Parse(dt.Rows[0]["linkType"].ToString());
-                obj.event_year = dt.Rows[0]["eventyear"].ToString();
-
-                obj.tabActive = dt.Rows[0]["tab_active"].ToString();
-                obj.ParentId = dt.Rows[0]["ParentId"].ToString();
-                obj.TabActiveOptions = new List<SelectListItem>
-            {
-                new SelectListItem { Value = "1", Text = "Yes" },
-                new SelectListItem { Value = "0", Text = "No" }
-            };
-
-
-                ViewBag.abc = "Update";
+                obj.PageBindingOptions.Add(new SelectListItem() { Value = db.id.ToString(), Text = db.DataBindTag });
             }
+            
+            ViewBag.abc = "Update";
             return View(obj);
         }
 
@@ -312,32 +270,27 @@ namespace NPCIL.Controllers
                 menuModel.file_StartDate = String.Format("{0:MM-dd-yyyy}", menuModel.file_StartDate_Display == null ? "" : menuModel.file_StartDate_Display.Value);
                 menuModel.file_EndDate = String.Format("{0:MM-dd-yyyy}", menuModel.file_EndDate_Display == null ? "" : menuModel.file_EndDate_Display.Value);
 
-                string ret = cmn.AddDelMod("exec PRC_AddMenu @qtype='4'," +
-                    "@sno='" + menuModel.MenuId + "'," +
-                    "@nameEng='" + menuModel.MenuName_eng + "'," +
-                    "@nameHindi='" + menuModel.MenuName_hind + "'," +
-                    "@img='" + menuModel.ImagePath + "'," +
-                    "@position='" + menuModel.MenuPositionId + "'," +
-                    "@menutype='" + menuModel.MenuTypeId + "'," +
-                    "@descEng='" + menuModel.MenuDesc_eng + "'," +
-                    "@descHindi='" + menuModel.MenuDesc_hind + "'," +
-                    "@content_eng='" + menuModel.Content_MenuName_eng + "'," +
-                   "@Content_hind='" + menuModel.Content_MenuName_hindi + "'," +
-                   "@file_image='" + menuModel.Imagepath2 + "'," +
-                   "@file_Startdate='" + menuModel.file_StartDate + "'," +
-                   "@file_Enddate='" + menuModel.file_EndDate + "'," +
-                   "@link_urlname='" + menuModel.link_urlname + "'," +
-                   "@linkType='" + menuModel.linkTypeId + "'," +
-                   "@tabActive='" + menuModel.tabActive + "'," +
-                   "@parentid='" + menuModel.ParentId + "'," +
-                   "@eventyear='" + menuModel.event_year + "'");
-                if (ret == "4")
+
+                try
                 {
-                    return RedirectToAction("MenusList", new { id = menuModel.ParentId });
+                    var entity = _mapper.Map<TblAddMenu>(menuModel);
+                    _dbcontext.TblAddMenu.Update(entity);
+                    _dbcontext.SaveChanges();
+                    return RedirectToAction("MenusList");
                 }
-                else
+                catch (Exception ex)
                 {
-                    return RedirectToAction("EditMenu", new { id = menuModel.MenuId });
+                    _dbcontext.Logs.Add(new Logs()
+                    {
+                        LogDate = DateTime.Now,
+                        LogMessage = "Menu updation failed for Menu ID-"+menuModel.MenuId,
+                        ExceptionMessage = ex.Message,
+                        StackTrace = ex.StackTrace,
+                        UserId = Request.Cookies["NPCIL_username"].ToString()
+                    });
+                    _dbcontext.SaveChanges();
+                    ViewBag.Error = "Something went wrong";
+                    return View(menuModel);
                 }
             }
             else
@@ -362,10 +315,10 @@ namespace NPCIL.Controllers
                     _dbcontext.Logs.Add(new Logs()
                     {
                         LogDate = DateTime.Now,
-                        LogMessage = "Menu deletion failed",
+                        LogMessage = "Menu deletion failed for Menu ID-"+id,
                         ExceptionMessage = ex.Message,
                         StackTrace = ex.StackTrace,
-                        UserId = Int32.Parse(Request.Cookies["NPCIL_username"].ToString())
+                        UserId = Request.Cookies["NPCIL_username"].ToString()
                     });
                     ViewBag.Error = "Something went wrong";
                 }
@@ -380,24 +333,38 @@ namespace NPCIL.Controllers
         [HttpPost]
         public IActionResult UpdateSeq([FromBody] List<MenuSeqModel> menuData)
         {
-
-            Boolean Success = true;
-            foreach (MenuSeqModel model in menuData)
+            try
             {
-
-                if (model.Sequence != null || model.Sequence != Int32.Parse(_npcilHelper.GetMenuFromId(Request,Int32.Parse(model.MenuId)).Sequence))
+                foreach (MenuSeqModel model in menuData)
                 {
-                    string ret = cmn.AddDelMod("exec PRC_AddMenu @qtype='8'," + "@sno='" + model.MenuId + "',@sequence=" + model.Sequence);
-                    if (ret != "4")
+                    TblAddMenu menuToUpdate = _dbcontext.TblAddMenu.Find(model.MenuId);
+
+                    if (menuToUpdate != null)
                     {
-                        Success = false;
-                        break;
+                        menuToUpdate.MenuOrder = model.Sequence;
+
+                        _dbcontext.TblAddMenu.Update(menuToUpdate);
+                        _dbcontext.SaveChanges();
                     }
+
                 }
 
+                return Json(new { success = true });
             }
-
-            return Json(new { success = Success });
+            catch (Exception ex)
+            {
+                _dbcontext.Logs.Add(new Logs()
+                {
+                    LogDate = DateTime.Now,
+                    LogMessage = "Menu Sequence updation failed",
+                    ExceptionMessage = ex.Message,
+                    StackTrace = ex.StackTrace,
+                    UserId = Request.Cookies["NPCIL_username"].ToString()
+                });
+                _dbcontext.SaveChanges();
+                return Json(new { success = false });
+            }
+            
         }
     }
 }

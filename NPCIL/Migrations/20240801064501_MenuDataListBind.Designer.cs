@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NPCIL.DbModels;
 
 namespace NPCIL.Migrations
 {
     [DbContext(typeof(NPCIL_DBContext))]
-    partial class NPCIL_DBContextModelSnapshot : ModelSnapshot
+    [Migration("20240801064501_MenuDataListBind")]
+    partial class MenuDataListBind
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -52,21 +54,6 @@ namespace NPCIL.Migrations
                     b.ToTable("Logs");
                 });
 
-            modelBuilder.Entity("NPCIL.DbModels.PageDataBind", b =>
-                {
-                    b.Property<int>("id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("DataBindTag")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("id");
-
-                    b.ToTable("PageDataBinds");
-                });
-
             modelBuilder.Entity("NPCIL.DbModels.TblAddMenu", b =>
                 {
                     b.Property<int>("MenuSno")
@@ -84,7 +71,7 @@ namespace NPCIL.Migrations
                         .HasColumnName("Content_hind")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("DataListBind")
+                    b.Property<string>("Controller")
                         .HasColumnType("varchar(max)")
                         .IsUnicode(false);
 

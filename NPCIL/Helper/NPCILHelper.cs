@@ -4,9 +4,13 @@ using System.Data;
 using System.Globalization;
 using System.Linq;
 using System.Security.Policy;
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
+using NPCIL.DbModels;
 using NPCIL.Models;
 using WebApplication1.Models;
 
@@ -16,16 +20,20 @@ namespace NPCIL.Helper
     {
         CmnDBWork cmn = new CmnDBWork();
         private readonly Microsoft.AspNetCore.Hosting.IHostingEnvironment hostingEnvironment;
-        public NPCILHelper(Microsoft.AspNetCore.Hosting.IHostingEnvironment environment)
+        private readonly NPCIL_DBContext _dbContext;
+        private readonly IMapper _mapper;
+        public NPCILHelper(Microsoft.AspNetCore.Hosting.IHostingEnvironment environment, NPCIL_DBContext dbContext, IMapper mapper)
         {
             hostingEnvironment = environment;
+            _dbContext = dbContext;
+            _mapper = mapper;
         }
         public List<BannerModel> GetBanners(HttpRequest req)
         {
 
             DataTable dt = cmn.GetDatatable("exec PRC_AddBanner @qtype=4");
 
-             List<BannerModel> Banners = [];
+            List<BannerModel> Banners = [];
 
             foreach (DataRow row in dt.Rows)
             {
@@ -46,7 +54,7 @@ namespace NPCIL.Helper
             return GetBanners(req);
 
         }
-        public MenuModel BindMenuFromDt(HttpRequest req,DataRow row)
+        public MenuModel BindMenuFromDt(HttpRequest req, DataRow row)
         {
             return new MenuModel()
             {
@@ -59,7 +67,7 @@ namespace NPCIL.Helper
                 Imagepath2 = $"{req.Scheme}://{req.Host}{req.PathBase}{row["file_image"].ToString()}",
                 ParentId = row["ParentId"].ToString(),
                 tabActive = row["tab_Active"].ToString(),
-                Controller = row["controller"].ToString(),
+                DataListBind = row["DataListBind"].ToString(),
                 link_urlname = row["link_urlname"].ToString(),
                 Content_MenuName_hindi = row["Content_hind"].ToString(),
                 Content_MenuName_eng = row["content_eng"].ToString(),
@@ -70,11 +78,12 @@ namespace NPCIL.Helper
         }
         public List<MenuModel> GetMenus(HttpRequest req)
         {
-            DataTable dt = cmn.GetDatatable("exec PRC_AddMenu @qtype=2");
-            List<MenuModel> Menus = [];
-            foreach (DataRow row in dt.Rows)
-                Menus.Add(BindMenuFromDt(req,row));
-            return Menus;
+            //DataTable dt = cmn.GetDatatable("exec PRC_AddMenu @qtype=2");
+            //List<MenuModel> Menus = [];
+            //foreach (DataRow row in dt.Rows)
+            //    Menus.Add(BindMenuFromDt(req, row));
+
+            return _dbContext.TblAddMenu.Select(m => _mapper.Map<MenuModel>(m)).ToList();
         }
 
         public List<MenuModel> GetActiveMenus(HttpRequest req)
@@ -82,25 +91,25 @@ namespace NPCIL.Helper
             return GetMenus(req).Where(m => m.tabActive == "1").ToList();
         }
 
-        public MenuModel GetMenuFromId(HttpRequest req,int id)
+        public MenuModel GetMenuFromId(HttpRequest req, int id)
         {
-            DataTable dt = cmn.GetDatatable("exec PRC_AddMenu @qtype=7, @sno="+id);
-            return BindMenuFromDt(req,dt.Rows[0]);
+            DataTable dt = cmn.GetDatatable("exec PRC_AddMenu @qtype=7, @sno=" + id);
+            return BindMenuFromDt(req, dt.Rows[0]);
         }
-        public List<MenuModel> GetSubMenus(HttpRequest req,int id)
+        public List<MenuModel> GetSubMenus(HttpRequest req, int id)
         {
-            DataTable dt = cmn.GetDatatable("exec PRC_AddMenu @qtype=5 , @parentid="+id);
+            DataTable dt = cmn.GetDatatable("exec PRC_AddMenu @qtype=5 , @parentid=" + id);
             List<MenuModel> Menus = [];
             foreach (DataRow row in dt.Rows)
             {
-                Menus.Add(BindMenuFromDt(req,row));
+                Menus.Add(BindMenuFromDt(req, row));
             }
             return Menus;
         }
 
-        public List<MenuModel> GetActiveSubMenus(HttpRequest req,int id)
+        public List<MenuModel> GetActiveSubMenus(HttpRequest req, int id)
         {
-            return GetSubMenus(req,id).Where(sm => sm.tabActive == "1").ToList();
+            return GetSubMenus(req, id).Where(sm => sm.tabActive == "1").ToList();
         }
         public List<TenderModel> GetTenders(HttpRequest req)
         {
@@ -206,9 +215,29 @@ namespace NPCIL.Helper
                 return "";
         }
 
-        bool INPCILHelper.ValidateMenu(HttpRequest req,MenuModel model)
+        bool INPCILHelper.ValidateMenu(HttpRequest req, MenuModel model)
         {
             return GetMenus(req).Where(m => (m.MenuName_eng == model.MenuName_eng || m.MenuName_hind == model.MenuName_hind) && m.MenuId != model.MenuId).Any();
+        }
+
+        public List<MenuHierarchyModel> GetMenuHierarchy(int parentid = 0)
+        {
+            List<MenuHierarchyModel> menuHierarchy = new List<MenuHierarchyModel>();
+
+            var rootMenus = _dbContext.TblAddMenu
+                                     .Where(m => m.ParentId == parentid && m.TabActive == 1)
+                                     .OrderBy(m => m.MenuOrder)
+                                     .ToList();
+
+            var orgMenuHierarchyModel= rootMenus.Select(m => _mapper.Map<MenuHierarchyModel>(m)).ToList();
+
+            foreach (var rootMenu in orgMenuHierarchyModel)
+            {
+                menuHierarchy.Add(rootMenu);
+                menuHierarchy.AddRange(GetMenuHierarchy(rootMenu.MenuSno));
+            }
+
+            return menuHierarchy;
         }
     }
 }
