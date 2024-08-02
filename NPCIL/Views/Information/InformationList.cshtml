@@ -1,0 +1,89 @@
+﻿@model IEnumerable<NPCIL.Models.InformationModel>
+@{
+    ViewData["Title"] = "View Information List";
+}
+
+<link href="~/datatables/css/buttons.datatables.css" rel="stylesheet" />
+<link href="~/datatables/css/datatables.datatables.css" rel="stylesheet" />
+
+
+<div class="page-header">
+    <div class="page-block">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <ul class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="../dashboard/index.html">Dashboard</a></li>
+                    <li class="breadcrumb-item"><a href="javascript: void(0)">View Information</a></li>
+                    @* <li class="breadcrumb-item" aria-current="page">Form Validation</li> *@
+                </ul>
+                <div class="page-header-title">
+                    <h2 class="mb-0">View Information</h2>
+                </div>
+            </div>
+            <div class="col-md-6 text-end">
+                <a href="~/Information/AddInformation" class="btn btn-primary">Add Information</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="row">
+    <!-- [ basic-table ] start -->
+    <div class="col-xl-12">
+        <div class="card">
+            <div class="card-header">
+                <h5>View Information</h5>
+            </div>
+            <div class="card-body table-border-style">
+                @*  <button class="btn btn-light-primary mb-1 btn-sm csv">Export CSV</button>
+                <button class="btn btn-light-primary mb-1 btn-sm sql">Export SQL</button>
+                <button class="btn btn-light-primary mb-1 btn-sm txt">Export TXT</button>
+                <button class="btn btn-light-primary mb-1 btn-sm json">Export JSON</button> *@
+                <div class="table-responsive">
+                    <table id="PcTbl" class="display nowrap table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Title</th>
+                                <th>Start Date</th>
+                                <th>End Date</th>
+                                <th>Edit</th>
+                                <th>Delete</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var info in Model)
+                            {
+                                <tr style="align-content:center;">
+                                    <td>@info.id</td>
+                                    <td>@info.title</td>
+                                    <td>@info.StartDate</td>
+                                    <td>@info.EndDate</td>
+                                    <td style="text-align:center">@Html.ActionLink("", "EditInformation", new { id = @info.id }, new { @class = "fa fa-plus-square", aria_hidden = "true" })</td>
+                                    <td style="text-align:center">@Html.ActionLink("", "DeleteInformation", new { id = @info.id }, new { @class = "fa-regular fa-trash", aria_hidden = "true" })</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- [ basic-table ] end -->
+</div>
+<!-- [ Main Content ] end -->
+
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#PcTbl').DataTable({
+            layout: {
+                topStart: {
+                    buttons: ['copy', 'csv', 'excel', 'pdf', 'print']
+                }
+            }
+        });
+    });
+</script>

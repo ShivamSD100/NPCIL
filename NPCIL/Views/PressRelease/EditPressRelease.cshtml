@@ -1,0 +1,236 @@
+﻿@model NPCIL.Models.PressReleaseModel;
+
+@{
+    ViewData["Title"] = "Edit Press Release";
+}
+
+<div class="page-header">
+    <div class="page-block">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <ul class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="../dashboard/index.html">Dashboard</a></li>
+                    <li class="breadcrumb-item"><a href="javascript: void(0)">Press Release</a></li>
+                    <li class="breadcrumb-item" aria-current="page">Update Press Release</li>
+                </ul>
+                <div class="page-header-title">
+                    <h2 class="mb-0">Update Press Release</h2>
+                </div>
+            </div>
+            <div class="col-md-6 text-end">
+                <a href="~/PressRelease/PressReleaseList" class="btn btn-primary">View Press Release</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="row">
+    <!-- [ Form Validation ] start -->
+
+    <div class="col-sm-12">
+        <div class="card">
+            <div class="card-header">
+                <h5>Update Press Release</h5>
+            </div>
+            <div class="card-body">
+
+                <form asp-controller="PressRelease" asp-action="UpdatePressRelease" method="post" enctype="multipart/form-data" class="validate-me" id="validate-me" data-validate="" novalidate="true">
+                    @Html.HiddenFor(m => m.id)
+                    @Html.HiddenFor(m => m.ImagePath)
+                    <div class="mb-3 row">
+                        <label class="col-lg-4 col-form-label text-lg-end">Language</label>
+                        <div class="col-lg-6">
+                            <select asp-for="langId"
+                                    class="form-control"
+                                    asp-items="@(new SelectList(@ViewBag.Listoflanguage,"langId", "langName"))">
+                            </select>
+                            @Html.ValidationMessageFor(m => m.langId, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="mb-3 row">
+                        <label class="col-lg-4 col-form-label text-lg-end">Type of Content</label>
+                        <div class="col-lg-6">
+                            <select asp-for="contentId" onchange="changeType(this)"
+                                    class="form-control"
+                                    asp-items="@(new SelectList(@ViewBag.Listofcontent,"contentId", "contentName"))">
+                            </select>
+                            @Html.ValidationMessageFor(m => m.contentId, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="mb-3 row">
+                        <label class="col-lg-4 col-form-label text-lg-end">Title</label>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(m => m.title, new { @class = "form-control", placeholder = "" })
+                            @Html.ValidationMessageFor(m => m.title, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div id="div_content" style="display:none">
+                        <div class="mb-3 row ">
+                            <label class="col-lg-4 col-form-label text-lg-end">Page Description</label>
+                            <div class="col-lg-6">
+                                @Html.HiddenFor(m => m.description, new { id = "description", value = Model.description ?? "" })
+                                <div id="editor_desc" style="height: 400px;"></div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="mb-3 row" id="div_file" style="display:none">
+                        <div class="mb-3 row">
+                            <label class="col-lg-4 col-form-label text-lg-end">File Upload</label>
+                            <div class="col-lg-6">
+                                 <input asp-for="PressImg" type="file" class="form-control" multiple="true"> 
+                                @* <p style="color: red; font:small;">Tip: .jpeg .png .gif image only</p> *@
+                                <div class="preview-container" style="margin-top:10px;">
+                                    <img id="PressImg_imgPreview" src="#" alt="Banner Preview" style="max-width: 20%; display: none;">
+                                    <video id="PressImg_videoPreview" controls style="max-width: 20%; display: none;"></video>
+                                    <div id="PressImg_fileNamePreview" style="display: none;"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3 row">
+                            <label class="col-lg-4 col-form-label text-lg-end">Previous Image</label>
+                            <div class="col-lg-6">
+                                <img src="@Model.ImagePath" width="150" alt="Image Not Available" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3 row" id="div_linkurl" style="display:none">
+                        <div class="mb-3 row">
+                            <label class="col-lg-4 col-form-label text-lg-end">Link URL</label>
+                            <div class="col-lg-6">
+                                @Html.TextBoxFor(m => m.link, new { @class = "form-control", placeholder = "" })
+                                @* <p style="color: red; font:small;">Tip: http://www.google.com</p> *@
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3 row">
+                        <label class="col-lg-4 col-form-label text-lg-end">Start Date</label>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(model => model.StartDate_Display, "{0:yyyy-MM-dd}", new { @class = "form-control", @type = "date", style = "width: 535px; height: 38px;" })
+                        </div>
+                    </div>
+
+                    <div class="mb-3 row">
+                        <label class="col-lg-4 col-form-label text-lg-end">End Date</label>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(model => model.EndDate_Display, "{0:yyyy-MM-dd}", new { @class = "form-control", @type = "date", style = "width: 535px; height: 38px;" })
+                        </div>
+                    </div>
+
+                    <div class="row mb-0">
+                        <div class="col-lg-4 col-form-label"></div>
+                        <div class="col-lg-6">
+                            <input type="submit" class="btn btn-primary" value="Update" fdprocessedid="6yalqo" onclick="saveContent()">
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // <partial name="_ValidationScriptsPartial" />
+</script>
+
+<script>
+    window.onload = function () {
+        changeType(document.getElementById('contentId'))
+    }
+    function changeType(ddl) {
+        var selectedText = $(ddl).find("option:selected").text();
+        debugger; if (selectedText == "Content") {
+            document.getElementById("div_content").style.display = "contents";
+            document.getElementById("div_file").style.display = "none";
+            document.getElementById("div_linkurl").style.display = "none";
+        }
+        else if (selectedText == "File") {
+            document.getElementById("div_content").style.display = "none";
+            document.getElementById("div_file").style.display = "contents";
+            document.getElementById("div_linkurl").style.display = "none";
+        }
+        else if (selectedText == "Link") {
+            document.getElementById("div_content").style.display = "none";
+            document.getElementById("div_file").style.display = "none";
+            document.getElementById("div_linkurl").style.display = "contents";
+        }
+    }
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        debugger;
+        var quillEngText = document.getElementById('description').value;
+
+        var quillEng = new Quill('#editor_desc', {
+            theme: 'snow'
+        });
+
+        quillEng.root.innerHTML = quillEngText;
+
+        function saveContent() {
+            var contentEng = document.getElementById('description');
+            contentEng.value = quillEng.root.innerHTML;
+        }
+
+        window.saveContent = saveContent;
+    });
+
+
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        setupFileInputPreview('PressImg');
+    });
+    function setupFileInputPreview(inputId) {
+        var input = document.getElementById(inputId);
+        var imgPreview = document.getElementById(inputId + '_imgPreview');
+        var videoPreview = document.getElementById(inputId + '_videoPreview');
+        var fileNamePreview = document.getElementById(inputId + '_fileNamePreview');
+
+        input.addEventListener('change', function (event) {
+            var file = event.target.files[0];
+            var reader = new FileReader();
+
+            // Hide all previews initially
+            imgPreview.style.display = 'none';
+            videoPreview.style.display = 'none';
+            fileNamePreview.style.display = 'none';
+
+            if (file) {
+                if (file.type.startsWith('image/')) {
+                    reader.onload = function (e) {
+                        imgPreview.setAttribute('src', e.target.result);
+                        imgPreview.style.display = 'block';
+                    };
+                    reader.readAsDataURL(file);
+                } else if (file.type.startsWith('video/')) {
+                    reader.onload = function (e) {
+                        videoPreview.setAttribute('src', e.target.result);
+                        videoPreview.style.display = 'block';
+                    };
+                    reader.readAsDataURL(file);
+                } else {
+                    fileNamePreview.textContent = 'Selected file: ' + file.name;
+                    fileNamePreview.style.display = 'block';
+                }
+            }
+        });
+    }
+
+    // Initialize the file input previews
+
+</script>
+
+
+
+

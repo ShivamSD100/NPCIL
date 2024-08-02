@@ -26,6 +26,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="wwwroot\ArticleImage\" />
+    <Folder Include="wwwroot\InfoImage\" />
+    <Folder Include="wwwroot\GeneralImage\" />
+    <Folder Include="wwwroot\PublicImage\" />
+    <Folder Include="wwwroot\PressImage\" />
     <Folder Include="wwwroot\TenderImages\" />
     <Folder Include="wwwroot\PublicationPDF\" />
     <Folder Include="wwwroot\PubCatImages\" />

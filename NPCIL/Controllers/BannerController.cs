@@ -15,6 +15,7 @@ using System.Web;
 using Microsoft.AspNetCore.Http;
 using NPCIL.Controllers;
 using Microsoft.AspNetCore.Hosting.Server;
+using Microsoft.Extensions.Primitives;
 
 namespace WebApplication1.Controllers
 {
@@ -89,14 +90,14 @@ namespace WebApplication1.Controllers
                 bannerModel.BannerImg.CopyTo(new FileStream(filePath, FileMode.Create));
                 filename = "/BannerImages/" + uniqueFileName;
             }
-
+            //String bant = bannerModel.BannerTitleRegLang.Replace("'", "/''");
                 string ret = cmn.AddDelMod("exec PRC_AddBanner @qtype='1'," +
                     "@ban_title='" + bannerModel.BannerTitle + "'," +
-                    "@ban_titleLang='" + bannerModel.BannerTitleRegLang + "'," +
+                    "@ban_titleLang=N'" + bannerModel.BannerTitleRegLang.Replace("'","''") + "'," +
                     "@ban_uploadImg='" + filename + "'," +
                     "@ban_linkURL='" + bannerModel.BannerLinkURL + "'," +
                     "@ban_altTag='" + bannerModel.BannerAltTag + "'," +
-                    "@ban_altTagLang='" + bannerModel.BannerTagRegLang + "'");
+                    "@ban_altTagLang=N'" + bannerModel.BannerTagRegLang.Replace("'","''") + "'");
                 if (ret == "1")
                 {
                     return RedirectToAction("BannerList");
@@ -152,11 +153,11 @@ namespace WebApplication1.Controllers
             string ret = cmn.AddDelMod("exec PRC_AddBanner @qtype='2'," +
                 "@ban_sno='" + bannerModel.BannerId + "'," +
                 "@ban_title='" + bannerModel.BannerTitle + "'," +
-                "@ban_titleLang='" + bannerModel.BannerTitleRegLang + "'," +
+                "@ban_titleLang=N'" + bannerModel.BannerTitleRegLang.Replace("'", "''") + "'," +
                 "@ban_uploadImg='" + filename + "'," +
                 "@ban_linkURL='" + bannerModel.BannerLinkURL + "'," +
                 "@ban_altTag='" + bannerModel.BannerAltTag + "'," +
-                "@ban_altTagLang='" + bannerModel.BannerTagRegLang + "'");
+                "@ban_altTagLang=N'" + bannerModel.BannerTagRegLang.Replace("'","''") + "'");
             if (ret == "2")
             {
                 return RedirectToAction("BannerList");

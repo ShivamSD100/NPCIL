@@ -85,11 +85,11 @@ namespace NPCIL.Controllers
 
             string ret = cmn.AddDelMod("exec PRC_AddPublicationCategories @qtype='1'," +
                 "@PC_title='" + publicationCategoriesModel.CategoriesTitle + "'," +
-                "@PC_titleLang='" + publicationCategoriesModel.CategoriesTitleRegLang + "'," +
+                "@PC_titleLang=N'" + publicationCategoriesModel.CategoriesTitleRegLang + "'," +
                 "@PC_uploadImg='" + publicationCategoriesModel.ImagePath + "'," +
                 "@PC_linkURL='" + publicationCategoriesModel.CategoriesLinkURL + "'," +
                 "@PC_altTag='" + publicationCategoriesModel.CategoriesAltTag + "'," +
-                "@PC_altTagLang='" + publicationCategoriesModel.CategoriesTagRegLang + "'");
+                "@PC_altTagLang=N'" + publicationCategoriesModel.CategoriesTagRegLang + "'");
             if (ret == "1")
             {
                 return RedirectToAction("publicationCategoriesList");
@@ -146,11 +146,11 @@ namespace NPCIL.Controllers
             string ret = cmn.AddDelMod("exec PRC_AddPublicationCategories @qtype='2'," +
                 "@pc_sno='" + publicationCategoriesModel.CategoriesId + "'," +
                  "@PC_title='" + publicationCategoriesModel.CategoriesTitle + "'," +
-                "@PC_titleLang='" + publicationCategoriesModel.CategoriesTitleRegLang + "'," +
+                "@PC_titleLang=N'" + publicationCategoriesModel.CategoriesTitleRegLang + "'," +
                 "@PC_uploadImg='" + publicationCategoriesModel.ImagePath + "'," +
                 "@PC_linkURL='" + publicationCategoriesModel.CategoriesLinkURL + "'," +
                 "@PC_altTag='" + publicationCategoriesModel.CategoriesAltTag + "'," +
-                "@PC_altTagLang='" + publicationCategoriesModel.CategoriesTagRegLang + "'");
+                "@PC_altTagLang=N'" + publicationCategoriesModel.CategoriesTagRegLang + "'");
             if (ret == "2")
             {
                 return RedirectToAction("publicationCategoriesList");

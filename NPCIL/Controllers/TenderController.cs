@@ -101,7 +101,7 @@ namespace NPCIL.Controllers
             string ret = cmn.AddDelMod("exec PRC_Tender @qtype='1'," +
                 "@Tendor_no='" + tenderModel.TendorNo + "'," +
                 "@Tendor_IssuingAuth_eng='" + tenderModel.TendorAuthEng + "'," +
-                "@Tendor_IssuingAuth_hindi='" + tenderModel.TendorAuthHindi + "'," +
+                "@Tendor_IssuingAuth_hindi=N'" + tenderModel.TendorAuthHindi + "'," +
                 "@Tender_StartDate_SellingTender='" + tenderModel.StartDate_Selling + "'," +
                 "@Tender_EndDate_SellingTender='" + tenderModel.EndDate_Selling + "'," +
                 "@Tender_DateOpening='" + tenderModel.DateOpening + "'," +
@@ -109,9 +109,9 @@ namespace NPCIL.Controllers
                 "@Tender_EndDate_ReceivingTender='" + tenderModel.EndDate_Receiving + "'," +
                 "@Tender_Prebid_Date='" + tenderModel.Prebid_Date + "'," +
                 "@Tender_Scope_eng='" + tenderModel.Scope_eng + "'," +
-                "@Tender_Scope_hindi='" + tenderModel.Scope_hindi + "'," +
+                "@Tender_Scope_hindi=N'" + tenderModel.Scope_hindi + "'," +
                 "@Tender_body_eng='" + tenderModel.body_eng + "'," +
-                "@Tender_body_hindi='" + tenderModel.body_hindi + "'," +
+                "@Tender_body_hindi=N'" + tenderModel.body_hindi + "'," +
                 "@Tender_markImportant='" + tenderModel.markImportant + "'," +
                 "@Tender_cost='" + tenderModel.cost + "'," +
                 "@TenderType='" + tenderModel.TenderTypeId + "'," +
@@ -221,7 +221,7 @@ namespace NPCIL.Controllers
                 "@Tender_id='" + tenderModel.id + "'," +
                 "@Tendor_no='" + tenderModel.TendorNo + "'," +
                 "@Tendor_IssuingAuth_eng='" + tenderModel.TendorAuthEng + "'," +
-                "@Tendor_IssuingAuth_hindi='" + tenderModel.TendorAuthHindi + "'," +
+                "@Tendor_IssuingAuth_hindi=N'" + tenderModel.TendorAuthHindi + "'," +
                 "@Tender_StartDate_SellingTender='" + tenderModel.StartDate_Selling + "'," +
                 "@Tender_EndDate_SellingTender='" + tenderModel.EndDate_Selling + "'," +
                 "@Tender_DateOpening='" + tenderModel.DateOpening + "'," +
@@ -229,9 +229,9 @@ namespace NPCIL.Controllers
                 "@Tender_EndDate_ReceivingTender='" + tenderModel.EndDate_Receiving + "'," +
                 "@Tender_Prebid_Date='" + tenderModel.Prebid_Date + "'," +
                 "@Tender_Scope_eng='" + tenderModel.Scope_eng + "'," +
-                "@Tender_Scope_hindi='" + tenderModel.Scope_hindi + "'," +
+                "@Tender_Scope_hindi=N'" + tenderModel.Scope_hindi + "'," +
                 "@Tender_body_eng='" + tenderModel.body_eng + "'," +
-                "@Tender_body_hindi='" + tenderModel.body_hindi + "'," +
+                "@Tender_body_hindi=N'" + tenderModel.body_hindi + "'," +
                 "@Tender_markImportant='" + tenderModel.markImportant + "'," +
                 "@Tender_cost='" + tenderModel.cost + "'," +
                  "@TenderType='" + tenderModel.TenderTypeId + "'," +
